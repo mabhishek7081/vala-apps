@@ -15,4 +15,5 @@ Dependencies:
 ````
 gtk+-3.0 >= 3.10
 gsettings-desktop-schemas
+imlib2
 ````

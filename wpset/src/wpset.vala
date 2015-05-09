@@ -16,7 +16,7 @@ private class Program : Gtk.Application
     Gdk.Pixbuf pixbuf;
     Gtk.ListStore liststore;
     Gtk.TreeIter iter;
-    Gtk.TreeView view;
+    Gtk.IconView view;
     string[] wallpaper;
     string[] images_dir;
     int thumbnail_size;
@@ -57,18 +57,11 @@ private class Program : Gtk.Application
         images_dir = settings.get_strv("images-dir");
         thumbnail_size = settings.get_int("thumbnail-size");
 
-        var cell_pixbuf = new Gtk.CellRendererPixbuf();
-        var cell_name = new Gtk.CellRendererText();
+        liststore = new Gtk.ListStore (2, typeof (Gdk.Pixbuf), typeof (string));
 
-        view = new Gtk.TreeView();
-        view.row_activated.connect(apply_selected_image);
-        view.set_headers_visible(false);
-
-        liststore = new Gtk.ListStore (3, typeof (Gdk.Pixbuf), typeof (string), typeof (string));
-
-        view.set_model(liststore);
-        view.insert_column_with_attributes (-1, "Image", cell_pixbuf, "pixbuf", 0);
-        view.insert_column_with_attributes (-1, "Filename", cell_name, "text", 1);
+        view = new Gtk.IconView.with_model(liststore);
+        view.set_pixbuf_column(0);
+        view.item_activated.connect(apply_selected_image);   
 
         for (int i = 0; i < images_dir.length; i++)
         {
@@ -91,26 +84,20 @@ private class Program : Gtk.Application
         headerbar.pack_end(menubutton);
 
         scrolled = new Gtk.ScrolledWindow(null, null);
-        scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS);
-        scrolled.expand = true;
-        scrolled.set_size_request(thumbnail_size + 240, 400);
         scrolled.add(view);
-
-        var grid = new Gtk.Grid();
-        grid.attach(scrolled, 0, 0, 3, 1);
-        grid.set_column_spacing(5);
-        grid.set_row_spacing(5);
+        scrolled.expand = true;
 
         window = new Gtk.ApplicationWindow(this);
         window.set_icon_name(ICON);
         window.window_position = Gtk.WindowPosition.CENTER;
         window.set_titlebar(headerbar);
-        window.add(grid);
+        window.add(scrolled);
         window.set_border_width(5);
+        window.set_default_size(600, 400);
         window.show_all();
 
-        Gtk.drag_dest_set(grid, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
-        grid.drag_data_received.connect(on_drag_data_received);
+        Gtk.drag_dest_set(scrolled, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
+        scrolled.drag_data_received.connect(on_drag_data_received);
     }
 
     public override void activate()
@@ -141,13 +128,12 @@ private class Program : Gtk.Application
             string fullpath = wallpaper[i];
             if (fullpath != "")
             {
-                var basename = Path.get_basename(fullpath);
                 load_thumbnail.begin(fullpath, (obj, res) =>
                 {
                     pixbuf = load_thumbnail.end(res);
 
                     liststore.append(out iter);
-                    liststore.set(iter, 0, pixbuf, 1, basename, 2, fullpath);
+                    liststore.set(iter, 0, pixbuf, 1, fullpath);
                 });
             }
         }
@@ -171,22 +157,24 @@ private class Program : Gtk.Application
 
     private void apply_selected_image()
     {
-        string selected;
-        Gtk.TreeModel model;
-        var selection = view.get_selection();
-        selection.get_selected(out model, out iter);
-        model.get(iter, 2, out selected);
-        var gnome_settings = new GLib.Settings("org.gnome.desktop.background");
-        gnome_settings.set_string("picture-uri", "file://".concat(selected));
-        GLib.Settings.sync();
-        try
+        List<Gtk.TreePath> paths = view.get_selected_items();
+        GLib.Value selected;
+        foreach (Gtk.TreePath path in paths)
         {
-            Process.spawn_command_line_sync("wpset-shell --set");
-        }
-        catch(Error error)
-        {
-            stderr.printf("error: %s\n", error.message);
-        }
+            liststore.get_iter(out iter, path);
+            liststore.get_value(iter, 1, out selected);
+            var gnome_settings = new GLib.Settings("org.gnome.desktop.background");
+            gnome_settings.set_string("picture-uri", "file://".concat((string)selected));
+            GLib.Settings.sync();
+            try
+            {
+                Process.spawn_command_line_sync("wpset-shell --set");
+            }
+            catch(Error error)
+            {
+                stderr.printf("error: %s\n", error.message);
+            }
+        }       
     }
 
     private void add_images_from_selected(string directory)
