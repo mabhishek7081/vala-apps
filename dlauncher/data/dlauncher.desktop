@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Dlauncher
+Comment=Dlauncher
+Exec=dlauncher
+Icon=dlauncher
+Terminal=false
+Categories=Application;Other;
+MimeType=
+StartupNotify=false
+NoDisplay=true

@@ -1,0 +1,192 @@
+# Serbian translations for PACKAGE package.
+# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# root <root@linux>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 001\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-04-15 23:35+0200\n"
+"PO-Revision-Date: 2014-01-04 19:04+0100\n"
+"Last-Translator: root <root@linux>\n"
+"Language-Team: Serbian\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: src/widgets/mainwin.vala:67
+msgid "About"
+msgstr "O programu"
+
+#: src/widgets/dialogs.vala:9 src/widgets/dialogs.vala:38
+#: src/widgets/dialogs.vala:105
+msgid "Cancel"
+msgstr "Otkaži"
+
+#: src/search/replace.vala:26
+msgid "Case sensitive"
+msgstr "Osetljivost na velika i mala slova"
+
+#: src/widgets/mainwin.vala:105 src/search/replace.vala:48
+msgid "Close"
+msgstr "Zatvori"
+
+#: src/widgets/mainwin.vala:106
+msgid "Close All"
+msgstr "Zatvori"
+
+#: src/widgets/dialogs.vala:63 src/widgets/dialogs.vala:104
+msgid "Close Without Saving"
+msgstr "Zatvori bez snimanja"
+
+#: src/preferences/prefdialog.vala:21
+msgid "Color scheme"
+msgstr "Šema boja"
+
+#: src/preferences/prefdialog.vala:120
+msgid "Editor"
+msgstr "Uređivač"
+
+#: src/preferences/prefdialog.vala:20
+msgid "Editor font"
+msgstr "Font uređivača"
+
+#: src/widgets/dialogs.vala:66
+msgid "Error"
+msgstr "Greška"
+
+#: src/widgets/dialogs.vala:61
+#, c-format
+msgid ""
+"Error saving file %s.\n"
+"The file on disk may now be truncated!"
+msgstr ""
+"Greška u snimanju datoteke %s.\n"
+"Datoteka na disku može biti oštećena!"
+
+#: src/search/replace.vala:51
+msgid "Find"
+msgstr "Nađi"
+
+#: src/preferences/prefdialog.vala:27
+msgid "Highlight current line"
+msgstr "Označi trenutnu liniju"
+
+#: src/preferences/prefdialog.vala:23
+msgid "Indent width"
+msgstr "Širina uvlačenja"
+
+#: src/preferences/prefdialog.vala:29
+msgid "Insert spaces instead of tabs"
+msgstr "Ubaci prostore umjesto kartica"
+
+#: src/preferences/prefdialog.vala:22
+msgid "Margin width"
+msgstr "Širina margine"
+
+#: src/widgets/mainwin.vala:95
+msgid "New"
+msgstr "Novi"
+
+#: src/widgets/dialogs.vala:8 src/widgets/dialogs.vala:10
+#: src/widgets/mainwin.vala:74
+msgid "Open"
+msgstr "Otvori"
+
+#: src/widgets/mainwin.vala:64
+msgid "Preferences"
+msgstr "Podešavanja"
+
+#: src/widgets/dialogs.vala:108
+msgid "Question"
+msgstr "Pitanje"
+
+#: src/widgets/mainwin.vala:68
+msgid "Quit"
+msgstr "Odustani"
+
+#: src/search/replace.vala:23
+msgid "Repace with:"
+msgstr "Zameni sa:"
+
+#: src/search/replace.vala:18 src/search/replace.vala:49
+msgid "Replace"
+msgstr "Zameni"
+
+#: src/search/replace.vala:50
+msgid "Replace All"
+msgstr "Zameni sve"
+
+#: src/widgets/mainwin.vala:100
+msgid "Replace..."
+msgstr "Zameni..."
+
+#: src/widgets/dialogs.vala:39 src/widgets/dialogs.vala:106
+#: src/widgets/mainwin.vala:78
+msgid "Save"
+msgstr "Snimi"
+
+#: src/widgets/mainwin.vala:97
+msgid "Save All"
+msgstr "Snimi sve"
+
+#: src/widgets/dialogs.vala:37 src/widgets/mainwin.vala:96
+msgid "Save As..."
+msgstr "Snimi kao..."
+
+#: src/search/replace.vala:28
+msgid "Search backwards"
+msgstr "Unazad"
+
+#: src/search/replace.vala:20
+msgid "Search for:"
+msgstr "Traži:"
+
+#: src/widgets/color.vala:15 src/widgets/mainwin.vala:102
+msgid "Select Color"
+msgstr "Izbor boja"
+
+#: src/widgets/dialogs.vala:64
+msgid "Select New Location"
+msgstr "Izaberi lokaciju"
+
+#: src/preferences/prefdialog.vala:26
+msgid "Show line numbers"
+msgstr "Prikaži brojeve redova"
+
+#: src/preferences/prefdialog.vala:28
+msgid "Show margin on right"
+msgstr "Prikaži desnu marginu"
+
+#: src/preferences/prefdialog.vala:24
+msgid "Tab width"
+msgstr "Širina kartica"
+
+#: src/widgets/mainwin.vala:101
+msgid "Text Wrap"
+msgstr "Prelom teksta"
+
+#: src/preferences/prefdialog.vala:30
+msgid "Text auto indentation"
+msgstr "Automatsko uvlačenje teksta"
+
+#: src/widgets/application.vala:9
+msgid "Text editor with syntax highlighting"
+msgstr "Uređivač teksta sa oznakom sintakse"
+
+#: src/widgets/dialogs.vala:102
+#, c-format
+msgid ""
+"The file '%s' is not saved.\n"
+"Do you want to save it before closing?"
+msgstr ""
+"Datoteka '%s' nije snimljena.\n"
+"Da li želite da je snimite prije zatvaranja?"
+
+#: src/preferences/prefdialog.vala:121
+msgid "View"
+msgstr "Pogled"

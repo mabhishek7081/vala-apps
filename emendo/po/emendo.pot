@@ -1,0 +1,187 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-04-15 23:35+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/widgets/mainwin.vala:67
+msgid "About"
+msgstr ""
+
+#: src/widgets/dialogs.vala:9 src/widgets/dialogs.vala:38
+#: src/widgets/dialogs.vala:105
+msgid "Cancel"
+msgstr ""
+
+#: src/search/replace.vala:26
+msgid "Case sensitive"
+msgstr ""
+
+#: src/widgets/mainwin.vala:105 src/search/replace.vala:48
+msgid "Close"
+msgstr ""
+
+#: src/widgets/mainwin.vala:106
+msgid "Close All"
+msgstr ""
+
+#: src/widgets/dialogs.vala:63 src/widgets/dialogs.vala:104
+msgid "Close Without Saving"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:21
+msgid "Color scheme"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:120
+msgid "Editor"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:20
+msgid "Editor font"
+msgstr ""
+
+#: src/widgets/dialogs.vala:66
+msgid "Error"
+msgstr ""
+
+#: src/widgets/dialogs.vala:61
+#, c-format
+msgid ""
+"Error saving file %s.\n"
+"The file on disk may now be truncated!"
+msgstr ""
+
+#: src/search/replace.vala:51
+msgid "Find"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:27
+msgid "Highlight current line"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:23
+msgid "Indent width"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:29
+msgid "Insert spaces instead of tabs"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:22
+msgid "Margin width"
+msgstr ""
+
+#: src/widgets/mainwin.vala:95
+msgid "New"
+msgstr ""
+
+#: src/widgets/dialogs.vala:8 src/widgets/dialogs.vala:10
+#: src/widgets/mainwin.vala:74
+msgid "Open"
+msgstr ""
+
+#: src/widgets/mainwin.vala:64
+msgid "Preferences"
+msgstr ""
+
+#: src/widgets/dialogs.vala:108
+msgid "Question"
+msgstr ""
+
+#: src/widgets/mainwin.vala:68
+msgid "Quit"
+msgstr ""
+
+#: src/search/replace.vala:23
+msgid "Repace with:"
+msgstr ""
+
+#: src/search/replace.vala:18 src/search/replace.vala:49
+msgid "Replace"
+msgstr ""
+
+#: src/search/replace.vala:50
+msgid "Replace All"
+msgstr ""
+
+#: src/widgets/mainwin.vala:100
+msgid "Replace..."
+msgstr ""
+
+#: src/widgets/dialogs.vala:39 src/widgets/dialogs.vala:106
+#: src/widgets/mainwin.vala:78
+msgid "Save"
+msgstr ""
+
+#: src/widgets/mainwin.vala:97
+msgid "Save All"
+msgstr ""
+
+#: src/widgets/dialogs.vala:37 src/widgets/mainwin.vala:96
+msgid "Save As..."
+msgstr ""
+
+#: src/search/replace.vala:28
+msgid "Search backwards"
+msgstr ""
+
+#: src/search/replace.vala:20
+msgid "Search for:"
+msgstr ""
+
+#: src/widgets/color.vala:15 src/widgets/mainwin.vala:102
+msgid "Select Color"
+msgstr ""
+
+#: src/widgets/dialogs.vala:64
+msgid "Select New Location"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:26
+msgid "Show line numbers"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:28
+msgid "Show margin on right"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:24
+msgid "Tab width"
+msgstr ""
+
+#: src/widgets/mainwin.vala:101
+msgid "Text Wrap"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:30
+msgid "Text auto indentation"
+msgstr ""
+
+#: src/widgets/application.vala:9
+msgid "Text editor with syntax highlighting"
+msgstr ""
+
+#: src/widgets/dialogs.vala:102
+#, c-format
+msgid ""
+"The file '%s' is not saved.\n"
+"Do you want to save it before closing?"
+msgstr ""
+
+#: src/preferences/prefdialog.vala:121
+msgid "View"
+msgstr ""

@@ -1,0 +1,70 @@
+<schemalist>
+  <schema id="org.vala-apps.emendo.preferences" path="/org/vala-apps/emendo/preferences/">
+    <key name="width" type="i">
+      <default>900</default>
+      <summary>width</summary>
+      <description>Main window width</description>
+    </key>
+    <key name="height" type="i">
+      <default>600</default>
+      <summary>height</summary>
+      <description>Main window heigth</description>
+    </key>
+    <key name="font" type="s">
+      <default>'Monospace 13'</default>
+      <summary>font</summary>
+      <description>Editor font</description>
+    </key>    
+    <key name="scheme" type="s">
+      <default>'kate'</default>
+      <summary>scheme</summary>
+      <description>Color scheme</description>
+    </key>    
+    <key name="margin-pos" type="u">
+      <default>75</default>
+      <summary>margin-pos</summary>
+      <description>Margin width</description>
+    </key>      
+    <key name="indent-size" type="i">
+      <default>4</default>
+      <summary>indent-size</summary>
+      <description>Indent width</description>
+    </key>    
+    <key name="tab-size" type="u">
+      <default>4</default>
+      <summary>tab-size</summary>
+      <description>Tab width</description>
+    </key>
+    <key name="numbers-show" type="b">
+      <default>true</default>
+      <summary>numbers-show</summary>
+      <description>Show line numbers</description>
+    </key>
+    <key name="highlight" type="b">
+      <default>true</default>
+      <summary>highlight</summary>
+      <description>Highlight current line</description>
+    </key>
+    <key name="margin-show" type="b">
+      <default>true</default>
+      <summary>margin-show</summary>
+      <description>Show margin on right</description>
+    </key>    
+    
+    <key name="spaces" type="b">
+      <default>true</default>
+      <summary>spaces</summary>
+      <description>Insert spaces instead of tabs</description>
+    </key>
+    <key name="auto-indent" type="b">
+      <default>true</default>
+      <summary>auto-indent</summary>
+      <description>Auto indentation of text</description>
+    </key>
+    <key name="recent-files" type="as">
+      <default>[]</default>
+      <summary>Recently opened files</summary>
+      <description>Recently opened files</description>
+    </key>
+  </schema>
+</schemalist>
