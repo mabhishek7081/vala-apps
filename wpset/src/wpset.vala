@@ -5,7 +5,7 @@
 private class Program : Gtk.Application
 {
     const string NAME = "Desktop Wallpaper";
-    const string VERSION = "1.7.5";
+    const string VERSION = "1.8.0";
     const string DESCRIPTION = _("A simple tool for changing your desktop wallpaper");
     const string ICON = "preferences-desktop-wallpaper";
     const string[] AUTHORS = { "Jonathan Koren (imlibsetroot) <jonathan-at-jonathankoren-dot-com>", "Simargl <https://github.com/simargl>", null };
@@ -61,12 +61,11 @@ private class Program : Gtk.Application
 
         view = new Gtk.IconView.with_model(liststore);
         view.set_pixbuf_column(0);
-        view.item_activated.connect(apply_selected_image);   
+        view.item_activated.connect(apply_selected_image);
+        view.set_activate_on_single_click(true);
 
         for (int i = 0; i < images_dir.length; i++)
-        {
             list_images(images_dir[i]);
-        }
 
         var gear_menu = new Menu();
         gear_menu.append(_("Add folder"), "app.add");
@@ -92,8 +91,7 @@ private class Program : Gtk.Application
         window.window_position = Gtk.WindowPosition.CENTER;
         window.set_titlebar(headerbar);
         window.add(scrolled);
-        window.set_border_width(5);
-        window.set_default_size(600, 400);
+        window.set_default_size(600, 480);
         window.show_all();
 
         Gtk.drag_dest_set(scrolled, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
