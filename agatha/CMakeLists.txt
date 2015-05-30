@@ -29,8 +29,8 @@ PACKAGES
     gtk+-3.0
     poppler-glib
 OPTIONS)
-add_executable("${CMAKE_PROJECT_NAME}" ${VALA_C})
-target_link_libraries("${CMAKE_PROJECT_NAME}" ${GTK3_LIBRARIES} ${POPPLER-GLIB_LIBRARIES})
+add_executable(agatha ${VALA_C})
+target_link_libraries(agatha ${GTK3_LIBRARIES} ${POPPLER-GLIB_LIBRARIES})
 
 set(CMAKE_INSTALL_PREFIX /usr)
 

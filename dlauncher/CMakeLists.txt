@@ -30,8 +30,8 @@ PACKAGES
     gio-unix-2.0
     libgnome-menu-3.0
 OPTIONS)
-add_executable("${CMAKE_PROJECT_NAME}" ${VALA_C})
-target_link_libraries("${CMAKE_PROJECT_NAME}" ${GTK3_LIBRARIES} ${LIBGNOME-MENU_LIBRARIES})
+add_executable(dlauncher ${VALA_C})
+target_link_libraries(dlauncher ${GTK3_LIBRARIES} ${LIBGNOME-MENU_LIBRARIES})
 
 set(CMAKE_INSTALL_PREFIX /usr)
 

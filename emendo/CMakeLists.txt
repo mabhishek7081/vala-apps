@@ -15,7 +15,7 @@ link_directories(${GTKSOURCEVIEW3_LIBRARY_DIRS})
 include_directories(${GEE-0.8_INCLUDE_DIRS})
 link_directories(${GEE-0.8_LIBRARY_DIRS})
 
-set(GETTEXT_PACKAGE "${CMAKE_PROJECT_NAME}")
+set(GETTEXT_PACKAGE emendo)
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 
 add_subdirectory (po)
@@ -38,12 +38,12 @@ PACKAGES
     gtksourceview-3.0
     gee-0.8
 OPTIONS)
-add_executable("${CMAKE_PROJECT_NAME}" ${VALA_C})
-target_link_libraries("${CMAKE_PROJECT_NAME}" ${GTKSOURCEVIEW3_LIBRARIES} ${GEE-0.8_LIBRARIES} -lm)
+add_executable(emendo ${VALA_C})
+target_link_libraries(emendo ${GTKSOURCEVIEW3_LIBRARIES} ${GEE-0.8_LIBRARIES} -lm)
 
 set(CMAKE_INSTALL_PREFIX /usr)
 
-install(TARGETS "${CMAKE_PROJECT_NAME}" DESTINATION bin)
+install(TARGETS emendo DESTINATION bin)
 install(FILES data/emendo.desktop DESTINATION share/applications)
 install(FILES data/emendo.png DESTINATION share/icons/hicolor/64x64/apps)
 install(FILES data/org.vala-apps.emendo.gschema.xml DESTINATION share/glib-2.0/schemas)

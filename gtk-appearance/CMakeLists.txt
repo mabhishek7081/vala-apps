@@ -21,8 +21,8 @@ vala_precompile(VALA_C
 PACKAGES
     gtk+-3.0
 OPTIONS)
-add_executable("${CMAKE_PROJECT_NAME}" ${VALA_C})
-target_link_libraries("${CMAKE_PROJECT_NAME}" ${GTK3_LIBRARIES})
+add_executable(gtk-appearance ${VALA_C})
+target_link_libraries(gtk-appearance ${GTK3_LIBRARIES})
 
 set(CMAKE_INSTALL_PREFIX /usr)
 

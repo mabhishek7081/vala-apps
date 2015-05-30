@@ -25,8 +25,8 @@ PACKAGES
     gtk+-3.0
     vte-2.91
 OPTIONS)
-add_executable("${CMAKE_PROJECT_NAME}" ${VALA_C})
-target_link_libraries("${CMAKE_PROJECT_NAME}" ${GTK3_LIBRARIES} ${VTE3_LIBRARIES} -lm)
+add_executable(taeni ${VALA_C})
+target_link_libraries(taeni ${GTK3_LIBRARIES} ${VTE3_LIBRARIES} -lm)
 
 set(CMAKE_INSTALL_PREFIX /usr)
 
