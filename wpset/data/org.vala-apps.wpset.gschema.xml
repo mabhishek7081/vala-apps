@@ -5,10 +5,5 @@
       <summary>Default wallpaper's directory</summary>
       <description>Default wallpaper's directory</description>
     </key>
-    <key name="thumbnail-size" type="i">
-      <default>170</default>
-      <summary>Thumbnail size</summary>
-      <description>Thumbnail size</description>
-    </key>  
   </schema>
 </schemalist>

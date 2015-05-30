@@ -19,7 +19,6 @@ private class Program : Gtk.Application
     Gtk.IconView view;
     string[] wallpaper;
     string[] images_dir;
-    int thumbnail_size;
     Gtk.ScrolledWindow scrolled;
     private const Gtk.TargetEntry[] targets = { {"text/uri-list", 0, 0} };
 
@@ -55,7 +54,6 @@ private class Program : Gtk.Application
 
         settings = new GLib.Settings("org.vala-apps.wpset.preferences");
         images_dir = settings.get_strv("images-dir");
-        thumbnail_size = settings.get_int("thumbnail-size");
 
         liststore = new Gtk.ListStore (2, typeof (Gdk.Pixbuf), typeof (string));
 
@@ -91,7 +89,7 @@ private class Program : Gtk.Application
         window.window_position = Gtk.WindowPosition.CENTER;
         window.set_titlebar(headerbar);
         window.add(scrolled);
-        window.set_default_size(600, 480);
+        window.set_default_size(800, 600);
         window.show_all();
 
         Gtk.drag_dest_set(scrolled, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
@@ -144,7 +142,7 @@ private class Program : Gtk.Application
         try
         {
             GLib.InputStream stream = yield file.read_async();
-            pix = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, thumbnail_size, thumbnail_size, true, null);
+            pix = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 220, 200, true, null);
         }
         catch (Error e)
         {

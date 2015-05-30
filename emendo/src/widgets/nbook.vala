@@ -2,6 +2,8 @@ namespace Emendo
 {
 public class NBook: Gtk.Notebook
 {
+    private const Gtk.TargetEntry[] targets = { {"text/uri-list", 0, 0} };
+ 
     public void create_tab(string path)
     {
         if (files.contains(path) == true)
@@ -32,6 +34,10 @@ public class NBook: Gtk.Notebook
         // default
         tab_view.set_cursor_visible(true);
         tab_view.set_left_margin(10);
+
+        // drag and drop
+        Gtk.drag_dest_set(tab_view, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
+        tab_view.drag_data_received.connect(on_drag_data_received);
 
         // style scheme
         var style_manager = new Gtk.SourceStyleSchemeManager();
@@ -89,6 +95,23 @@ public class NBook: Gtk.Notebook
         {
             on_modified_changed(buffer, tab_label, path);
         });
+    }
+
+    // Drag Data
+    private void on_drag_data_received(Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time)
+    {
+        string fileopen = null;
+        foreach(string uri in data.get_uris())
+        {
+            fileopen = uri.replace("file://", "");
+            fileopen = Uri.unescape_string(fileopen);
+            
+            var nbook = new Emendo.NBook();
+            nbook.create_tab(fileopen);
+            var operations = new Emendo.Operations();
+            operations.open_file(fileopen);
+        }
+        Gtk.drag_finish(drag_context, true, false, time);
     }
 
     // Destroy tab

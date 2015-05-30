@@ -11,12 +11,12 @@
       <description>Main window heigth</description>
     </key>
     <key name="bgcolor" type="s">
-      <default>'#1A1A1A'</default>
+      <default>'#252E32'</default>
       <summary>Background</summary>
       <description>Terminal background color</description>
     </key>
     <key name="fgcolor" type="s">
-      <default>'#DCDCDC'</default>
+      <default>'#BFCCCD'</default>
       <summary>Foreground</summary>
       <description>Terminal foreground color</description>
     </key>
