@@ -2,17 +2,13 @@ namespace Emendo
 {
 private Gee.ArrayList<string> files;
 private Gtk.ApplicationWindow window;
-private Gtk.Button button_find;
-private Gtk.MenuButton menubutton;
-private Gtk.HeaderBar headerbar;
 private Gtk.Notebook notebook;
 
 public class MainWin: Gtk.ApplicationWindow
 {
     private const GLib.ActionEntry[] action_entries =
     {
-        { "show-menu", action_show_menu },
-        { "show-find", action_find },
+        { "show-find", action_find      },
         { "undo",      action_undo      },
         { "redo",      action_redo      },
         { "open",      action_open      },
@@ -49,6 +45,7 @@ public class MainWin: Gtk.ApplicationWindow
         app.set_accels_for_action("app.save",       {"<Primary>S"});
         app.set_accels_for_action("app.new",        {"<Primary>N"});
         app.set_accels_for_action("app.save-all",   {"<Primary><Shift>S"});
+        app.set_accels_for_action("app.find",       {"<Primary>F"});
         app.set_accels_for_action("app.replace",    {"<Primary>H"});
         app.set_accels_for_action("app.wrap",       {"<Primary>R"});
         app.set_accels_for_action("app.color",      {"F9"});
@@ -58,64 +55,37 @@ public class MainWin: Gtk.ApplicationWindow
 
         // app menu
         var menu = new GLib.Menu();
-        var app_section_one = new GLib.Menu();
-        var app_section_two = new GLib.Menu();
 
-        app_section_one.append(_("Preferences"),  "app.pref");
-        menu.append_section(null, app_section_one);
+        var section = new GLib.Menu();
+        section.append(_("New"),            "app.new");
+        section.append(_("Open"),           "app.open");
+        section.append(_("Save"),           "app.save");
+        section.append(_("Save As..."),     "app.save-as");
+        section.append(_("Save All"),       "app.save-all");
+        menu.append_section(null, section);
+        
+        section = new GLib.Menu();
+        section.append(_("Find..."),   	    "app.find");
+        section.append(_("Replace..."),   	"app.replace");
+        section.append(_("Text Wrap"), 		"app.wrap");
+        section.append(_("Select Color"), 	"app.color");
+        menu.append_section(null, section);
+        
+        section = new GLib.Menu();
+        section.append(_("Close"),          "app.close");
+        section.append(_("Close All"),      "app.close-all");
+        menu.append_section(null, section);
 
-        app_section_two.append(_("About"),        "app.about");
-        app_section_two.append(_("Quit"),         "app.quit");
-        menu.append_section(null, app_section_two);
+        section = new GLib.Menu();
+        section.append(_("Preferences"),    "app.pref");
+        menu.append_section(null, section);
+        
+        section = new GLib.Menu();
+        section.append(_("About"),          "app.about");
+        section.append(_("Quit"),           "app.quit");
+        menu.append_section(null, section);
 
         app.set_app_menu(menu);
-
-        // buttons
-        var button_open  = new Gtk.Button.with_label(_("Open"));
-        button_open.width_request  = 55;
-        button_open.clicked.connect(action_open);
-
-        var button_save = new Gtk.Button.with_label(_("Save"));
-        button_save.width_request = 55;
-        button_save.clicked.connect(action_save);
-
-        var image_find = new Gtk.Image.from_icon_name("edit-find-symbolic", Gtk.IconSize.MENU);
-
-        button_find = new Gtk.Button();
-        button_find.set_image(image_find);
-        button_find.valign = Gtk.Align.CENTER;
-        button_find.clicked.connect(action_find);
-
-        // gear menu system
-        var gmenu = new GLib.Menu();
-        var gmenu_one = new GLib.Menu();
-        var gmenu_two = new GLib.Menu();
-        var gmenu_three = new GLib.Menu();
-
-        gmenu_one.append(_("New"),            	"app.new");
-        gmenu_one.append(_("Save As..."),     	"app.save-as");
-        gmenu_one.append(_("Save All"),       	"app.save-all");
-        gmenu.append_section(null, gmenu_one);
-
-        gmenu_two.append(_("Replace..."),   	"app.replace");
-        gmenu_two.append(_("Text Wrap"), 		"app.wrap");
-        gmenu_two.append(_("Select Color"), 	"app.color");
-        gmenu.append_section(null, gmenu_two);
-
-        gmenu_three.append(_("Close"),          "app.close");
-        gmenu_three.append(_("Close All"),      "app.close-all");
-        gmenu.append_section(null, gmenu_three);
-
-        var menuimage = new Gtk.Image.from_icon_name("open-menu-symbolic", Gtk.IconSize.MENU);
-
-        menubutton = new Gtk.MenuButton();
-        menubutton.valign = Gtk.Align.CENTER;
-        menubutton.set_use_popover(true);
-        menubutton.set_menu_model(gmenu);
-        menubutton.set_image(menuimage);
-
-        var popover = menubutton.get_popover();
-        popover.hide.connect(action_view_grab_focus);
 
         // window
         notebook = new Gtk.Notebook();
@@ -123,18 +93,11 @@ public class MainWin: Gtk.ApplicationWindow
         notebook.set_scrollable(true);
         notebook.switch_page.connect(on_notebook_page_switched);
 
-        headerbar = new Gtk.HeaderBar();
-        headerbar.set_show_close_button(true);
-        headerbar.pack_start(button_open);
-        headerbar.pack_start(button_save);
-        headerbar.pack_end  (menubutton);
-        headerbar.pack_end  (button_find);
-
         window = new Gtk.ApplicationWindow(app);
         window.window_position = Gtk.WindowPosition.CENTER;
         window.set_default_size(width, height);
         window.set_icon_name(ICON);
-        window.set_titlebar(headerbar);
+        window.set_title(NAME);
         window.add(notebook);
         window.show_all();
         window.delete_event.connect(() =>
@@ -148,7 +111,7 @@ public class MainWin: Gtk.ApplicationWindow
     {
         var tabs = new Emendo.Tabs();
         string path = tabs.get_path_at_tab((int)page_num);
-        headerbar.set_title(path);
+        window.set_title(path);
     }
 
     public void action_app_quit()
@@ -159,22 +122,6 @@ public class MainWin: Gtk.ApplicationWindow
         settings.set_height();
         GLib.Settings.sync();
         window.get_application().quit();
-    }
-
-    private void action_view_grab_focus()
-    {
-        if (notebook.get_n_pages() == 0)
-            return;
-        var tabs = new Emendo.Tabs();
-        var view = tabs.get_current_sourceview();
-        view.grab_focus();
-    }
-
-    // without menu item
-    private void action_show_menu()
-    {
-        var operations = new Emendo.Operations();
-        operations.show_menu();
     }
 
     private void action_undo()

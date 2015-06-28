@@ -11,7 +11,7 @@
       <description>Main window heigth</description>
     </key>
     <key name="font" type="s">
-      <default>'Monospace 13'</default>
+      <default>'Monospace 14'</default>
       <summary>font</summary>
       <description>Editor font</description>
     </key>    

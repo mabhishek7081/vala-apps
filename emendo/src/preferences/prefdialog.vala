@@ -69,12 +69,9 @@ public class PrefDialog: Gtk.Dialog
         button_auto_indent.notify["active"].connect (on_button_auto_indent_changed);
 
         // Dialog
-        var headerbar_preferences = new Gtk.HeaderBar();
-        headerbar_preferences.set_show_close_button(true);
-
         var preferences = new Gtk.Dialog();
-        preferences.set_titlebar(headerbar_preferences);
-        preferences.set_border_width(20);
+        preferences.set_title(_("Preferences"));
+        preferences.set_border_width(5);
         preferences.set_transient_for(window);
         preferences.set_property("skip-taskbar-hint", true);
         preferences.set_resizable(false);
@@ -109,7 +106,6 @@ public class PrefDialog: Gtk.Dialog
         grid_view.attach(label_auto_indent,    0, 4, 3, 1);
         grid_view.attach(button_auto_indent,   3, 4, 1, 1);
 
-
         grid_view.set_column_spacing(10);
         grid_view.set_row_spacing(21);
         grid_view.set_column_homogeneous(true);
@@ -117,18 +113,17 @@ public class PrefDialog: Gtk.Dialog
         // Stack and Switcher
         var stack = new Gtk.Stack();
         stack.set_transition_duration(500);
-        stack.add_titled(grid_editor, "editor", _("Editor"));
-        stack.add_titled(grid_view,   "view",   _("View"));
+        stack.add_titled(grid_editor, "editor", _("                          Editor                         "));
+        stack.add_titled(grid_view,   "view",   _("                           View                          "));
         stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
-
-        var content = preferences.get_content_area() as Gtk.Box;
-        content.pack_start(stack, false, false, 0);
 
         var switcher = new Gtk.StackSwitcher();
         switcher.set_stack(stack);
-        switcher.set_border_width(4);
+        switcher.set_border_width(10);
 
-        headerbar_preferences.set_custom_title(switcher);
+        var content = preferences.get_content_area() as Gtk.Box;
+        content.pack_start(switcher, true, true, 0);
+        content.pack_start(stack, true, true, 0);
         preferences.show_all();
     }
 

@@ -196,12 +196,5 @@ public class Operations: GLib.Object
         view.redo();
     }
 
-    // show menu
-    public void show_menu()
-    {
-        if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) == 0)
-            menubutton.set_active(true);
-    }
-
 }
 }

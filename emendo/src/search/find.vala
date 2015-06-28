@@ -4,59 +4,62 @@ public class Find: Gtk.Dialog
 {
     private Gtk.Entry entry;
     private Gtk.SourceSearchContext context;
-    private Gtk.Popover popover;
 
     public void show_dialog()
     {
         if (notebook.get_n_pages() == 0)
             return;
+        var dialog = new Gtk.Dialog();
+        dialog.set_transient_for(window);
+        dialog.set_border_width(5);
+        dialog.set_property("skip-taskbar-hint", true);
+        dialog.set_resizable(false);
+        dialog.set_title(_("Find"));
 
+        var label_sch = new Gtk.Label.with_mnemonic(_("Search for:"));
         entry = new Gtk.Entry();
-        entry.set_size_request(200, 30);
-
-        var button_up = new Gtk.Button.from_icon_name("go-up-symbolic",     Gtk.IconSize.BUTTON);
-        button_up.set_size_request(30, 30);
-
-        var button_down = new Gtk.Button.from_icon_name("go-down-symbolic", Gtk.IconSize.BUTTON);
-        button_down.set_size_request(30, 30);
-
-        var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        box.pack_start(button_up);
-        box.pack_start(button_down);
-        box.get_style_context().add_class("linked");
-        box.valign = Gtk.Align.CENTER;
-
-        var image_close = new Gtk.Image();
-        image_close.set_from_icon_name("window-close-symbolic",  Gtk.IconSize.BUTTON);
-        image_close.set_padding(1, 8);
-
-        var eventbox = new Gtk.EventBox();
-        eventbox.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
-        eventbox.add(image_close);
 
         var grid = new Gtk.Grid();
-        grid.attach(entry,    0, 0, 1, 1);
-        grid.attach(box,      1, 0, 1, 1);
-        grid.attach(eventbox, 2, 0, 1, 1);
-        grid.set_border_width(3);
-        grid.set_column_spacing(2);
+        grid.set_column_spacing(30);
+        grid.set_row_spacing(10);
+        grid.set_border_width(10);
+        grid.set_row_homogeneous(true);
+
+        grid.attach(label_sch,  0, 0,  1, 1);
+        grid.attach(entry,  1, 0, 7, 1);
         grid.show_all();
 
-        popover = new Gtk.Popover(button_find);
-        popover.add(grid);
-        popover.set_modal(false);
-        popover.set_visible(true);
+        var content = dialog.get_content_area() as Gtk.Container;
+        content.add(grid);
 
-        // signals
+        dialog.add_button(_("Close"),       1);
+        dialog.add_button(_("Previous"),    2);
+        dialog.add_button(_("Next"),        3);
+
+        dialog.response.connect(on_response);
+        dialog.show_all();
+
+         // signals
         entry.changed.connect(forward_on_changed);
-        entry.activate.connect(forward);
-        button_down.clicked.connect(forward);
-        button_up.clicked.connect(backward);
-        eventbox.button_release_event.connect(on_close_clicked);
-
-        popover.hide.connect(on_popover_hide);
-
+        entry.activate.connect(forward);     
         entry_start_text();
+    }
+
+    private void on_response(Gtk.Dialog dialog, int response)
+    {
+        switch(response)
+        {
+        case 1:
+            dialog.destroy();
+            context.set_highlight(false);
+            break;        
+         case 2:
+            backward();
+            break;
+        case 3:
+            forward();
+            break;
+        }
     }
 
     // Set entry text from selection
@@ -185,24 +188,6 @@ public class Find: Gtk.Dialog
         var rgba = Gdk.RGBA();
         rgba.parse("#FF6666");
         entry.override_color(Gtk.StateFlags.NORMAL, rgba);
-    }
-
-    // Hide Popover
-    private bool on_close_clicked()
-    {
-        popover.hide();
-        return false;
-    }
-
-    // On popover hide
-    private void on_popover_hide()
-    {
-        var tabs = new Emendo.Tabs();
-        var view = tabs.get_current_sourceview();
-        view.grab_focus();
-
-        if (entry.get_text_length() > 0)
-            context.set_highlight(false);
     }
 
 }

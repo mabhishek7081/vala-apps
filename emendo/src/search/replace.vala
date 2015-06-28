@@ -10,6 +10,8 @@ public class Replace: Gtk.Dialog
 
     public void show_dialog()
     {
+        if (notebook.get_n_pages() == 0)
+            return;
         var dialog = new Gtk.Dialog();
         dialog.set_transient_for(window);
         dialog.set_border_width(5);

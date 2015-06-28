@@ -134,7 +134,7 @@ public class NBook: Gtk.Notebook
             files.remove(path);
             current_files();
             if (notebook.get_n_pages() == 0)
-                headerbar.set_title(NAME);
+                window.set_title(NAME);
             if (notebook.get_n_pages() == 1)
                 notebook.set_show_tabs(false);
             else

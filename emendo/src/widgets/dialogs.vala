@@ -115,7 +115,7 @@ public class Dialogs: Gtk.Dialog
             notebook.remove_page(num);
             files.remove(path);
             if (notebook.get_n_pages() == 0)
-                headerbar.set_title("");
+                window.set_title("");
             break;
         case Gtk.ResponseType.CANCEL:
             break;
@@ -125,7 +125,7 @@ public class Dialogs: Gtk.Dialog
             notebook.remove_page(num);
             files.remove(path);
             if (notebook.get_n_pages() == 0)
-                headerbar.set_title("");
+                window.set_title("");
             break;
         }
         var nbook = new Emendo.NBook();
