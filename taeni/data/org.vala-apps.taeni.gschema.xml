@@ -6,7 +6,7 @@
       <description>Main window width</description>
     </key>
     <key name="height" type="i">
-      <default>460</default>
+      <default>464</default>
       <summary>Heigth</summary>
       <description>Main window heigth</description>
     </key>
@@ -21,7 +21,7 @@
       <description>Terminal foreground color</description>
     </key>
     <key name="font" type="s">
-      <default>'Monospace 13'</default>
+      <default>'Monospace 14'</default>
       <summary>Font</summary>
       <description>Terminal font</description>
     </key>

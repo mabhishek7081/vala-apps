@@ -5,7 +5,7 @@
 private class Program : Gtk.Application
 {
     const string NAME        = "Taeni";
-    const string VERSION     = "2.1.0";
+    const string VERSION     = "2.2.0";
     const string DESCRIPTION = _("Multi-tabbed terminal emulator based on VTE");
     const string ICON        = "utilities-terminal";
     const string APP_ID      = "org.vala-apps.taeni";
@@ -61,23 +61,6 @@ private class Program : Gtk.Application
     {
         base.startup();
 
-        var menu = new GLib.Menu();
-
-        var section = new GLib.Menu();
-        section.append(_("New Window"), "app.new-window");
-        menu.append_section(null, section);       
-        
-        section = new GLib.Menu();
-        section.append(_("Preferences"), "app.pref");
-        menu.append_section(null, section);
-
-        section = new GLib.Menu();
-        section.append(_("About"), "app.about");
-        section.append(_("Quit"), "app.quit");
-        menu.append_section(null, section);
-
-        set_app_menu(menu);
-
         set_accels_for_action("app.new-window",    {"<Primary><Shift>N"});
         set_accels_for_action("app.new-tab",       {"<Primary><Shift>T"});
         set_accels_for_action("app.close-tab",     {"<Primary><Shift>W"});
@@ -125,31 +108,8 @@ private class Program : Gtk.Application
         terminal_fgcolor = settings.get_string("fgcolor");
         terminal_font = settings.get_string("font");
 
-        if (width < 600 ){ width = 600; }
-        if (height < 400){ height = 400;}      
-
-        var gear_menu = new GLib.Menu();
-        var section_one = new GLib.Menu();
-        var section_two = new GLib.Menu();
-
-        section_one.append(_("New tab"), "app.new-tab");
-        gear_menu.append_section(null, section_one);
-
-        section_two.append(_("Copy"), "app.copy");
-        section_two.append(_("Paste"), "app.paste");
-        section_two.append(_("Select all"), "app.select-all");
-        gear_menu.append_section(null, section_two);
-
-        menubutton = new Gtk.MenuButton();
-        menubutton.valign = Gtk.Align.CENTER;
-        menubutton.set_use_popover(true);
-        menubutton.set_menu_model(gear_menu);
-        menubutton.set_image(new Gtk.Image.from_icon_name("open-menu-symbolic", Gtk.IconSize.MENU));
-
-        var headerbar = new Gtk.HeaderBar();
-        headerbar.set_show_close_button(true);
-        headerbar.set_title(NAME);
-        headerbar.pack_end(menubutton);
+        if (width < 752 ){ width = 752; }
+        if (height < 464){ height = 464;}
 
         notebook = new Gtk.Notebook();
         notebook.expand = true;
@@ -159,7 +119,7 @@ private class Program : Gtk.Application
 
         window = new Gtk.ApplicationWindow(this);
         window.set_default_size(width, height);
-        window.set_titlebar(headerbar);
+        window.set_title(NAME);
         window.add(notebook);
         window.set_icon_name(ICON);
         window.show_all();
@@ -171,7 +131,7 @@ private class Program : Gtk.Application
 
         context_menu = new Gtk.Menu();
         add_popup_menu(context_menu);
-        return window;        
+        return window;
     }
 
     private void execute_command(string command)
@@ -223,12 +183,11 @@ private class Program : Gtk.Application
 
         tab_button_close.clicked.connect(() =>
         {
+            term = get_current_terminal();
             int page_num = notebook.page_num(page_grid);
             notebook.remove_page(page_num);
             if (notebook.get_n_pages() == 1)
-            {
                 notebook.set_show_tabs(false);
-            }
         });
 
         // Close tab with middle click
@@ -236,6 +195,7 @@ private class Program : Gtk.Application
         {
             if (event.button == 2)
             {
+                term = get_current_terminal();
                 int page_num = notebook.page_num(page_grid);
                 notebook.remove_page(page_num);
                 if (notebook.get_n_pages() == 1)
@@ -259,9 +219,7 @@ private class Program : Gtk.Application
 
         notebook.append_page(page_grid, tab);
         if (notebook.get_n_pages() > 1)
-        {
             notebook.set_show_tabs(true);
-        }
         notebook.set_tab_reorderable(page_grid, true);
         notebook.set_current_page(notebook.get_n_pages() - 1);
 
@@ -273,46 +231,53 @@ private class Program : Gtk.Application
     // Context menu
     private void add_popup_menu(Gtk.Menu menu)
     {
-        var context_new = new Gtk.MenuItem.with_label(_("New tab"));
-        context_new.activate.connect(action_new_tab);
-
-        var context_close = new Gtk.MenuItem.with_label(_("Close tab"));
-        context_close.activate.connect(action_close_tab);
-
+        var context_new_window = new Gtk.MenuItem.with_label(_("New window"));
+        context_new_window.activate.connect(action_new_window);
+        var context_new_tab = new Gtk.MenuItem.with_label(_("New tab"));
+        context_new_tab.activate.connect(action_new_tab);
         var context_separator1 = new Gtk.SeparatorMenuItem();
 
         var context_copy = new Gtk.MenuItem.with_label(_("Copy"));
         context_copy.activate.connect(action_copy);
-
         var context_paste = new Gtk.MenuItem.with_label(_("Paste"));
         context_paste.activate.connect(action_paste);
-
         var context_select_all = new Gtk.MenuItem.with_label(_("Select all"));
         context_select_all.activate.connect(action_select_all);
-
         var context_separator2 = new Gtk.SeparatorMenuItem();
 
         var context_full_screen = new Gtk.MenuItem.with_label(_("Full screen"));
         context_full_screen.activate.connect(action_full_screen);
+        var context_close = new Gtk.MenuItem.with_label(_("Close tab"));
+        context_close.activate.connect(action_close_tab);
+        var context_separator3 = new Gtk.SeparatorMenuItem();
 
-        menu.append(context_new);
-        menu.append(context_close);
+        var context_pref = new Gtk.MenuItem.with_label(_("Preferences"));
+        context_pref.activate.connect(action_pref);
+        var context_about = new Gtk.MenuItem.with_label(_("About"));
+        context_about.activate.connect(action_about); 
+        var context_quit = new Gtk.MenuItem.with_label(_("Quit"));
+        context_quit.activate.connect(action_quit); 
+
+        menu.append(context_new_window);
+        menu.append(context_new_tab);
         menu.append(context_separator1);
         menu.append(context_copy);
         menu.append(context_paste);
         menu.append(context_select_all);
         menu.append(context_separator2);
         menu.append(context_full_screen);
+        menu.append(context_close);
+        menu.append(context_separator3);
+        menu.append(context_pref);
+        menu.append(context_about); 
+        menu.append(context_quit);
         menu.show_all();
     }
 
     private bool terminal_button_press(Gdk.EventButton event)
     {
         if (event.button == 3)
-        {
-            context_menu.select_first (false);
             context_menu.popup (null, null, null, event.button, event.time);
-        }
         return false;
     }
 
@@ -320,10 +285,8 @@ private class Program : Gtk.Application
     {
         var bgcolor = Gdk.RGBA();
         var fgcolor = Gdk.RGBA();
-
         bgcolor.parse(back);
         fgcolor.parse(text);
-
         term.set_color_background(bgcolor);
         term.set_color_foreground(fgcolor);
     }
@@ -445,16 +408,12 @@ private class Program : Gtk.Application
         preferences_grid.attach(preferences_fg_label, 0, 2, 1, 1);
         preferences_grid.attach(preferences_fg_button, 1, 2, 1, 1);
 
-        var preferences_headerbar = new Gtk.HeaderBar();
-        preferences_headerbar.set_show_close_button(true);
-        preferences_headerbar.set_title(_("Preferences"));
-
         var window = this.get_active_window();
         preferences = new Gtk.Dialog();
         preferences.set_property("skip-taskbar-hint", true);
         preferences.set_transient_for(window);
         preferences.set_resizable(false);
-        preferences.set_titlebar(preferences_headerbar);
+        preferences.set_title(_("Preferences"));
 
         var content = preferences.get_content_area() as Gtk.Container;
         content.add(preferences_grid);

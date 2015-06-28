@@ -24,7 +24,8 @@ vala_precompile(VALA_C
 PACKAGES
     gtk+-3.0
     vte-2.91
-OPTIONS)
+OPTIONS
+    --vapidir=/usr/share/vala/vapi)
 add_executable(taeni ${VALA_C})
 target_link_libraries(taeni ${GTK3_LIBRARIES} ${VTE3_LIBRARIES} -lm)
 
