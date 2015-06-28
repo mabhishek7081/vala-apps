@@ -7,7 +7,7 @@ namespace Appearance
 public class Program: Gtk.Application
 {
     const string NAME        = "Gtk Appearance";
-    const string VERSION     = "1.0.7";
+    const string VERSION     = "1.2.0";
     const string DESCRIPTION = _("Utility for adjusting Gtk appearance");
     const string ICON        = "preferences-desktop-theme";
     const string APP_ID      = "org.vala-apps.gtk-appearance";
@@ -124,13 +124,9 @@ public class Program: Gtk.Application
         grid.attach(label_decoration,  0, 6, 3, 1);
         grid.attach(button_decoration, 3, 6, 2, 1);
 
-        var headerbar = new Gtk.HeaderBar();
-        headerbar.set_show_close_button(true);
-        headerbar.set_title(NAME);
-        
         window = new Gtk.ApplicationWindow(this);
         window.window_position = Gtk.WindowPosition.CENTER;
-        window.set_titlebar(headerbar);
+        window.set_title(NAME);
         window.add(grid);
         window.set_default_size(450, 300);
         window.set_icon_name(ICON);
@@ -149,6 +145,7 @@ public class Program: Gtk.Application
         // Themes
         try
         {
+            button_theme.append("Adwaita", "Adwaita"); // Adwaita
             var st = Dir.open("/usr/share/themes");
             while ((name = st.read_name()) != null)
             {

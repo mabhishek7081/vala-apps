@@ -23,7 +23,6 @@ add_definitions(${CFLAGS})
 vala_precompile(VALA_C 
     src/cache.vala
     src/model.vala
-    src/style.vala
     src/main.vala
 PACKAGES
     gtk+-3.0

@@ -44,13 +44,10 @@ public class Application: Gtk.Application
         view.set_selection_mode(Gtk.SelectionMode.BROWSE);
         view.set_activate_on_single_click(true);
         view.item_activated.connect(icon_clicked);
-        view.override_font(Pango.FontDescription.from_string("Cantarell 10"));
+        view.override_font(Pango.FontDescription.from_string("10"));
 
         var cache = new Dlauncher.Cache();
         cache.list_applications();
-
-        var style = new Dlauncher.Style();
-        style.load_css();
 
         var scrolled = new Gtk.ScrolledWindow(null, null);
         scrolled.add(view);

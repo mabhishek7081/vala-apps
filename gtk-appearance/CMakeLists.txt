@@ -27,4 +27,5 @@ target_link_libraries(gtk-appearance ${GTK3_LIBRARIES})
 set(CMAKE_INSTALL_PREFIX /usr)
 
 install(TARGETS gtk-appearance DESTINATION bin)
+install(PROGRAMS data/gtk-appearance-openbox DESTINATION bin)
 install(FILES data/gtk-appearance.desktop DESTINATION share/applications)

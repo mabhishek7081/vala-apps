@@ -49,6 +49,7 @@ public class Settings: GLib.Object
         gtk_settings.set("gtk-theme-name", button_theme.get_active_text());
         write_changes_gtk3();
         write_changes_gtk2();
+        write_changes_openbox();
     }
 
     public void icon_changed()
@@ -124,7 +125,7 @@ gtk-cursor-theme-name='%s'
 gtk-toolbar-style=GTK_TOOLBAR_ICONS
 gtk-toolbar-icon-size=GTK_ICON_SIZE_SMALL_TOOLBAR
 gtk-button-images=0
-gtk-menu-images=0
+gtk-menu-images=1
 gtk-xft-antialias=1
 gtk-xft-hinting=1
 gtk-xft-hintstyle='hintfull'
@@ -142,6 +143,34 @@ button_cursor.get_active_text());
             stderr.printf ("%s\n", e.message);
         }
     }
-
+    
+    private void write_changes_openbox()
+    {
+        File file;
+        file = File.new_for_path(GLib.Environment.get_home_dir() + "/.themes/" + button_theme.get_active_text() + "/openbox-3");
+        if (file.query_exists() == true) {
+            write_rc_xml();
+        }
+        file = File.new_for_path("/usr/share/themes/" + button_theme.get_active_text() + "/openbox-3");
+        if (file.query_exists() == true) {
+            write_rc_xml();
+        }
+    }
+    
+    private void write_rc_xml()
+    {
+        string rcxml = GLib.Environment.get_home_dir() + "/.config/openbox/rc.xml";
+        var file = File.new_for_path(rcxml);
+        if (file.query_exists() == true) {
+            try
+            {
+                Process.spawn_command_line_sync("sh -c 'gtk-appearance-openbox \"%s\"'".printf(button_theme.get_active_text()));
+            }
+            catch (GLib.Error e)
+            {
+                stderr.printf ("%s\n", e.message);
+            }
+        }
+    }
 }
 }
