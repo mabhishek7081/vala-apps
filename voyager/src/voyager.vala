@@ -5,7 +5,7 @@
 private class Program : Gtk.Application
 {
     const string NAME        = "Voyager";
-    const string VERSION     = "1.2.9";
+    const string VERSION     = "1.4.0";
     const string DESCRIPTION = _("Fast and elegant image browser");
     const string ICON        = "voyager";
     const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };
@@ -14,15 +14,11 @@ private class Program : Gtk.Application
     Gdk.Pixbuf pixbuf;
     Gdk.Pixbuf pixbuf_scaled;
     Gtk.ApplicationWindow window;
-    Gtk.HeaderBar headerbar;
     Gtk.TreeView treeview;
     Gtk.ListStore liststore;
-    Gtk.MenuButton menubutton;
     Gtk.Revealer revealer;
     Gtk.ScrolledWindow scrolled_window_image;
     Gtk.ScrolledWindow scrolled_window_treeview;
-    Gtk.ScaleButton scale;
-    Gtk.ToggleButton button_list;
     GLib.Settings settings;
     Gdk.RGBA white;
     Gdk.RGBA black;
@@ -36,10 +32,10 @@ private class Program : Gtk.Application
     int saved_pixbuf_height;
     uint slideshow_delay;
     bool slideshow_active;
+    bool list_visible;
     string[] images;
     string file;
     string basename;
-    double scale_current_value;
     private uint timeout_id;
     private const Gtk.TargetEntry[] targets = { {"text/uri-list", 0, 0} };
 
@@ -64,6 +60,7 @@ private class Program : Gtk.Application
         { "previous-image",     action_previous_image     },
         { "open",               action_open               },
         { "set-as-wallpaper",   action_set_as_wallpaper   },
+        { "toggle-list",        action_reveal_list        },
         { "rotate-right",       action_rotate_right       },
         { "rotate-left",        action_rotate_left        },
         { "zoom-in",            action_zoom_in            },
@@ -74,7 +71,6 @@ private class Program : Gtk.Application
         { "edit-with-gimp",     action_edit_with_gimp     },
         { "full-screen-toggle", action_full_screen_toggle },
         { "full-screen-exit",   action_full_screen_exit   },
-        { "show-menu",          action_show_menu          },
         { "about",              action_about              },
         { "quit",               action_quit               }
     };
@@ -89,16 +85,11 @@ private class Program : Gtk.Application
     {
         base.startup();
 
-        var menu = new Menu();
-        menu.append(_("About"),     "app.about");
-        menu.append(_("Quit"),      "app.quit");
-
-        set_app_menu(menu);
-
         set_accels_for_action("app.next-image",            {"Right"});
         set_accels_for_action("app.previous-image",        {"Left"});
         set_accels_for_action("app.open",                  {"<Primary>O", "O"});
         set_accels_for_action("app.set-as-wallpaper",      {"<Primary>W", "W"});
+        set_accels_for_action("app.toggle-list",           {"<Primary>L", "L"});
         set_accels_for_action("app.rotate-right",          {"<Primary>Page_Down", "Page_Down"});
         set_accels_for_action("app.rotate-left",           {"<Primary>Page_Up", "Page_Up"});
         set_accels_for_action("app.full-screen-exit",      {"Escape"});
@@ -106,78 +97,46 @@ private class Program : Gtk.Application
         set_accels_for_action("app.show-menu",             {"F10"});
         set_accels_for_action("app.quit",                  {"<Primary>Q"});
 
+        var menu = new Menu();
+        var section = new GLib.Menu();
+        section.append(_("Open"),               "app.open");
+        section.append(_("Set as Wallpaper"),   "app.set-as-wallpaper");
+        section.append(_("Toggle list"),        "app.toggle-list");
+        menu.append_section(null, section);
+
+        section = new GLib.Menu();
+        section.append(_("Rotate Right"),       "app.rotate-right");
+        section.append(_("Rotate Left"),        "app.rotate-left");
+        menu.append_section(null, section);
+
+        section = new GLib.Menu();
+        section.append(_("Zoom In"),            "app.zoom-in");
+        section.append(_("Zoom Out"),           "app.zoom-out");
+        section.append(_("Zoom to Fit"),        "app.zoom-to-fit");
+        section.append(_("Actual Size"),        "app.zoom-actual");
+        menu.append_section(null, section);
+
+        section = new GLib.Menu();
+        section.append(_("Slideshow"),          "app.slideshow");
+        section.append(_("Edit With Gimp"),     "app.edit-with-gimp");
+        menu.append_section(null, section);
+        
+        section = new GLib.Menu();
+        section.append(_("About"),              "app.about");
+        section.append(_("Quit"),               "app.quit");
+        menu.append_section(null, section);
+
+        set_app_menu(menu);
+
         settings = new GLib.Settings("org.vala-apps.voyager.preferences");
         width = settings.get_int("width");
         height = settings.get_int("height");
         slideshow_delay = settings.get_uint("slideshow-delay");
+        list_visible = false;
         screen_width = Gdk.Screen.width();
         screen_height = Gdk.Screen.height();
 
         image = new Gtk.Image();
-
-        // Buttons
-        button_list = new Gtk.ToggleButton();
-        button_list.valign = Gtk.Align.CENTER;
-        button_list.set_image(new Gtk.Image.from_icon_name("view-list-symbolic", Gtk.IconSize.MENU));
-        button_list.set_active(false);
-        button_list.toggled.connect(action_reveal_list);
-
-        var button_prev = new Gtk.Button.from_icon_name("go-previous-symbolic", Gtk.IconSize.MENU);
-        var button_next = new Gtk.Button.from_icon_name("go-next-symbolic", Gtk.IconSize.MENU);
-        button_prev.clicked.connect(action_previous_image);
-        button_next.clicked.connect(action_next_image);
-
-        var prev_next_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        prev_next_box.pack_start(button_prev);
-        prev_next_box.pack_start(button_next);
-        prev_next_box.get_style_context().add_class("linked");
-        prev_next_box.valign = Gtk.Align.CENTER;
-
-        string[] icons = { "zoom-out-symbolic", "zoom-in-symbolic" };
-        scale_current_value = 50;
-        scale = new Gtk.ScaleButton(Gtk.IconSize.SMALL_TOOLBAR, 0, 100, 1, icons);
-        scale.set_value(scale_current_value);
-        scale.value_changed.connect(scale_zoom_level);
-        scale.scroll_event.connect(scale_scroll_event);
-
-        // HeaderBar & MenuButton
-        var gear_menu = new GLib.Menu();
-        var section_one = new GLib.Menu();
-        var section_two = new GLib.Menu();
-        var section_three = new GLib.Menu();
-        var section_four = new GLib.Menu();
-
-        section_one.append(_("Open"), "app.open");
-        section_one.append(_("Set as Wallpaper"), "app.set-as-wallpaper");
-        gear_menu.append_section(null, section_one);
-
-        section_two.append(_("Rotate Right"), "app.rotate-right");
-        section_two.append(_("Rotate Left"), "app.rotate-left");
-        gear_menu.append_section(null, section_two);
-
-        section_three.append(_("Zoom In"), "app.zoom-in");
-        section_three.append(_("Zoom Out"), "app.zoom-out");
-        section_three.append(_("Zoom to Fit"), "app.zoom-to-fit");
-        section_three.append(_("Actual Size"), "app.zoom-actual");
-        gear_menu.append_section(null, section_three);
-
-        section_four.append(_("Slideshow"), "app.slideshow");
-        section_four.append(_("Edit With Gimp"), "app.edit-with-gimp");
-        gear_menu.append_section(null, section_four);
-
-        menubutton = new Gtk.MenuButton();
-        menubutton.valign = Gtk.Align.CENTER;
-        menubutton.set_use_popover(true);
-        menubutton.set_menu_model(gear_menu);
-        menubutton.set_image(new Gtk.Image.from_icon_name("open-menu-symbolic", Gtk.IconSize.MENU));
-
-        headerbar = new Gtk.HeaderBar();
-        headerbar.set_show_close_button(true);
-        headerbar.set_title(NAME);
-        headerbar.pack_start(button_list);
-        headerbar.pack_start(prev_next_box);
-        headerbar.pack_end(menubutton);
-        headerbar.pack_end(scale);
 
         // TreeView
         var cell = new Gtk.CellRendererText();
@@ -237,7 +196,7 @@ private class Program : Gtk.Application
         // Window
         window = new Gtk.ApplicationWindow(this);
         window.add(grid);
-        window.set_titlebar(headerbar);
+        window.set_title(NAME);
         window.set_default_size(width, height);
         window.set_icon_name(ICON);
         window.show_all();
@@ -324,7 +283,7 @@ private class Program : Gtk.Application
     {
         basename = Path.get_basename(file);
         double izoom = zoom * 100;
-        headerbar.set_title("%s (%sx%s) %s%s".printf(basename, pixbuf.get_width().to_string(), pixbuf.get_height().to_string(), Math.round(izoom).to_string(), "%"));
+        window.set_title("%s (%sx%s) %s%s".printf(basename, pixbuf.get_width().to_string(), pixbuf.get_height().to_string(), Math.round(izoom).to_string(), "%"));
     }
 
     // load pixbuf with full size
@@ -393,7 +352,6 @@ private class Program : Gtk.Application
             pixbuf_height = scrolled_window_image.get_allocated_height();
         }
         load_pixbuf_with_size(pixbuf_width, pixbuf_height);
-        scale.set_value(50);
     }
 
     private void zoom_image(bool plus, double large, double small)
@@ -426,22 +384,6 @@ private class Program : Gtk.Application
         }
         image.set_from_pixbuf(pixbuf_scaled);
         update_title();
-    }
-
-    private void scale_zoom_level()
-    {
-        if (file != null)
-        {
-            if (scale.get_value() > scale_current_value)
-            {
-                zoom_image(true, 0.20, 0.03);
-            }
-            else
-            {
-                zoom_image(false, 0.20, 0.03);
-            }
-            scale_current_value = scale.get_value();
-        }
     }
 
     // Mouse EventButton Press
@@ -552,23 +494,6 @@ private class Program : Gtk.Application
         Gtk.drag_finish(drag_context, true, false, time);
     }
 
-    private bool scale_scroll_event(Gdk.EventScroll event)
-    {
-        if (file != null)
-        {
-            double dir = event.delta_y;
-            if (dir < 0)
-            {
-                zoom_image(true, 0.20, 0.03);
-            }
-            else
-            {
-                zoom_image(false, 0.20, 0.03);
-            }
-        }
-        return true;
-    }
-
     private void save_settings()
     {
         window.get_size(out width, out height);
@@ -579,13 +504,15 @@ private class Program : Gtk.Application
 
     private void action_reveal_list()
     {
-        if (button_list.get_active() == true)
+        if (list_visible == false)
         {
             revealer.set_reveal_child(true);
+            list_visible = true;
         }
         else
         {
             revealer.set_reveal_child(false);
+            list_visible = false;
         }
     }
 
@@ -777,14 +704,6 @@ private class Program : Gtk.Application
             window.unfullscreen();
             load_pixbuf_with_size(saved_pixbuf_width, saved_pixbuf_height);
             scrolled_window_image.override_background_color(Gtk.StateFlags.NORMAL, white);
-        }
-    }
-
-    private void action_show_menu()
-    {
-        if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) == 0)
-        {
-            menubutton.set_active(true);
         }
     }
 
