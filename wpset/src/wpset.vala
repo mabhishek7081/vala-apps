@@ -5,7 +5,7 @@
 private class Program : Gtk.Application
 {
     const string NAME = "Desktop Wallpaper";
-    const string VERSION = "1.8.0";
+    const string VERSION = "1.9.0";
     const string DESCRIPTION = _("A simple tool for changing your desktop wallpaper");
     const string ICON = "preferences-desktop-wallpaper";
     const string[] AUTHORS = { "Jonathan Koren (imlibsetroot) <jonathan-at-jonathankoren-dot-com>", "Simargl <https://github.com/simargl>", null };
@@ -41,9 +41,18 @@ private class Program : Gtk.Application
     {
         base.startup();
 
-        var menu = new Menu();
-        menu.append(_("About"),     "app.about");
-        menu.append(_("Quit"),      "app.quit");
+        // app menu
+        var menu = new GLib.Menu();
+
+        var section = new GLib.Menu();
+        section.append(_("Add folder"), "app.add");
+        section.append(_("Reset list"), "app.reset");
+        menu.append_section(null, section);
+
+        section = new GLib.Menu();
+        section.append(_("About"),     "app.about");
+        section.append(_("Quit"),      "app.quit");
+        menu.append_section(null, section);
 
         set_app_menu(menu);
 
@@ -65,21 +74,6 @@ private class Program : Gtk.Application
         for (int i = 0; i < images_dir.length; i++)
             list_images(images_dir[i]);
 
-        var gear_menu = new Menu();
-        gear_menu.append(_("Add folder"), "app.add");
-        gear_menu.append(_("Reset list"), "app.reset");
-
-        menubutton = new Gtk.MenuButton();
-        menubutton.valign = Gtk.Align.CENTER;
-        menubutton.set_use_popover(true);
-        menubutton.set_menu_model(gear_menu);
-        menubutton.set_image(new Gtk.Image.from_icon_name("open-menu-symbolic", Gtk.IconSize.MENU));
-
-        var headerbar = new Gtk.HeaderBar();
-        headerbar.set_show_close_button(true);
-        headerbar.set_title(NAME);
-        headerbar.pack_end(menubutton);
-
         scrolled = new Gtk.ScrolledWindow(null, null);
         scrolled.add(view);
         scrolled.expand = true;
@@ -87,9 +81,9 @@ private class Program : Gtk.Application
         window = new Gtk.ApplicationWindow(this);
         window.set_icon_name(ICON);
         window.window_position = Gtk.WindowPosition.CENTER;
-        window.set_titlebar(headerbar);
+        window.set_title(NAME);
         window.add(scrolled);
-        window.set_default_size(800, 600);
+        window.set_default_size(485, 600);
         window.show_all();
 
         Gtk.drag_dest_set(scrolled, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
@@ -142,7 +136,7 @@ private class Program : Gtk.Application
         try
         {
             GLib.InputStream stream = yield file.read_async();
-            pix = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 220, 200, true, null);
+            pix = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 140, 100, true, null);
         }
         catch (Error e)
         {
@@ -162,12 +156,10 @@ private class Program : Gtk.Application
             var gnome_settings = new GLib.Settings("org.gnome.desktop.background");
             gnome_settings.set_string("picture-uri", "file://".concat((string)selected));
             GLib.Settings.sync();
-            try
-            {
+            try {
                 Process.spawn_command_line_sync("wpset-shell --set");
             }
-            catch(Error error)
-            {
+            catch(Error error) {
                 stderr.printf("error: %s\n", error.message);
             }
         }       
@@ -180,9 +172,7 @@ private class Program : Gtk.Application
         for (i = 0; i < images_dir.length; i++)
         {
             if (images_dir[i] == directory)
-            {
                 indexes += i;
-            }
         }
         if (indexes.length == 0)
         {
