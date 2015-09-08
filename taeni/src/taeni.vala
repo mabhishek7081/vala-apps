@@ -163,7 +163,8 @@ private class Program : Gtk.Application
         var scrollbar = new Gtk.Scrollbar(Gtk.Orientation.VERTICAL, term.vadjustment);
 
         var tab_label = new Gtk.Label("");
-        tab_label.expand = true;
+        tab_label.width_request = 50;
+        tab_label.set_alignment(0, 1);
         var eventbox = new Gtk.EventBox();
         eventbox.add(tab_label);
 
@@ -209,9 +210,9 @@ private class Program : Gtk.Application
             term = get_current_terminal();
             string dir = term.get_window_title();
             string dir_short = dir;
-            if (dir.length >= 23)
+            if (dir.length >= 19)
             {
-                dir_short = dir.substring(0, 23) + "...";
+                dir_short = dir.substring(0, 16) + "...";
             }
             tab_label.set_tooltip_text(dir);
             tab_label.set_text(dir_short);
@@ -247,14 +248,16 @@ private class Program : Gtk.Application
 
         var context_full_screen = new Gtk.MenuItem.with_label(_("Full screen"));
         context_full_screen.activate.connect(action_full_screen);
-        var context_close = new Gtk.MenuItem.with_label(_("Close tab"));
-        context_close.activate.connect(action_close_tab);
         var context_separator3 = new Gtk.SeparatorMenuItem();
-
+        
         var context_pref = new Gtk.MenuItem.with_label(_("Preferences"));
         context_pref.activate.connect(action_pref);
         var context_about = new Gtk.MenuItem.with_label(_("About"));
         context_about.activate.connect(action_about); 
+        var context_separator4 = new Gtk.SeparatorMenuItem();
+        
+        var context_close = new Gtk.MenuItem.with_label(_("Close tab"));
+        context_close.activate.connect(action_close_tab);
         var context_quit = new Gtk.MenuItem.with_label(_("Quit"));
         context_quit.activate.connect(action_quit); 
 
@@ -266,10 +269,11 @@ private class Program : Gtk.Application
         menu.append(context_select_all);
         menu.append(context_separator2);
         menu.append(context_full_screen);
-        menu.append(context_close);
         menu.append(context_separator3);
         menu.append(context_pref);
         menu.append(context_about); 
+        menu.append(context_separator4);
+        menu.append(context_close);
         menu.append(context_quit);
         menu.show_all();
     }
