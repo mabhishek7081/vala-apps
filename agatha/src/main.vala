@@ -1,6 +1,5 @@
 /*  Author: simargl <https://github.org/simargl>
  *  License: GPL v3
- *  Artwork: Potenza icon https://github.com/AlessandroBompadre/Potenza
  */
 
 namespace Agatha
@@ -18,7 +17,7 @@ int total;
 const string NAME        = "Agatha";
 const string VERSION     = "0.0.1";
 const string DESCRIPTION = _("PDF Viewer in GTK3 and Poppler");
-const string ICON        = "agatha";
+const string ICON        = "evince";
 const string[] AUTHORS   = { "Simargl <archpup-at-gmail-dot-com>", null };
 
 int x_start;

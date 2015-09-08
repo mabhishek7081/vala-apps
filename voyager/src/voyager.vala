@@ -7,7 +7,7 @@ private class Program : Gtk.Application
     const string NAME        = "Voyager";
     const string VERSION     = "1.4.0";
     const string DESCRIPTION = _("Fast and elegant image browser");
-    const string ICON        = "voyager";
+    const string ICON        = "eog";
     const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };
 
     Gtk.Image image;

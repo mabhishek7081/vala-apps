@@ -49,6 +49,7 @@ public class MainWin: Gtk.ApplicationWindow
         app.set_accels_for_action("app.replace",    {"<Primary>H"});
         app.set_accels_for_action("app.wrap",       {"<Primary>R"});
         app.set_accels_for_action("app.color",      {"F9"});
+        app.set_accels_for_action("app.pref",       {"<Primary>P"});
         app.set_accels_for_action("app.close",      {"<Primary>W"});
         app.set_accels_for_action("app.close-all",  {"<Primary><Shift>W"});
         app.set_accels_for_action("app.quit",       {"<Primary>Q"});
@@ -90,6 +91,7 @@ public class MainWin: Gtk.ApplicationWindow
         // window
         notebook = new Gtk.Notebook();
         notebook.expand = true;
+        notebook.popup_enable();
         notebook.set_scrollable(true);
         notebook.switch_page.connect(on_notebook_page_switched);
 

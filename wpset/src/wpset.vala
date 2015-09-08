@@ -4,7 +4,7 @@
 
 private class Program : Gtk.Application
 {
-    const string NAME = "Desktop Wallpaper";
+    const string NAME = "WPSet";
     const string VERSION = "1.9.0";
     const string DESCRIPTION = _("A simple tool for changing your desktop wallpaper");
     const string ICON = "preferences-desktop-wallpaper";

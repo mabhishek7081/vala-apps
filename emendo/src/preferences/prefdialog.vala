@@ -89,41 +89,36 @@ public class PrefDialog: Gtk.Dialog
         grid_editor.attach(label_tab_size,     0, 4, 3, 1);
         grid_editor.attach(button_tab_size,    3, 4, 2, 1);
 
-        grid_editor.set_column_spacing(10);
-        grid_editor.set_row_spacing(15);
+        grid_editor.set_column_spacing(5);
+        grid_editor.set_row_spacing(10);
+        grid_editor.set_border_width(15);
         grid_editor.set_column_homogeneous(true);
 
         // View Grid
         var grid_view = new Gtk.Grid();
-        grid_view.attach(label_numbers_show,   0, 0, 3, 1);
-        grid_view.attach(button_numbers_show,  3, 0, 1, 1);
-        grid_view.attach(label_highlight,      0, 1, 3, 1);
-        grid_view.attach(button_highlight,     3, 1, 1, 1);
-        grid_view.attach(label_margin_show,    0, 2, 3, 1);
-        grid_view.attach(button_margin_show,   3, 2, 1, 1);
-        grid_view.attach(label_spaces,         0, 3, 3, 1);
-        grid_view.attach(button_spaces,        3, 3, 1, 1);
-        grid_view.attach(label_auto_indent,    0, 4, 3, 1);
-        grid_view.attach(button_auto_indent,   3, 4, 1, 1);
+        grid_view.attach(label_numbers_show,   0, 0, 4, 1);
+        grid_view.attach(button_numbers_show,  4, 0, 1, 1);
+        grid_view.attach(label_highlight,      0, 1, 4, 1);
+        grid_view.attach(button_highlight,     4, 1, 1, 1);
+        grid_view.attach(label_margin_show,    0, 2, 4, 1);
+        grid_view.attach(button_margin_show,   4, 2, 1, 1);
+        grid_view.attach(label_spaces,         0, 3, 4, 1);
+        grid_view.attach(button_spaces,        4, 3, 1, 1);
+        grid_view.attach(label_auto_indent,    0, 4, 4, 1);
+        grid_view.attach(button_auto_indent,   4, 4, 1, 1);
 
-        grid_view.set_column_spacing(10);
-        grid_view.set_row_spacing(21);
+        grid_view.set_column_spacing(5);
+        grid_view.set_row_spacing(15);
+        grid_view.set_border_width(15);
         grid_view.set_column_homogeneous(true);
 
-        // Stack and Switcher
-        var stack = new Gtk.Stack();
-        stack.set_transition_duration(500);
-        stack.add_titled(grid_editor, "editor", _("                          Editor                         "));
-        stack.add_titled(grid_view,   "view",   _("                           View                          "));
-        stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
+        var pref_notebook = new Gtk.Notebook();
+        pref_notebook.append_page(grid_editor, new Gtk.Label(_("Editor")));
+        pref_notebook.append_page(grid_view, new Gtk.Label(_("View")));
+        pref_notebook.set_tab_pos(Gtk.PositionType.LEFT);
 
-        var switcher = new Gtk.StackSwitcher();
-        switcher.set_stack(stack);
-        switcher.set_border_width(10);
-
-        var content = preferences.get_content_area() as Gtk.Box;
-        content.pack_start(switcher, true, true, 0);
-        content.pack_start(stack, true, true, 0);
+        var content = preferences.get_content_area() as Gtk.Container;
+        content.add(pref_notebook);
         preferences.show_all();
     }
 

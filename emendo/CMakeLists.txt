@@ -45,5 +45,4 @@ set(CMAKE_INSTALL_PREFIX /usr)
 
 install(TARGETS emendo DESTINATION bin)
 install(FILES data/emendo.desktop DESTINATION share/applications)
-install(FILES data/emendo.png DESTINATION share/icons/hicolor/64x64/apps)
 install(FILES data/org.vala-apps.emendo.gschema.xml DESTINATION share/glib-2.0/schemas)

@@ -7,7 +7,7 @@ namespace Emendo
 const string NAME        = "Emendo";
 const string VERSION     = "3.1.0";
 const string DESCRIPTION = _("Text editor with syntax highlighting");
-const string ICON        = "emendo";
+const string ICON        = "accessories-text-editor";
 const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", "Yosef Or Boczko <yoseforb-at-gmail-dot-com>", null };
 
 private class Application: Gtk.Application

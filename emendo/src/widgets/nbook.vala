@@ -80,8 +80,11 @@ public class NBook: Gtk.Notebook
         print("debug: added %s\n", path);
         current_files();
 
+        var menu_label = new Gtk.Label(GLib.Path.get_basename(path));
+        menu_label.set_alignment(0.0f, 0.5f);
+
         // Add tab and page to notebook
-        notebook.append_page(tab_page, tab);
+        notebook.append_page_menu(tab_page, tab, menu_label);
         notebook.set_current_page(notebook.get_n_pages() - 1);
         notebook.show_all();
 

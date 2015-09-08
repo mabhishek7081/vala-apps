@@ -36,5 +36,4 @@ set(CMAKE_INSTALL_PREFIX /usr)
 
 install(TARGETS agatha DESTINATION bin)
 install(FILES data/agatha.desktop DESTINATION share/applications)
-install(FILES data/agatha.png DESTINATION share/icons/hicolor/64x64/apps)
 install(FILES data/org.vala-apps.agatha.gschema.xml DESTINATION share/glib-2.0/schemas)
