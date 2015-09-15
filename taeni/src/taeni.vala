@@ -163,8 +163,8 @@ private class Program : Gtk.Application
         var scrollbar = new Gtk.Scrollbar(Gtk.Orientation.VERTICAL, term.vadjustment);
 
         var tab_label = new Gtk.Label("");
-        tab_label.width_request = 50;
         tab_label.set_alignment(0, 1);
+        tab_label.set_width_chars(20);
         var eventbox = new Gtk.EventBox();
         eventbox.add(tab_label);
 
@@ -174,7 +174,6 @@ private class Program : Gtk.Application
         var tab = new Gtk.Grid();
         tab.attach(eventbox,   0, 0, 1, 1);
         tab.attach(tab_button_close, 1, 0, 1, 1);
-        tab.set_column_spacing(10);
         tab.show_all();
 
         var page_grid = new Gtk.Grid();
@@ -210,10 +209,8 @@ private class Program : Gtk.Application
             term = get_current_terminal();
             string dir = term.get_window_title();
             string dir_short = dir;
-            if (dir.length >= 19)
-            {
-                dir_short = dir.substring(0, 16) + "...";
-            }
+            if (dir.length > 22)
+                dir_short = dir.substring(0, 19) + "...";
             tab_label.set_tooltip_text(dir);
             tab_label.set_text(dir_short);
         });

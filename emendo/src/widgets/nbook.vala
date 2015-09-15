@@ -52,7 +52,8 @@ public class NBook: Gtk.Notebook
         // Tab
         var tab_label = new Gtk.Label(GLib.Path.get_basename(path));
         tab_label.set_tooltip_text(path);
-        tab_label.expand = true;
+        tab_label.set_alignment(0, 1);
+        tab_label.set_width_chars(15);
         var eventbox = new Gtk.EventBox();
         eventbox.add(tab_label);
         // Close tab with middle click
@@ -73,7 +74,6 @@ public class NBook: Gtk.Notebook
         var tab = new Gtk.Grid();
         tab.attach(eventbox,   0, 0, 1, 1);
         tab.attach(tab_button, 1, 0, 1, 1);
-        tab.set_column_spacing(10);
         tab.show_all();
 
         files.add(path);
@@ -88,10 +88,6 @@ public class NBook: Gtk.Notebook
         notebook.set_current_page(notebook.get_n_pages() - 1);
         notebook.show_all();
 
-        if (notebook.get_n_pages() == 1)
-            notebook.set_show_tabs(false);
-        else
-            notebook.set_show_tabs(true);
         tab_view.grab_focus();
 
         buffer.modified_changed.connect(() =>
@@ -138,10 +134,6 @@ public class NBook: Gtk.Notebook
             current_files();
             if (notebook.get_n_pages() == 0)
                 window.set_title(NAME);
-            if (notebook.get_n_pages() == 1)
-                notebook.set_show_tabs(false);
-            else
-                notebook.set_show_tabs(true);
         }
     }
 
