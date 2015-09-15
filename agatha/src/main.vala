@@ -125,10 +125,13 @@ public class Application: Gtk.Application
         
         if (last_file != "")
         {
-            filename = last_file;
-            cpage = last_page;
-            var viewer = new Agatha.Viewer();
-            viewer.open_file();
+            File file = File.new_for_path(last_file);
+            if (file.query_exists() == true) {
+                filename = last_file;
+                cpage = last_page;
+                var viewer = new Agatha.Viewer();
+                viewer.open_file();
+            }
         }
     }
 
@@ -162,7 +165,7 @@ public class Application: Gtk.Application
             if(device != null)
             {
                 event.window.get_device_position(device, out x_start, out y_start, null);
-                event.window.set_cursor(new Gdk.Cursor(Gdk.CursorType.FLEUR));
+                event.window.set_cursor(new Gdk.Cursor.for_display(Gdk.Display.get_default(), Gdk.CursorType.FLEUR));
             }
             dragging = true;
             hadj_value = hadj.get_value();

@@ -20,8 +20,6 @@ private class Program : Gtk.Application
     Gtk.ScrolledWindow scrolled_window_image;
     Gtk.ScrolledWindow scrolled_window_treeview;
     GLib.Settings settings;
-    Gdk.RGBA white;
-    Gdk.RGBA black;
     int width;
     int height;
     int screen_width;
@@ -140,7 +138,6 @@ private class Program : Gtk.Application
 
         // TreeView
         var cell = new Gtk.CellRendererText();
-        cell.set("font", "Cantarell 10");
         liststore = new Gtk.ListStore(2, typeof (string), typeof (string));
 
         treeview = new Gtk.TreeView();
@@ -150,18 +147,11 @@ private class Program : Gtk.Application
         treeview.row_activated.connect(show_selected_image);
         treeview.insert_column_with_attributes (-1, _("Name"), cell, "text", 0);
 
-        white = Gdk.RGBA();
-        black = Gdk.RGBA();
-
-        white.parse("#FFFFFF");
-        black.parse("#000000");
-
         // ScrolledWindow
         scrolled_window_image = new Gtk.ScrolledWindow(null, null);
         scrolled_window_image.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
         scrolled_window_image.expand = true;
         scrolled_window_image.set_size_request(200, 0);
-        scrolled_window_image.override_background_color(Gtk.StateFlags.NORMAL, white);
         scrolled_window_image.add(image);
         scrolled_window_image.scroll_event.connect(button_scroll_event);
 
@@ -409,7 +399,7 @@ private class Program : Gtk.Application
             if(device != null)
             {
                 event.window.get_device_position(device, out x_start, out y_start, null);
-                event.window.set_cursor(new Gdk.Cursor(Gdk.CursorType.FLEUR));
+                event.window.set_cursor(new Gdk.Cursor.for_display(Gdk.Display.get_default(), Gdk.CursorType.FLEUR));
             }
             dragging = true;
             hadj_value = hadj.get_value();
@@ -692,7 +682,6 @@ private class Program : Gtk.Application
             saved_pixbuf_width = (int)pixbuf_scaled.get_width();
             saved_pixbuf_height = (int)pixbuf_scaled.get_height();
             load_pixbuf_with_size(screen_width, screen_height);
-            scrolled_window_image.override_background_color(Gtk.StateFlags.NORMAL, black);
         }
     }
 
@@ -703,7 +692,6 @@ private class Program : Gtk.Application
             scrolled_window_treeview.show();
             window.unfullscreen();
             load_pixbuf_with_size(saved_pixbuf_width, saved_pixbuf_height);
-            scrolled_window_image.override_background_color(Gtk.StateFlags.NORMAL, white);
         }
     }
 
