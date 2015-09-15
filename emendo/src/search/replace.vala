@@ -52,6 +52,13 @@ public class Replace: Gtk.Dialog
         dialog.add_button(_("Replace All"), 3);
         dialog.add_button(_("Find"),        4);
 
+        dialog.delete_event.connect(() =>
+        {
+            context.set_highlight(false);
+            dialog.destroy();
+            return true;
+        });
+        
         dialog.response.connect(on_response);
         dialog.show_all();
 

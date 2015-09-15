@@ -36,6 +36,13 @@ public class Find: Gtk.Dialog
         dialog.add_button(_("Previous"),    2);
         dialog.add_button(_("Next"),        3);
 
+        dialog.delete_event.connect(() =>
+        {
+            context.set_highlight(false);
+            dialog.destroy();
+            return true;
+        });
+        
         dialog.response.connect(on_response);
         dialog.show_all();
 
@@ -50,8 +57,8 @@ public class Find: Gtk.Dialog
         switch(response)
         {
         case 1:
-            dialog.destroy();
             context.set_highlight(false);
+            dialog.destroy();
             break;        
          case 2:
             backward();
