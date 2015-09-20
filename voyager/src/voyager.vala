@@ -85,15 +85,18 @@ private class Program : Gtk.Application
 
         set_accels_for_action("app.next-image",            {"Right"});
         set_accels_for_action("app.previous-image",        {"Left"});
-        set_accels_for_action("app.open",                  {"<Primary>O", "O"});
-        set_accels_for_action("app.set-as-wallpaper",      {"<Primary>W", "W"});
-        set_accels_for_action("app.toggle-list",           {"<Primary>L", "L"});
-        set_accels_for_action("app.rotate-right",          {"<Primary>Page_Down", "Page_Down"});
-        set_accels_for_action("app.rotate-left",           {"<Primary>Page_Up", "Page_Up"});
+        set_accels_for_action("app.open",                  {"O", "<Primary>O"});
+        set_accels_for_action("app.set-as-wallpaper",      {"W", "<Primary>W"});
+        set_accels_for_action("app.toggle-list",           {"L", "<Primary>L"});
+        set_accels_for_action("app.rotate-right",          {"Page_Down", "<Primary>Page_Down"});
+        set_accels_for_action("app.rotate-left",           {"Page_Up", "<Primary>Page_Up"});
         set_accels_for_action("app.full-screen-exit",      {"Escape"});
+        set_accels_for_action("app.zoom-in",               {"KP_Add"});
+        set_accels_for_action("app.zoom-out",              {"KP_Subtract"});
+        set_accels_for_action("app.zoom-actual",           {"KP_0"});
         set_accels_for_action("app.full-screen-toggle",    {"F11"});
         set_accels_for_action("app.show-menu",             {"F10"});
-        set_accels_for_action("app.quit",                  {"<Primary>Q"});
+        set_accels_for_action("app.quit",                  {"Q", "<Primary>Q"});
 
         var menu = new Menu();
         var section = new GLib.Menu();
