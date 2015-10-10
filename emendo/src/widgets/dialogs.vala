@@ -128,8 +128,6 @@ public class Dialogs: Gtk.Dialog
                 window.set_title("");
             break;
         }
-        var nbook = new Emendo.NBook();
-        nbook.current_files();
         dialog.destroy();
     }
 
@@ -149,8 +147,6 @@ public class Dialogs: Gtk.Dialog
             {
                 notebook.remove_page(i);
                 files.remove(path);
-                var nbook = new Emendo.NBook();
-                nbook.current_files();
             }
             else
             {

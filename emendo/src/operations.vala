@@ -17,6 +17,7 @@ public class Operations: GLib.Object
                     operations.open_file(recent_files[i]);
                 }
             }
+            notebook.set_current_page((int)active_tab);
         }
     }
 

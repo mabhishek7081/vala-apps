@@ -6,5 +6,5 @@ Exec=emendo %F
 Icon=accessories-text-editor
 Terminal=false
 Categories=GTK;Development;
-MimeType=text/plain;
+MimeType=text/plain;application/x-desktop;application/xml;application/x-shellscript
 StartupNotify=true

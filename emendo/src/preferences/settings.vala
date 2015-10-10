@@ -2,6 +2,7 @@ namespace Emendo
 {
 private int      width;
 private int      height;
+private bool     maximized;
 
 private string   font;
 private string   scheme;
@@ -17,6 +18,8 @@ private bool     auto_indent;
 
 private string[] recent_files;
 
+private uint     active_tab;
+
 private GLib.Settings settings;
 
 public class Settings: GLib.Object
@@ -27,6 +30,7 @@ public class Settings: GLib.Object
 
         get_width();
         get_height();
+        get_maximized();
 
         get_font();
         get_scheme();
@@ -41,6 +45,7 @@ public class Settings: GLib.Object
         get_auto_indent();
 
         get_recent_files();
+        get_active_tab();
     }
 
     // settings get
@@ -52,6 +57,11 @@ public class Settings: GLib.Object
     public int get_height()
     {
         return height = settings.get_int("height");
+    }
+
+    public bool get_maximized()
+    {
+        return maximized = settings.get_boolean("maximized");
     }
 
     public string get_font()
@@ -108,6 +118,11 @@ public class Settings: GLib.Object
     {
 		return recent_files = settings.get_strv("recent-files");
     }
+    
+    public uint get_active_tab()
+    {
+		return active_tab = settings.get_uint("active-tab");
+    }    
 
     // settings set
     public void set_width()
@@ -118,6 +133,11 @@ public class Settings: GLib.Object
     public void set_height()
     {
         settings.set_int("height", height);
+    }
+
+    public void set_maximized()
+    {
+        settings.set_boolean("maximized", maximized);
     }
 
     public void set_font()
@@ -177,5 +197,10 @@ public class Settings: GLib.Object
             recent_files += files[i];
         settings.set_strv("recent-files", recent_files);
     }
+    
+    public void set_active_tab()
+    {
+        settings.set_uint("active-tab", active_tab);
+    }    
 }
 }

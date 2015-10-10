@@ -10,6 +10,11 @@
       <summary>height</summary>
       <description>Main window heigth</description>
     </key>
+    <key name="maximized" type="b">
+      <default>false</default>
+      <summary>Maximized</summary>
+      <description>Main window maximized</description>
+    </key>
     <key name="font" type="s">
       <default>'Monospace 14'</default>
       <summary>font</summary>
@@ -66,5 +71,10 @@
       <summary>Recently opened files</summary>
       <description>Recently opened files</description>
     </key>
+    <key name="active-tab" type="u">
+      <default>0</default>
+      <summary>active-tab</summary>
+      <description>Active tab position</description>
+    </key>       
   </schema>
 </schemalist>

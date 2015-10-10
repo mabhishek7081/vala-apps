@@ -100,6 +100,8 @@ public class MainWin: Gtk.ApplicationWindow
         window.set_default_size(width, height);
         window.set_icon_name(ICON);
         window.set_title(NAME);
+        if (maximized == true)
+            window.maximize();
         window.add(notebook);
         window.show_all();
         window.delete_event.connect(() =>
@@ -118,11 +120,6 @@ public class MainWin: Gtk.ApplicationWindow
 
     public void action_app_quit()
     {
-        window.get_size(out width, out height);
-        var settings = new Emendo.Settings();
-        settings.set_width();
-        settings.set_height();
-        GLib.Settings.sync();
         window.get_application().quit();
     }
 
@@ -221,6 +218,17 @@ public class MainWin: Gtk.ApplicationWindow
 
     public void action_quit()
     {
+        window.get_size(out width, out height);
+        maximized = window.is_maximized;
+        active_tab = notebook.get_current_page();
+
+        var settings = new Emendo.Settings();
+        settings.set_width();
+        settings.set_height();
+        settings.set_maximized();
+        settings.set_active_tab();
+        GLib.Settings.sync();
+
         var dialogs = new Emendo.Dialogs();
         dialogs.changes_all();
     }

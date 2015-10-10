@@ -78,7 +78,6 @@ public class NBook: Gtk.Notebook
 
         files.add(path);
         print("debug: added %s\n", path);
-        current_files();
 
         var menu_label = new Gtk.Label(GLib.Path.get_basename(path));
         menu_label.set_alignment(0.0f, 0.5f);
@@ -131,7 +130,7 @@ public class NBook: Gtk.Notebook
         {
             notebook.remove_page(page_num);
             files.remove(path);
-            current_files();
+            print("debug: removed %s\n", path);
             if (notebook.get_n_pages() == 0)
                 window.set_title(NAME);
         }
@@ -146,12 +145,5 @@ public class NBook: Gtk.Notebook
             lab.set_text(GLib.Path.get_basename(p));
     }
 
-    public void current_files()
-    {
-        print("%s\n", "debug: list");
-        foreach(string i in files)
-        print("  %s\n", i);
-        print("\n\n");
-    }
 }
 }
