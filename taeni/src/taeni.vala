@@ -23,8 +23,6 @@ private class Program : Gtk.Application
     Gtk.ColorButton preferences_bg_button;
     Gtk.ColorButton preferences_fg_button;
 
-    string argument;
-    string command;
     string terminal_bgcolor;
     string terminal_fgcolor;
     string terminal_font;
@@ -53,7 +51,7 @@ private class Program : Gtk.Application
 
     private Program()
     {
-        Object(application_id: APP_ID, flags: ApplicationFlags.HANDLES_COMMAND_LINE);
+        Object(application_id: APP_ID, flags: ApplicationFlags.HANDLES_COMMAND_LINE | ApplicationFlags.NON_UNIQUE);
         add_action_entries(action_entries, this);
     }
 
@@ -72,30 +70,26 @@ private class Program : Gtk.Application
         set_accels_for_action("app.select-all",    {"<Primary><Shift>A"});
         set_accels_for_action("app.full-screen",   {"F11"});
         set_accels_for_action("app.show-menu",     {"<Primary>F10"});
+        
+        window = add_new_window();
     }
 
     public override void activate()
     {
-        window = add_new_window();
+        window.present();
     }
 
     public override int command_line(ApplicationCommandLine command_line)
     {
         var args = command_line.get_arguments();
-        argument = args[1];
-        string path = "";
-        if (argument == "-d")
-        {
+        string path;
+        if (args[1] == "-d")
             path = args[2];
-        }
-        window = add_new_window();
-        create_tab(path);
-        window.present();
-        if (argument == "-e")
-        {
-            command = args[2];
-            execute_command(command);
-        }
+        else
+            path = "";
+        create_tab(path); 
+        if (args[1] == "-e")
+            execute_command(args[2]);
         return 0;
     }
 
