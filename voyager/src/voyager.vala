@@ -31,7 +31,6 @@ private class Program : Gtk.Application
     uint slideshow_delay;
     bool slideshow_active;
     bool list_visible;
-    string[] images;
     string file;
     string basename;
     private uint timeout_id;
@@ -224,42 +223,31 @@ private class Program : Gtk.Application
     // Treeview
     private void list_images(string directory)
     {
-        try
-        {
-            string output;
-            Environment.set_current_dir(directory);
-            Process.spawn_command_line_sync(" sh -c \"find '%s' -maxdepth 1 -name '*jpg' -o -name '*jpeg' -o -name '*png' -o -name '*bmp' -o -name '*svg' -o -name '*xpm' -o -name '*ico' -o -name '*JPG' -o -name '*JPEG' -o -name '*PNG' -o -name '*BMP' | sort -n\" ".printf(directory), out output);
-            images = Regex.split_simple("[\n]", output, GLib.RegexCompileFlags.MULTILINE);
-            add_images_to_liststore(images);
-        }
-        catch (GLib.Error e)
-        {
-            stderr.printf ("%s\n", e.message);
-        }
-    }
-
-    private void add_images_to_liststore(string[] images_in_a_folder)
-    {
-        liststore.clear();
-        Gtk.TreeIter iter;
-        int img_number = 0;
-        for (int i = 0; i < images_in_a_folder.length; i++)
-        {
-            if (images[i] != "")
-            {
-                var basename = Path.get_basename(images[i]);
-                liststore.append(out iter);
-                liststore.set(iter, 0, basename, 1, images[i]);
-                if (images[i] == file)
-                {
-                    img_number = i;
+        try {
+		    liststore.clear();
+		    Environment.set_current_dir(directory);
+		    var d = File.new_for_path(directory);
+		    var enumerator = d.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+		    FileInfo info;
+		    while((info = enumerator.next_file()) != null) {
+                string output = info.get_name();
+                var file_check = File.new_for_path(output);
+                var file_info = file_check.query_info("standard::content-type", 0, null);
+                string content = file_info.get_content_type();
+                if ( content.contains("image")) {
+                    string fullpath = directory + "/" + output;
+                    Gtk.TreeIter iter;
+                    liststore.append(out iter);
+                    liststore.set(iter, 0, output, 1, fullpath);
+                    treeview.grab_focus();
+                    if (file == fullpath) {
+                        treeview.get_selection().select_iter(iter);
+                    }
                 }
-            }
-        }
-        treeview.grab_focus();
-        var path = new Gtk.TreePath.from_string(img_number.to_string());
-        treeview.get_selection().select_path(path);
-        treeview.scroll_to_cell(path, null, true, 0.5f, 0.0f);
+		    }
+	    } catch(Error e) {
+		    stderr.printf("Error: %s\n", e.message);
+	    }
     }
 
     private void show_selected_image()

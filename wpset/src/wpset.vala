@@ -17,7 +17,6 @@ private class Program : Gtk.Application
     Gtk.ListStore liststore;
     Gtk.TreeIter iter;
     Gtk.IconView view;
-    string[] wallpaper;
     string[] images_dir;
     Gtk.ScrolledWindow scrolled;
     private const Gtk.TargetEntry[] targets = { {"text/uri-list", 0, 0} };
@@ -83,7 +82,7 @@ private class Program : Gtk.Application
         window.window_position = Gtk.WindowPosition.CENTER;
         window.set_title(NAME);
         window.add(scrolled);
-        window.set_default_size(485, 600);
+        window.set_default_size(520, 600);
         window.show_all();
 
         Gtk.drag_dest_set(scrolled, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
@@ -97,36 +96,31 @@ private class Program : Gtk.Application
 
     void list_images(string directory)
     {
-        try
-        {
-            string output;
-            Environment.set_current_dir(directory);
-            Process.spawn_command_line_sync(" sh -c \"find '%s' -maxdepth 1 -name '*jpg' -o -name '*png' -o -name '*bmp' | sort -n\" ".printf(directory), out output);
-            wallpaper = Regex.split_simple("[\n]", output, GLib.RegexCompileFlags.MULTILINE);
-            add_pixbuf_to_liststore(wallpaper);
-        }
-        catch (GLib.Error e)
-        {
-            stderr.printf ("%s\n", e.message);
-        }
-    }
+        try {
+		    Environment.set_current_dir(directory);
+		    var d = File.new_for_path(directory);
+		    var enumerator = d.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+		    FileInfo info;
+		    while((info = enumerator.next_file()) != null) {
+                string output = info.get_name();
+                var file_check = File.new_for_path(output);
+                var file_info = file_check.query_info("standard::content-type", 0, null);
+                string content = file_info.get_content_type();
 
-    void add_pixbuf_to_liststore(string[] images_in_a_folder)
-    {
-        for (int i = 0; i < images_in_a_folder.length; i++)
-        {
-            string fullpath = wallpaper[i];
-            if (fullpath != "")
-            {
-                load_thumbnail.begin(fullpath, (obj, res) =>
-                {
-                    pixbuf = load_thumbnail.end(res);
+                if ( content.contains("image")) {
+                    string fullpath = directory + "/" + output;
+                    load_thumbnail.begin(fullpath, (obj, res) =>
+                    {
+                        pixbuf = load_thumbnail.end(res);
 
-                    liststore.append(out iter);
-                    liststore.set(iter, 0, pixbuf, 1, fullpath);
-                });
-            }
-        }
+                        liststore.append(out iter);
+                        liststore.set(iter, 0, pixbuf, 1, fullpath);
+                    });
+                }
+		    }
+	    } catch(Error e) {
+		    stderr.printf("Error: %s\n", e.message);
+	    }
     }
 
     private async Gdk.Pixbuf load_thumbnail(string name)
