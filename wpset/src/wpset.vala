@@ -97,11 +97,11 @@ private class Program : Gtk.Application
     void list_images(string directory)
     {
         try {
-		    Environment.set_current_dir(directory);
-		    var d = File.new_for_path(directory);
-		    var enumerator = d.enumerate_children(FileAttribute.STANDARD_NAME, 0);
-		    FileInfo info;
-		    while((info = enumerator.next_file()) != null) {
+            Environment.set_current_dir(directory);
+            var d = File.new_for_path(directory);
+            var enumerator = d.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+            FileInfo info;
+            while((info = enumerator.next_file()) != null) {
                 string output = info.get_name();
                 var file_check = File.new_for_path(output);
                 var file_info = file_check.query_info("standard::content-type", 0, null);
@@ -117,10 +117,10 @@ private class Program : Gtk.Application
                         liststore.set(iter, 0, pixbuf, 1, fullpath);
                     });
                 }
-		    }
-	    } catch(Error e) {
-		    stderr.printf("Error: %s\n", e.message);
-	    }
+            }
+        } catch(Error e) {
+            stderr.printf("Error: %s\n", e.message);
+        }
     }
 
     private async Gdk.Pixbuf load_thumbnail(string name)

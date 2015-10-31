@@ -57,7 +57,7 @@ private class Program : Gtk.Application
         { "previous-image",     action_previous_image     },
         { "open",               action_open               },
         { "set-as-wallpaper",   action_set_as_wallpaper   },
-        { "toggle-list",        action_reveal_list        },
+        { "toggle-thumbnails",  action_reveal_thumbnails  },
         { "rotate-right",       action_rotate_right       },
         { "rotate-left",        action_rotate_left        },
         { "zoom-in",            action_zoom_in            },
@@ -86,7 +86,7 @@ private class Program : Gtk.Application
         set_accels_for_action("app.previous-image",        {"Left"});
         set_accels_for_action("app.open",                  {"O", "<Primary>O"});
         set_accels_for_action("app.set-as-wallpaper",      {"W", "<Primary>W"});
-        set_accels_for_action("app.toggle-list",           {"L", "<Primary>L"});
+        set_accels_for_action("app.toggle-thumbnails",     {"T", "<Primary>T"});
         set_accels_for_action("app.rotate-right",          {"Page_Down", "<Primary>Page_Down"});
         set_accels_for_action("app.rotate-left",           {"Page_Up", "<Primary>Page_Up"});
         set_accels_for_action("app.full-screen-exit",      {"Escape"});
@@ -101,7 +101,7 @@ private class Program : Gtk.Application
         var section = new GLib.Menu();
         section.append(_("Open"),               "app.open");
         section.append(_("Set as Wallpaper"),   "app.set-as-wallpaper");
-        section.append(_("Toggle list"),        "app.toggle-list");
+        section.append(_("Thumbnails On/Off"),  "app.toggle-thumbnails");
         menu.append_section(null, section);
 
         section = new GLib.Menu();
@@ -132,22 +132,21 @@ private class Program : Gtk.Application
         width = settings.get_int("width");
         height = settings.get_int("height");
         slideshow_delay = settings.get_uint("slideshow-delay");
-        list_visible = false;
+        list_visible = true;
         screen_width = Gdk.Screen.width();
         screen_height = Gdk.Screen.height();
 
         image = new Gtk.Image();
 
         // TreeView
-        var cell = new Gtk.CellRendererText();
-        liststore = new Gtk.ListStore(2, typeof (string), typeof (string));
+        liststore = new Gtk.ListStore(3, typeof (Gdk.Pixbuf), typeof (string), typeof (string));
 
         treeview = new Gtk.TreeView();
         treeview.set_model(liststore);
         treeview.set_headers_visible(false);
         treeview.set_activate_on_single_click(true);
         treeview.row_activated.connect(show_selected_image);
-        treeview.insert_column_with_attributes (-1, _("Name"), cell, "text", 0);
+        treeview.insert_column_with_attributes (-1, _("Preview"), new Gtk.CellRendererPixbuf(), "pixbuf");
 
         // ScrolledWindow
         scrolled_window_image = new Gtk.ScrolledWindow(null, null);
@@ -175,6 +174,7 @@ private class Program : Gtk.Application
 
         revealer = new Gtk.Revealer();
         revealer.add(scrolled_window_treeview);
+        revealer.set_reveal_child(true);
         revealer.set_transition_duration(300);
         revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_LEFT);
 
@@ -199,7 +199,6 @@ private class Program : Gtk.Application
             return true;
         });
         add_window(window);
-
         hadj = scrolled_window_image.get_hadjustment();
         vadj = scrolled_window_image.get_vadjustment();
     }
@@ -224,30 +223,53 @@ private class Program : Gtk.Application
     private void list_images(string directory)
     {
         try {
-		    liststore.clear();
-		    Environment.set_current_dir(directory);
-		    var d = File.new_for_path(directory);
-		    var enumerator = d.enumerate_children(FileAttribute.STANDARD_NAME, 0);
-		    FileInfo info;
-		    while((info = enumerator.next_file()) != null) {
+            liststore.clear();
+            Environment.set_current_dir(directory);
+            var d = File.new_for_path(directory);
+            var enumerator = d.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+            FileInfo info;
+            while((info = enumerator.next_file()) != null) {
                 string output = info.get_name();
                 var file_check = File.new_for_path(output);
                 var file_info = file_check.query_info("standard::content-type", 0, null);
                 string content = file_info.get_content_type();
                 if ( content.contains("image")) {
                     string fullpath = directory + "/" + output;
-                    Gtk.TreeIter iter;
-                    liststore.append(out iter);
-                    liststore.set(iter, 0, output, 1, fullpath);
-                    treeview.grab_focus();
-                    if (file == fullpath) {
-                        treeview.get_selection().select_iter(iter);
-                    }
+                    Gdk.Pixbuf pixbuf = null;
+                    Gtk.TreeIter? iter = null;
+                    load_thumbnail.begin(fullpath, (obj, res) =>
+                    {
+                        pixbuf = load_thumbnail.end(res);
+                        liststore.append(out iter);
+                        liststore.set(iter, 0, pixbuf, 1, fullpath, 2, output, -1);
+                        if (file == fullpath) {
+                            treeview.get_selection().select_iter(iter);
+                            Gtk.TreePath path = treeview.get_model().get_path(iter);
+                            treeview.scroll_to_cell(path, null, false, 0, 0);
+                        }
+                    });
                 }
-		    }
-	    } catch(Error e) {
-		    stderr.printf("Error: %s\n", e.message);
-	    }
+            }
+            treeview.grab_focus();
+        } catch(Error e) {
+            stderr.printf("Error: %s\n", e.message);
+        }
+    }
+
+    private async Gdk.Pixbuf load_thumbnail(string name)
+    {
+        Gdk.Pixbuf? pix = null;
+        var file = GLib.File.new_for_path(name);
+        try
+        {
+            GLib.InputStream stream = yield file.read_async();
+            pix = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 140, 100, true, null);
+        }
+        catch (Error e)
+        {
+            stderr.printf("%s\n", e.message);
+        }
+        return pix;
     }
 
     private void show_selected_image()
@@ -483,7 +505,7 @@ private class Program : Gtk.Application
         GLib.Settings.sync();
     }
 
-    private void action_reveal_list()
+    private void action_reveal_thumbnails()
     {
         if (list_visible == false)
         {
