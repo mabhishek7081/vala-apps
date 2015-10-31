@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 001\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 23:43+0200\n"
+"POT-Creation-Date: 2015-10-31 11:34+0100\n"
 "PO-Revision-Date: 2014-02-05 09:12+0100\n"
 "Last-Translator: root <root@linux>\n"
 "Language-Team: Serbian\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/voyager.vala:93
+#: src/voyager.vala:125
 msgid "About"
 msgstr "O programu"
 
-#: src/voyager.vala:161
+#: src/voyager.vala:116
 msgid "Actual Size"
 msgstr "Stvarna veličina"
 
-#: src/voyager.vala:165
+#: src/voyager.vala:121
 msgid "Edit With Gimp"
 msgstr "Uredi u gimpu"
 
@@ -34,42 +34,49 @@ msgstr "Uredi u gimpu"
 msgid "Fast and elegant image browser"
 msgstr "Pregledač slika"
 
-#: src/voyager.vala:192
-msgid "Name"
-msgstr "Ime"
-
-#: src/voyager.vala:150 src/voyager.vala:640
+#: src/voyager.vala:102 src/voyager.vala:570
 msgid "Open"
 msgstr "Otvori"
 
-#: src/voyager.vala:94
+#: src/voyager.vala:149
+msgid "Preview"
+msgstr ""
+
+#: src/voyager.vala:126
 msgid "Quit"
 msgstr "Odustani"
 
-#: src/voyager.vala:155
+#: src/voyager.vala:109
 msgid "Rotate Left"
 msgstr "Rotiraj levo"
 
-#: src/voyager.vala:154
+#: src/voyager.vala:108
 msgid "Rotate Right"
 msgstr "Rotiraj desno"
 
-#: src/voyager.vala:151
+#: src/voyager.vala:103
 msgid "Set as Wallpaper"
 msgstr "Postavi kao pozadinu ekrana"
 
-#: src/voyager.vala:164
+#: src/voyager.vala:120
 msgid "Slideshow"
 msgstr "Prezentacija"
 
-#: src/voyager.vala:158
+#: src/voyager.vala:104
+msgid "Thumbnails On/Off"
+msgstr ""
+
+#: src/voyager.vala:113
 msgid "Zoom In"
 msgstr "Uvećaj"
 
-#: src/voyager.vala:159
+#: src/voyager.vala:114
 msgid "Zoom Out"
 msgstr "Umanji"
 
-#: src/voyager.vala:160
+#: src/voyager.vala:115
 msgid "Zoom to Fit"
 msgstr "Uvećaj prema širini"
+
+#~ msgid "Name"
+#~ msgstr "Ime"

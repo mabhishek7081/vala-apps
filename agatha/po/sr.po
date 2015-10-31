@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 001\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 23:34+0200\n"
+"POT-Creation-Date: 2015-10-31 11:34+0100\n"
 "PO-Revision-Date: 2014-02-05 09:12+0100\n"
 "Last-Translator: root <root@linux>\n"
 "Language-Team: Serbian\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/main.vala:87
+#: src/main.vala:86
 msgid "About"
 msgstr "O programu"
 
@@ -34,19 +34,19 @@ msgstr "Zatvori"
 msgid "Go"
 msgstr "Idi"
 
-#: src/dialogs.vala:31 src/main.vala:86
+#: src/dialogs.vala:31 src/main.vala:85
 msgid "Go to page"
 msgstr "Idi na stranu"
 
-#: src/dialogs.vala:9 src/dialogs.vala:11 src/main.vala:85
+#: src/dialogs.vala:9 src/dialogs.vala:11 src/main.vala:84
 msgid "Open"
 msgstr "Otvori"
 
-#: src/main.vala:20
+#: src/main.vala:19
 #, fuzzy
 msgid "PDF Viewer in GTK3 and Poppler"
 msgstr "Program za pregled PDF dokumenta"
 
-#: src/main.vala:88
+#: src/main.vala:87
 msgid "Quit"
 msgstr "Odustani"

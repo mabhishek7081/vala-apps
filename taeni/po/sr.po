@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 001\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 23:40+0200\n"
+"POT-Creation-Date: 2015-10-31 11:34+0100\n"
 "PO-Revision-Date: 2014-01-04 10:01+0100\n"
 "Last-Translator: root <root@linux>\n"
 "Language-Team: Serbian\n"
@@ -18,31 +18,31 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/taeni.vala:75
+#: src/taeni.vala:246
 msgid "About"
 msgstr "O programu"
 
-#: src/taeni.vala:424
+#: src/taeni.vala:382
 msgid "Background"
 msgstr "Pozadina"
 
-#: src/taeni.vala:279
+#: src/taeni.vala:250
 msgid "Close tab"
 msgstr "Zatvori karticu"
 
-#: src/taeni.vala:138 src/taeni.vala:284
+#: src/taeni.vala:232
 msgid "Copy"
 msgstr "Kopiraj"
 
-#: src/taeni.vala:414
+#: src/taeni.vala:372
 msgid "Font"
 msgstr "Font"
 
-#: src/taeni.vala:428
+#: src/taeni.vala:386
 msgid "Foreground"
 msgstr "Boja teksta"
 
-#: src/taeni.vala:295
+#: src/taeni.vala:240
 msgid "Full screen"
 msgstr "Ceo ekran"
 
@@ -50,26 +50,27 @@ msgstr "Ceo ekran"
 msgid "Multi-tabbed terminal emulator based on VTE"
 msgstr "Linux terminal baziran na VTE"
 
-#: src/taeni.vala:67
-msgid "New Window"
-msgstr "Novi prozor"
-
-#: src/taeni.vala:135 src/taeni.vala:276
+#: src/taeni.vala:228
 msgid "New tab"
 msgstr "Nova kartica"
 
-#: src/taeni.vala:139 src/taeni.vala:287
+#: src/taeni.vala:226
+#, fuzzy
+msgid "New window"
+msgstr "Novi prozor"
+
+#: src/taeni.vala:234
 msgid "Paste"
 msgstr "Zalepi"
 
-#: src/taeni.vala:71 src/taeni.vala:450
+#: src/taeni.vala:244 src/taeni.vala:411
 msgid "Preferences"
 msgstr "Podešavanja"
 
-#: src/taeni.vala:76
+#: src/taeni.vala:252
 msgid "Quit"
 msgstr "Odustani"
 
-#: src/taeni.vala:140 src/taeni.vala:290
+#: src/taeni.vala:236
 msgid "Select all"
 msgstr "Selektuj sve"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 001\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 23:43+0200\n"
+"POT-Creation-Date: 2015-10-31 11:34+0100\n"
 "PO-Revision-Date: 2014-01-15 20:45+0100\n"
 "Last-Translator: root <root@linux>\n"
 "Language-Team: Serbian\n"
@@ -22,26 +22,26 @@ msgstr ""
 msgid "A simple tool for changing your desktop wallpaper"
 msgstr "Program za menjanje pozadine ekrana"
 
-#: src/wpset.vala:46
+#: src/wpset.vala:52
 msgid "About"
 msgstr "O programu"
 
-#: src/wpset.vala:79 src/wpset.vala:227
+#: src/wpset.vala:47 src/wpset.vala:195
 msgid "Add folder"
 msgstr "Dodaj fasciklu"
 
-#: src/wpset.vala:228
+#: src/wpset.vala:196
 msgid "Cancel"
 msgstr "Otkaži"
 
-#: src/wpset.vala:229
+#: src/wpset.vala:197
 msgid "Open"
 msgstr "Otvori"
 
-#: src/wpset.vala:47
+#: src/wpset.vala:53
 msgid "Quit"
 msgstr "Odustani"
 
-#: src/wpset.vala:80
+#: src/wpset.vala:48
 msgid "Reset list"
 msgstr "Podrazumevana lista"
