@@ -23,16 +23,16 @@ add_subdirectory (po)
 vala_precompile(VALA_C 
     src/operations.vala
     src/tabs.vala
-    src/preferences/prefdialog.vala
-    src/preferences/settings.vala
-    src/preferences/apply.vala
-    src/search/replace.vala
-    src/search/find.vala
-    src/widgets/application.vala
-    src/widgets/color.vala
-    src/widgets/nbook.vala
-    src/widgets/dialogs.vala
-    src/widgets/mainwin.vala
+    src/prefdialog.vala
+    src/settings.vala
+    src/apply.vala
+    src/replace.vala
+    src/find.vala
+    src/application.vala
+    src/color.vala
+    src/nbook.vala
+    src/dialogs.vala
+    src/mainwin.vala
 PACKAGES
     gtk+-3.0
     gtksourceview-3.0

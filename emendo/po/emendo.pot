@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 23:35+0200\n"
+"POT-Creation-Date: 2015-10-31 11:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,171 +17,180 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/widgets/mainwin.vala:67
+#: src/mainwin.vala:85
 msgid "About"
 msgstr ""
 
-#: src/widgets/dialogs.vala:9 src/widgets/dialogs.vala:38
-#: src/widgets/dialogs.vala:105
+#: src/dialogs.vala:9 src/dialogs.vala:38 src/dialogs.vala:105
 msgid "Cancel"
 msgstr ""
 
-#: src/search/replace.vala:26
+#: src/replace.vala:28
 msgid "Case sensitive"
 msgstr ""
 
-#: src/widgets/mainwin.vala:105 src/search/replace.vala:48
+#: src/find.vala:35 src/mainwin.vala:76 src/replace.vala:50
 msgid "Close"
 msgstr ""
 
-#: src/widgets/mainwin.vala:106
+#: src/mainwin.vala:77
 msgid "Close All"
 msgstr ""
 
-#: src/widgets/dialogs.vala:63 src/widgets/dialogs.vala:104
+#: src/dialogs.vala:63 src/dialogs.vala:104
 msgid "Close Without Saving"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:21
+#: src/prefdialog.vala:21
 msgid "Color scheme"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:120
+#: src/prefdialog.vala:116
 msgid "Editor"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:20
+#: src/prefdialog.vala:20
 msgid "Editor font"
 msgstr ""
 
-#: src/widgets/dialogs.vala:66
+#: src/dialogs.vala:66
 msgid "Error"
 msgstr ""
 
-#: src/widgets/dialogs.vala:61
+#: src/dialogs.vala:61
 #, c-format
 msgid ""
 "Error saving file %s.\n"
 "The file on disk may now be truncated!"
 msgstr ""
 
-#: src/search/replace.vala:51
+#: src/find.vala:17 src/replace.vala:53
 msgid "Find"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:27
+#: src/mainwin.vala:69
+msgid "Find..."
+msgstr ""
+
+#: src/prefdialog.vala:27
 msgid "Highlight current line"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:23
+#: src/prefdialog.vala:23
 msgid "Indent width"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:29
+#: src/prefdialog.vala:29
 msgid "Insert spaces instead of tabs"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:22
+#: src/prefdialog.vala:22
 msgid "Margin width"
 msgstr ""
 
-#: src/widgets/mainwin.vala:95
+#: src/mainwin.vala:61
 msgid "New"
 msgstr ""
 
-#: src/widgets/dialogs.vala:8 src/widgets/dialogs.vala:10
-#: src/widgets/mainwin.vala:74
+#: src/find.vala:37
+msgid "Next"
+msgstr ""
+
+#: src/dialogs.vala:8 src/dialogs.vala:10 src/mainwin.vala:62
 msgid "Open"
 msgstr ""
 
-#: src/widgets/mainwin.vala:64
+#: src/mainwin.vala:81 src/prefdialog.vala:73
 msgid "Preferences"
 msgstr ""
 
-#: src/widgets/dialogs.vala:108
+#: src/find.vala:36
+msgid "Previous"
+msgstr ""
+
+#: src/dialogs.vala:108
 msgid "Question"
 msgstr ""
 
-#: src/widgets/mainwin.vala:68
+#: src/mainwin.vala:86
 msgid "Quit"
 msgstr ""
 
-#: src/search/replace.vala:23
+#: src/replace.vala:25
 msgid "Repace with:"
 msgstr ""
 
-#: src/search/replace.vala:18 src/search/replace.vala:49
+#: src/replace.vala:20 src/replace.vala:51
 msgid "Replace"
 msgstr ""
 
-#: src/search/replace.vala:50
+#: src/replace.vala:52
 msgid "Replace All"
 msgstr ""
 
-#: src/widgets/mainwin.vala:100
+#: src/mainwin.vala:70
 msgid "Replace..."
 msgstr ""
 
-#: src/widgets/dialogs.vala:39 src/widgets/dialogs.vala:106
-#: src/widgets/mainwin.vala:78
+#: src/dialogs.vala:39 src/dialogs.vala:106 src/mainwin.vala:63
 msgid "Save"
 msgstr ""
 
-#: src/widgets/mainwin.vala:97
+#: src/mainwin.vala:65
 msgid "Save All"
 msgstr ""
 
-#: src/widgets/dialogs.vala:37 src/widgets/mainwin.vala:96
+#: src/dialogs.vala:37 src/mainwin.vala:64
 msgid "Save As..."
 msgstr ""
 
-#: src/search/replace.vala:28
+#: src/replace.vala:30
 msgid "Search backwards"
 msgstr ""
 
-#: src/search/replace.vala:20
+#: src/find.vala:19 src/replace.vala:22
 msgid "Search for:"
 msgstr ""
 
-#: src/widgets/color.vala:15 src/widgets/mainwin.vala:102
+#: src/color.vala:15 src/mainwin.vala:72
 msgid "Select Color"
 msgstr ""
 
-#: src/widgets/dialogs.vala:64
+#: src/dialogs.vala:64
 msgid "Select New Location"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:26
+#: src/prefdialog.vala:26
 msgid "Show line numbers"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:28
+#: src/prefdialog.vala:28
 msgid "Show margin on right"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:24
+#: src/prefdialog.vala:24
 msgid "Tab width"
 msgstr ""
 
-#: src/widgets/mainwin.vala:101
+#: src/mainwin.vala:71
 msgid "Text Wrap"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:30
+#: src/prefdialog.vala:30
 msgid "Text auto indentation"
 msgstr ""
 
-#: src/widgets/application.vala:9
+#: src/application.vala:9
 msgid "Text editor with syntax highlighting"
 msgstr ""
 
-#: src/widgets/dialogs.vala:102
+#: src/dialogs.vala:102
 #, c-format
 msgid ""
 "The file '%s' is not saved.\n"
 "Do you want to save it before closing?"
 msgstr ""
 
-#: src/preferences/prefdialog.vala:121
+#: src/prefdialog.vala:117
 msgid "View"
 msgstr ""
