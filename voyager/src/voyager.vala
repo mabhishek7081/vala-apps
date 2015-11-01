@@ -715,6 +715,7 @@ private class Program : Gtk.Application
         about.set_version(VERSION);
         about.set_comments(DESCRIPTION);
         about.set_logo_icon_name(ICON);
+        about.set_icon_name(ICON);
         about.set_authors(AUTHORS);
         about.set_copyright("Copyright \xc2\xa9 2015");
         about.set_website("https://github.com/simargl");
