@@ -112,6 +112,8 @@ public class Application: Gtk.Application
         window.add(eventbox);
         window.set_icon_name(ICON);
         window.set_default_size(width, height);
+        if (maximized == true)
+            window.maximize();
         window.show_all();
 
         window.delete_event.connect(() =>
@@ -315,9 +317,11 @@ public class Application: Gtk.Application
     private void action_quit()
     {
         window.get_size(out width, out height);
+        maximized = window.is_maximized;
         var settings = new Agatha.Settings();
         settings.set_width();
         settings.set_height();
+        settings.set_maximized();
         GLib.Settings.sync();
         quit();
     }

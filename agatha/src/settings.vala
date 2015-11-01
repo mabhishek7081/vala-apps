@@ -2,6 +2,7 @@ namespace Agatha
 {
 private int     width;
 private int     height;
+private bool    maximized;
 private double  zoom;
 private string  last_file;
 private int     last_page;
@@ -14,6 +15,7 @@ public class Settings: GLib.Object
 
         get_width();
         get_height();
+        get_maximized();
         get_zoom();
         get_last_file();
         get_last_page();
@@ -28,6 +30,11 @@ public class Settings: GLib.Object
     public int get_height()
     {
         return height = settings.get_int("height");
+    }
+
+    public bool get_maximized()
+    {
+        return maximized = settings.get_boolean("maximized");
     }
 
     public double get_zoom()
@@ -54,6 +61,11 @@ public class Settings: GLib.Object
     public void set_height()
     {
         settings.set_int("height", height);
+    }
+
+    public void set_maximized()
+    {
+        settings.set_boolean("maximized", maximized);
     }
 
     public void set_zoom()
