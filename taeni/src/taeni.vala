@@ -70,8 +70,6 @@ private class Program : Gtk.Application
         set_accels_for_action("app.select-all",    {"<Primary><Shift>A"});
         set_accels_for_action("app.full-screen",   {"F11"});
         set_accels_for_action("app.show-menu",     {"<Primary>F10"});
-        
-        window = add_new_window();
     }
 
     public override void activate()
@@ -82,11 +80,22 @@ private class Program : Gtk.Application
     public override int command_line(ApplicationCommandLine command_line)
     {
         var args = command_line.get_arguments();
+        if (args[1] == "-h" || args[1] == "--help") {
+            string USAGE = "%s\n  %s %s %s".printf("Usage:", NAME.down(), "[OPTION...] -", DESCRIPTION);
+            string OPTIONS = "Application Options:\n  -d Set working directory\n  -e Execute command\n  -v Print version number";
+            print("%s\n\n%s\n\n".printf(USAGE, OPTIONS));
+            return 0;
+        }
+        if (args[1] == "-v" || args[1] == "--version") {
+            print("%s %s %s\n".printf(NAME, "version is", VERSION));
+            return 0;
+        }
         string path;
         if (args[1] == "-d")
             path = args[2];
         else
             path = "";
+        window = add_new_window();
         create_tab(path); 
         if (args[1] == "-e")
             execute_command(args[2]);
