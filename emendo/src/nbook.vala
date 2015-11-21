@@ -49,11 +49,17 @@ public class NBook: Gtk.Notebook
         tab_page.add(tab_view);
         tab_page.show_all();
 
+        // File name
+        string fname = GLib.Path.get_basename(path);
+        if (fname.length > 18)
+            fname = fname.substring(0, 15) + "...";
+
         // Tab
-        var tab_label = new Gtk.Label(GLib.Path.get_basename(path));
+        var tab_label = new Gtk.Label(fname);
         tab_label.set_tooltip_text(path);
-        tab_label.set_alignment(0, 1);
-        tab_label.set_width_chars(15);
+        tab_label.set_alignment(0, 0.5f);
+        tab_label.set_hexpand(true);
+        tab_label.set_size_request(100, -1);
         var eventbox = new Gtk.EventBox();
         eventbox.add(tab_label);
         // Close tab with middle click
@@ -63,9 +69,19 @@ public class NBook: Gtk.Notebook
                 destroy_tab(tab_page, path);
             return false;
         });
+        
+        var css_stuff = """ * { padding :0; } """;
+        var provider = new Gtk.CssProvider();
+        try { 
+            provider.load_from_data(css_stuff, css_stuff.length); } 
+        catch (Error e) { 
+            stderr.printf ("Error: %s\n", e.message); 
+        }
 
         var tab_button = new Gtk.Button.from_icon_name("window-close-symbolic", Gtk.IconSize.MENU);
         tab_button.set_relief(Gtk.ReliefStyle.NONE);
+        tab_button.set_hexpand(false);
+        tab_button.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         tab_button.clicked.connect(() =>
         {
             destroy_tab(tab_page, path);
@@ -74,6 +90,7 @@ public class NBook: Gtk.Notebook
         var tab = new Gtk.Grid();
         tab.attach(eventbox,   0, 0, 1, 1);
         tab.attach(tab_button, 1, 0, 1, 1);
+        tab.set_hexpand(false);
         tab.show_all();
 
         files.add(path);

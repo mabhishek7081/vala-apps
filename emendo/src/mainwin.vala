@@ -8,7 +8,6 @@ public class MainWin: Gtk.ApplicationWindow
 {
     private const GLib.ActionEntry[] action_entries =
     {
-        { "show-find", action_find      },
         { "undo",      action_undo      },
         { "redo",      action_redo      },
         { "open",      action_open      },
@@ -38,7 +37,6 @@ public class MainWin: Gtk.ApplicationWindow
         app.add_action_entries(action_entries, app);
 
         app.set_accels_for_action("app.show-menu",  {"F10"});
-        app.set_accels_for_action("app.show-find",  {"<Primary>F"});
         app.set_accels_for_action("app.undo",       {"<Primary>Z"});
         app.set_accels_for_action("app.redo",       {"<Primary>Y"});
         app.set_accels_for_action("app.open",       {"<Primary>O"});
