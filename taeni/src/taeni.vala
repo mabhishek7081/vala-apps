@@ -120,11 +120,16 @@ private class Program : Gtk.Application
         notebook.set_show_tabs(false);
         notebook.set_can_focus(false);
 
+        var geometry = Gdk.Geometry();
+        geometry.height_inc = 20;
+        geometry.width_inc = 20;
+
         window = new Gtk.ApplicationWindow(this);
         window.set_default_size(width, height);
         window.set_title(NAME);
         window.add(notebook);
         window.set_icon_name(ICON);
+        window.set_geometry_hints(window, geometry, Gdk.WindowHints.RESIZE_INC);
         window.show_all();
         window.delete_event.connect(() =>
         {
@@ -166,17 +171,28 @@ private class Program : Gtk.Application
         var scrollbar = new Gtk.Scrollbar(Gtk.Orientation.VERTICAL, term.vadjustment);
 
         var tab_label = new Gtk.Label("");
-        tab_label.set_alignment(0, 1);
-        tab_label.set_width_chars(20);
+        tab_label.set_alignment(0, 0.5f);
+        tab_label.set_hexpand(true);
+        tab_label.set_size_request(100, -1);
         var eventbox = new Gtk.EventBox();
         eventbox.add(tab_label);
 
+        var css_stuff = """ * { padding :0; } """;
+        var provider = new Gtk.CssProvider();
+        try { 
+            provider.load_from_data(css_stuff, css_stuff.length); } 
+        catch (Error e) { 
+            stderr.printf ("Error: %s\n", e.message); 
+        }
         var tab_button_close = new Gtk.Button.from_icon_name("window-close-symbolic", Gtk.IconSize.MENU);
         tab_button_close.set_relief(Gtk.ReliefStyle.NONE);
+        tab_button_close.set_hexpand(false);
+        tab_button_close.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
         var tab = new Gtk.Grid();
         tab.attach(eventbox,   0, 0, 1, 1);
         tab.attach(tab_button_close, 1, 0, 1, 1);
+        tab.set_hexpand(false);
         tab.show_all();
 
         var page_grid = new Gtk.Grid();
