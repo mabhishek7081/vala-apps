@@ -7,7 +7,7 @@ public class PageZoom: GLib.Object
         zoom = zoom + 0.25;
 
         var viewer = new Agatha.Viewer();
-        viewer.render_page(cpage);
+        viewer.render_page();
 
         var settings = new Agatha.Settings();
         settings.set_zoom();
@@ -20,7 +20,7 @@ public class PageZoom: GLib.Object
         zoom = zoom - 0.25;
 
         var viewer = new Agatha.Viewer();
-        viewer.render_page(cpage);
+        viewer.render_page();
 
         var settings = new Agatha.Settings();
         settings.set_zoom();

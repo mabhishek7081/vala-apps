@@ -15,7 +15,7 @@ int cpage;
 int total;
 
 const string NAME        = "Agatha";
-const string VERSION     = "0.0.1";
+const string VERSION     = "1.0.0";
 const string DESCRIPTION = _("PDF Viewer in GTK3 and Poppler");
 const string ICON        = "evince";
 const string[] AUTHORS   = { "Simargl <archpup-at-gmail-dot-com>", null };
@@ -132,7 +132,7 @@ public class Application: Gtk.Application
                 filename = last_file;
                 cpage = last_page;
                 var viewer = new Agatha.Viewer();
-                viewer.open_file();
+                viewer.render_page();
             }
         }
     }
@@ -147,9 +147,9 @@ public class Application: Gtk.Application
         foreach (File f in files)
         filename = f.get_path();
 
-        cpage = 0;
+        cpage = 1;
         var viewer = new Agatha.Viewer();
-        viewer.open_file();
+        viewer.render_page();
 
         window.present();
     }
@@ -226,18 +226,22 @@ public class Application: Gtk.Application
 
     private void action_previous_page()
     {
+        if (cpage < 2)
+            return;
         cpage--;
 
         var viewer = new Agatha.Viewer();
-        viewer.render_page(cpage);
+        viewer.render_page();
     }
 
     private void action_next_page()
     {
+        if (cpage > (total -1))
+            return;
         cpage++;
 
         var viewer = new Agatha.Viewer();
-        viewer.render_page(cpage);
+        viewer.render_page();
     }
 
     private void action_page_up()

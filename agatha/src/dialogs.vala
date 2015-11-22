@@ -2,7 +2,7 @@ namespace Agatha
 {
 public class Dialogs: Gtk.Dialog
 {
-    private Gtk.Entry entry;
+    private Gtk.SpinButton spinbutton;
     
     public void show_open()
     {
@@ -18,9 +18,9 @@ public class Dialogs: Gtk.Dialog
         {
             filename = dialog.get_filename();
 
-            cpage = 0;
+            cpage = 1;
             var viewer = new Agatha.Viewer();
-            viewer.open_file();
+            viewer.render_page();
         }
         dialog.destroy();
     }
@@ -34,30 +34,27 @@ public class Dialogs: Gtk.Dialog
         dialog.set_transient_for(window);
         dialog.set_resizable(false);        
         
-        entry = new Gtk.Entry();
-        entry.set_text(cpage.to_string());
-        entry.set_size_request(250, 0);
-        entry.activate.connect(() => { on_entry_activate(dialog); });
-        
+        spinbutton = new Gtk.SpinButton.with_range(1, total, 1);
+        spinbutton.set_value(cpage);
+        spinbutton.set_size_request(250, 0);
+        spinbutton.value_changed.connect(() => { on_spinbutton_activate(dialog); });
+
         var content = dialog.get_content_area() as Gtk.Box;
-        content.pack_start(entry, true, true, 10);
+        content.pack_start(spinbutton, true, true, 10);
         
-        dialog.add_button(_("Go"), Gtk.ResponseType.OK);
         dialog.add_button(_("Close"), Gtk.ResponseType.CLOSE);
-        dialog.set_default_response(Gtk.ResponseType.OK);
+        dialog.delete_event.connect(() => { dialog.destroy(); return true; });
         dialog.show_all();
-      
-        if (dialog.run() == Gtk.ResponseType.OK)
-            on_entry_activate(dialog);
-        dialog.destroy();
+        
+        if (dialog.run() == Gtk.ResponseType.CLOSE)
+            dialog.destroy();
     }
 
-    private void on_entry_activate(Gtk.Dialog d)
+    private void on_spinbutton_activate(Gtk.Dialog d)
     {
-        cpage = int.parse(entry.get_text());
+        cpage = spinbutton.get_value_as_int();
         var viewer = new Agatha.Viewer();
-        viewer.render_page(cpage);
-        d.destroy();
+        viewer.render_page();
     }
 
     public void show_about()
