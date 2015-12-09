@@ -2,11 +2,11 @@
  *  License: GPL v3
  */
 
-private class Program : Gtk.Application
-{
+private class Program : Gtk.Application {
     const string NAME = "WPSet";
     const string VERSION = "1.9.0";
-    const string DESCRIPTION = _("A simple tool for changing your desktop wallpaper");
+    const string DESCRIPTION =
+        _("A simple tool for changing your desktop wallpaper");
     const string ICON = "preferences-desktop-wallpaper";
     const string[] AUTHORS = { "Jonathan Koren (imlibsetroot) <jonathan-at-jonathankoren-dot-com>", "Simargl <https://github.com/simargl>", null };
 
@@ -21,8 +21,7 @@ private class Program : Gtk.Application
     Gtk.ScrolledWindow scrolled;
     private const Gtk.TargetEntry[] targets = { {"text/uri-list", 0, 0} };
 
-    private const GLib.ActionEntry[] action_entries =
-    {
+    private const GLib.ActionEntry[] action_entries = {
         { "add",       action_add       },
         { "reset",     action_reset     },
         { "show-menu", action_show_menu },
@@ -30,53 +29,42 @@ private class Program : Gtk.Application
         { "quit",      action_quit      }
     };
 
-    private Program()
-    {
-        Object(application_id: "org.vala-apps.wpset", flags: ApplicationFlags.FLAGS_NONE);
+    private Program() {
+        Object(application_id: "org.vala-apps.wpset",
+               flags: ApplicationFlags.FLAGS_NONE);
         add_action_entries(action_entries, this);
     }
 
-    public override void startup()
-    {
+    public override void startup() {
         base.startup();
-
         // app menu
         var menu = new GLib.Menu();
-
         var section = new GLib.Menu();
         section.append(_("Add folder"), "app.add");
         section.append(_("Reset list"), "app.reset");
         menu.append_section(null, section);
-
         section = new GLib.Menu();
         section.append(_("About"),     "app.about");
         section.append(_("Quit"),      "app.quit");
         menu.append_section(null, section);
-
         set_app_menu(menu);
-
         set_accels_for_action("app.add",       {"<Primary><Shift>A"});
         set_accels_for_action("app.reset",     {"Delete"});
         set_accels_for_action("app.show-menu", {"F10"});
         set_accels_for_action("app.quit",      {"<Primary>Q"});
-
         settings = new GLib.Settings("org.vala-apps.wpset.preferences");
         images_dir = settings.get_strv("images-dir");
-
         liststore = new Gtk.ListStore (2, typeof (Gdk.Pixbuf), typeof (string));
-
         view = new Gtk.IconView.with_model(liststore);
         view.set_pixbuf_column(0);
         view.item_activated.connect(apply_selected_image);
         view.set_activate_on_single_click(true);
-
-        for (int i = 0; i < images_dir.length; i++)
+        for (int i = 0; i < images_dir.length; i++) {
             list_images(images_dir[i]);
-
+        }
         scrolled = new Gtk.ScrolledWindow(null, null);
         scrolled.add(view);
         scrolled.expand = true;
-
         window = new Gtk.ApplicationWindow(this);
         window.set_icon_name(ICON);
         window.window_position = Gtk.WindowPosition.CENTER;
@@ -84,18 +72,15 @@ private class Program : Gtk.Application
         window.add(scrolled);
         window.set_default_size(520, 600);
         window.show_all();
-
         Gtk.drag_dest_set(scrolled, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
         scrolled.drag_data_received.connect(on_drag_data_received);
     }
 
-    public override void activate()
-    {
+    public override void activate() {
         window.present();
     }
 
-    void list_images(string directory)
-    {
+    void list_images(string directory) {
         try {
             Environment.set_current_dir(directory);
             var d = File.new_for_path(directory);
@@ -106,13 +91,10 @@ private class Program : Gtk.Application
                 var file_check = File.new_for_path(output);
                 var file_info = file_check.query_info("standard::content-type", 0, null);
                 string content = file_info.get_content_type();
-
                 if ( content.contains("image")) {
                     string fullpath = directory + "/" + output;
-                    load_thumbnail.begin(fullpath, (obj, res) =>
-                    {
+                    load_thumbnail.begin(fullpath, (obj, res) => {
                         pixbuf = load_thumbnail.end(res);
-
                         liststore.append(out iter);
                         liststore.set(iter, 0, pixbuf, 1, fullpath);
                     });
@@ -123,28 +105,23 @@ private class Program : Gtk.Application
         }
     }
 
-    private async Gdk.Pixbuf load_thumbnail(string name)
-    {
+    private async Gdk.Pixbuf load_thumbnail(string name) {
         Gdk.Pixbuf? pix = null;
         var file = GLib.File.new_for_path(name);
-        try
-        {
+        try {
             GLib.InputStream stream = yield file.read_async();
-            pix = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 140, 100, true, null);
-        }
-        catch (Error e)
-        {
+            pix = yield new Gdk.Pixbuf.from_stream_at_scale_async(stream, 140, 100, true,
+                    null);
+        } catch (Error e) {
             stderr.printf("%s\n", e.message);
         }
         return pix;
     }
 
-    private void apply_selected_image()
-    {
+    private void apply_selected_image() {
         List<Gtk.TreePath> paths = view.get_selected_items();
         GLib.Value selected;
-        foreach (Gtk.TreePath path in paths)
-        {
+        foreach (Gtk.TreePath path in paths) {
             liststore.get_iter(out iter, path);
             liststore.get_value(iter, 1, out selected);
             var gnome_settings = new GLib.Settings("org.gnome.desktop.background");
@@ -152,24 +129,21 @@ private class Program : Gtk.Application
             GLib.Settings.sync();
             try {
                 Process.spawn_command_line_sync("wpset-shell --set");
-            }
-            catch(Error error) {
+            } catch(Error error) {
                 stderr.printf("error: %s\n", error.message);
             }
-        }       
+        }
     }
 
-    private void add_images_from_selected(string directory)
-    {
+    private void add_images_from_selected(string directory) {
         int i;
         int[] indexes = {};
-        for (i = 0; i < images_dir.length; i++)
-        {
-            if (images_dir[i] == directory)
+        for (i = 0; i < images_dir.length; i++) {
+            if (images_dir[i] == directory) {
                 indexes += i;
+            }
         }
-        if (indexes.length == 0)
-        {
+        if (indexes.length == 0) {
             images_dir += directory;
             list_images(directory);
             settings.set_strv("images-dir", images_dir);
@@ -177,10 +151,9 @@ private class Program : Gtk.Application
     }
 
     // Drag Data
-    private void on_drag_data_received(Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData data, uint info, uint time)
-    {
-        foreach(string uri in data.get_uris())
-        {
+    private void on_drag_data_received(Gdk.DragContext drag_context, int x, int y,
+                                       Gtk.SelectionData data, uint info, uint time) {
+        foreach(string uri in data.get_uris()) {
             string file;
             file = uri.replace("file://", "");
             file = Uri.unescape_string(file);
@@ -190,22 +163,20 @@ private class Program : Gtk.Application
         Gtk.drag_finish(drag_context, true, false, time);
     }
 
-    private void action_add()
-    {
-        var dialog = new Gtk.FileChooserDialog(_("Add folder"), window, Gtk.FileChooserAction.SELECT_FOLDER,
+    private void action_add() {
+        var dialog = new Gtk.FileChooserDialog(_("Add folder"), window,
+                                               Gtk.FileChooserAction.SELECT_FOLDER,
                                                _("Cancel"), Gtk.ResponseType.CANCEL,
                                                _("Open"), Gtk.ResponseType.ACCEPT);
         dialog.set_transient_for(window);
-        if (dialog.run() == Gtk.ResponseType.ACCEPT)
-        {
+        if (dialog.run() == Gtk.ResponseType.ACCEPT) {
             string dirname = dialog.get_current_folder();
             add_images_from_selected(dirname);
         }
         dialog.destroy();
     }
 
-    private void action_reset()
-    {
+    private void action_reset() {
         liststore.clear();
         images_dir = {"/usr/share/backgrounds"};
         list_images(images_dir[0]);
@@ -214,13 +185,11 @@ private class Program : Gtk.Application
         GLib.Settings.sync();
     }
 
-    private void action_show_menu()
-    {
+    private void action_show_menu() {
         menubutton.set_active(true);
     }
 
-    private void action_about()
-    {
+    private void action_about() {
         var about = new Gtk.AboutDialog();
         about.set_program_name(NAME);
         about.set_version(VERSION);
@@ -237,13 +206,11 @@ private class Program : Gtk.Application
         about.hide();
     }
 
-    private void action_quit()
-    {
+    private void action_quit() {
         quit();
     }
 
-    private static int main (string[] args)
-    {
+    private static int main (string[] args) {
         Program app = new Program();
         return app.run(args);
     }

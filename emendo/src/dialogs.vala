@@ -1,15 +1,12 @@
-namespace Emendo
-{
-public class Dialogs: Gtk.Dialog
-{
-    public void show_open()
-    {
+namespace Emendo {
+public class Dialogs: Gtk.Dialog {
+    public void show_open() {
         string selected;
-        var dialog = new Gtk.FileChooserDialog(_("Open"), window, Gtk.FileChooserAction.OPEN,
+        var dialog = new Gtk.FileChooserDialog(_("Open"), window,
+                                               Gtk.FileChooserAction.OPEN,
                                                _("Cancel"), Gtk.ResponseType.CANCEL,
                                                _("Open"),   Gtk.ResponseType.ACCEPT);
-        if (notebook.get_n_pages() > 0)
-        {
+        if (notebook.get_n_pages() > 0) {
             var tabs = new Emendo.Tabs();
             string cf = tabs.get_current_path();
             dialog.set_current_folder(Path.get_dirname(cf));
@@ -17,10 +14,8 @@ public class Dialogs: Gtk.Dialog
         dialog.set_select_multiple(false);
         dialog.set_modal(true);
         dialog.show();
-        if (dialog.run() == Gtk.ResponseType.ACCEPT)
-        {
+        if (dialog.run() == Gtk.ResponseType.ACCEPT) {
             selected = dialog.get_filename();
-
             var nbook = new Emendo.NBook();
             var operations = new Emendo.Operations();
             nbook.create_tab(selected);
@@ -29,12 +24,13 @@ public class Dialogs: Gtk.Dialog
         dialog.destroy();
     }
 
-    public void show_save()
-    {
-        if (notebook.get_n_pages() == 0)
+    public void show_save() {
+        if (notebook.get_n_pages() == 0) {
             return;
+        }
         string newname;
-        var dialog = new Gtk.FileChooserDialog(_("Save As..."), window, Gtk.FileChooserAction.SAVE,
+        var dialog = new Gtk.FileChooserDialog(_("Save As..."), window,
+                                               Gtk.FileChooserAction.SAVE,
                                                _("Cancel"), Gtk.ResponseType.CANCEL,
                                                _("Save"),   Gtk.ResponseType.ACCEPT);
         var tabs = new Emendo.Tabs();
@@ -44,31 +40,25 @@ public class Dialogs: Gtk.Dialog
         dialog.set_do_overwrite_confirmation(true);
         dialog.set_modal(true);
         dialog.show();
-        if (dialog.run() == Gtk.ResponseType.ACCEPT)
-        {
+        if (dialog.run() == Gtk.ResponseType.ACCEPT) {
             newname = dialog.get_filename();
-
             var operations = new Emendo.Operations();
             operations.save_file_as(newname);
         }
         dialog.destroy();
     }
 
-    public void save_fallback(string path)
-    {
+    public void save_fallback(string path) {
         var dialog = new Gtk.MessageDialog( window,
                                             Gtk.DialogFlags.MODAL, Gtk.MessageType.ERROR, Gtk.ButtonsType.NONE,
                                             _("Error saving file %s.\nThe file on disk may now be truncated!"), path);
-
         dialog.add_button(_("Close Without Saving"), Gtk.ResponseType.NO);
         dialog.add_button(_("Select New Location"),  Gtk.ResponseType.YES);
         dialog.set_resizable(false);
         dialog.set_title(_("Error"));
         dialog.set_default_response(Gtk.ResponseType.YES);
-
         int response = dialog.run();
-        switch (response)
-        {
+        switch (response) {
         case Gtk.ResponseType.NO:
             break;
         case Gtk.ResponseType.YES:
@@ -78,8 +68,7 @@ public class Dialogs: Gtk.Dialog
         dialog.destroy();
     }
 
-    public void show_about()
-    {
+    public void show_about() {
         var about = new Gtk.AboutDialog();
         about.set_program_name(NAME);
         about.set_version(VERSION);
@@ -96,27 +85,24 @@ public class Dialogs: Gtk.Dialog
         about.hide();
     }
 
-    public void changes_one(int num, string path)
-    {
+    public void changes_one(int num, string path) {
         var dialog = new Gtk.MessageDialog( window,
                                             Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.NONE,
                                             _("The file '%s' is not saved.\nDo you want to save it before closing?"), path);
-
         dialog.add_button(_("Close Without Saving"), Gtk.ResponseType.NO);
         dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
         dialog.add_button(_("Save"),  Gtk.ResponseType.YES);
         dialog.set_resizable(false);
         dialog.set_title(_("Question"));
         dialog.set_default_response(Gtk.ResponseType.YES);
-
         int response = dialog.run();
-        switch (response)
-        {
+        switch (response) {
         case Gtk.ResponseType.NO:
             notebook.remove_page(num);
             files.remove(path);
-            if (notebook.get_n_pages() == 0)
+            if (notebook.get_n_pages() == 0) {
                 window.set_title("");
+            }
             break;
         case Gtk.ResponseType.CANCEL:
             break;
@@ -125,39 +111,31 @@ public class Dialogs: Gtk.Dialog
             operations.save_file_at_pos(num);
             notebook.remove_page(num);
             files.remove(path);
-            if (notebook.get_n_pages() == 0)
+            if (notebook.get_n_pages() == 0) {
                 window.set_title("");
+            }
             break;
         }
         dialog.destroy();
     }
 
-    public void changes_all()
-    {
+    public void changes_all() {
         var settings = new Emendo.Settings();
         settings.set_recent_files();
-
-        for (int i = files.size - 1; i >= 0; i--)
-        {
+        for (int i = files.size - 1; i >= 0; i--) {
             var tabs = new Emendo.Tabs();
             string path = tabs.get_path_at_tab(i);
             var view = tabs.get_sourceview_at_tab(i);
             var buffer = (Gtk.SourceBuffer) view.get_buffer();
-
-            if (buffer.get_modified() == false)
-            {
+            if (buffer.get_modified() == false) {
                 notebook.remove_page(i);
                 files.remove(path);
-            }
-            else
-            {
+            } else {
                 var dialogs = new Emendo.Dialogs();
                 dialogs.changes_one(i, path);
             }
         }
-
-        if (notebook.get_n_pages() == 0)
-        {
+        if (notebook.get_n_pages() == 0) {
             var mainwin = new Emendo.MainWin();
             mainwin.action_app_quit();
         }

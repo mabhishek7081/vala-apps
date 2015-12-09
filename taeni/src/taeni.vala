@@ -2,8 +2,7 @@
  *  License: GPL v3
  */
 
-private class Program : Gtk.Application
-{
+private class Program : Gtk.Application {
     const string NAME        = "Taeni";
     const string VERSION     = "2.2.0";
     const string DESCRIPTION = _("Multi-tabbed terminal emulator based on VTE");
@@ -32,8 +31,7 @@ private class Program : Gtk.Application
     GLib.Settings settings;
     GLib.Pid child_pid;
 
-    private const GLib.ActionEntry[] action_entries =
-    {
+    private const GLib.ActionEntry[] action_entries = {
         { "new-window",  action_new_window  },
         { "pref",        action_pref        },
         { "new-tab",     action_new_tab     },
@@ -49,16 +47,14 @@ private class Program : Gtk.Application
         { "quit",        action_quit        }
     };
 
-    private Program()
-    {
-        Object(application_id: APP_ID, flags: ApplicationFlags.HANDLES_COMMAND_LINE | ApplicationFlags.NON_UNIQUE);
+    private Program() {
+        Object(application_id: APP_ID,
+               flags: ApplicationFlags.HANDLES_COMMAND_LINE | ApplicationFlags.NON_UNIQUE);
         add_action_entries(action_entries, this);
     }
 
-    public override void startup()
-    {
+    public override void startup() {
         base.startup();
-
         set_accels_for_action("app.new-window",    {"<Primary><Shift>N"});
         set_accels_for_action("app.new-tab",       {"<Primary><Shift>T"});
         set_accels_for_action("app.close-tab",     {"<Primary><Shift>W"});
@@ -72,17 +68,17 @@ private class Program : Gtk.Application
         set_accels_for_action("app.show-menu",     {"<Primary>F10"});
     }
 
-    public override void activate()
-    {
+    public override void activate() {
         window.present();
     }
 
-    public override int command_line(ApplicationCommandLine command_line)
-    {
+    public override int command_line(ApplicationCommandLine command_line) {
         var args = command_line.get_arguments();
         if (args[1] == "-h" || args[1] == "--help") {
-            string USAGE = "%s\n  %s %s %s".printf("Usage:", NAME.down(), "[OPTION...] -", DESCRIPTION);
-            string OPTIONS = "Application Options:\n  -d Set working directory\n  -e Execute command\n  -v Print version number";
+            string USAGE = "%s\n  %s %s %s".printf("Usage:", NAME.down(), "[OPTION...] -",
+                                                   DESCRIPTION);
+            string OPTIONS =
+                "Application Options:\n  -d Set working directory\n  -e Execute command\n  -v Print version number";
             print("%s\n\n%s\n\n".printf(USAGE, OPTIONS));
             return 0;
         }
@@ -91,39 +87,40 @@ private class Program : Gtk.Application
             return 0;
         }
         string path;
-        if (args[1] == "-d")
+        if (args[1] == "-d") {
             path = args[2];
-        else
+        } else {
             path = "";
+        }
         window = add_new_window();
-        create_tab(path); 
-        if (args[1] == "-e")
+        create_tab(path);
+        if (args[1] == "-e") {
             execute_command(args[2]);
+        }
         return 0;
     }
 
-    private Gtk.ApplicationWindow add_new_window()
-    {
+    private Gtk.ApplicationWindow add_new_window() {
         settings = new GLib.Settings(APP_ID_PREF);
         width = settings.get_int("width");
         height = settings.get_int("height");
         terminal_bgcolor = settings.get_string("bgcolor");
         terminal_fgcolor = settings.get_string("fgcolor");
         terminal_font = settings.get_string("font");
-
-        if (width < 752 ){ width = 752; }
-        if (height < 464){ height = 464;}
-
+        if (width < 752 ) {
+            width = 752;
+        }
+        if (height < 464) {
+            height = 464;
+        }
         notebook = new Gtk.Notebook();
         notebook.expand = true;
         notebook.set_scrollable(true);
         notebook.set_show_tabs(false);
         notebook.set_can_focus(false);
-
         var geometry = Gdk.Geometry();
         geometry.height_inc = 20;
         geometry.width_inc = 20;
-
         window = new Gtk.ApplicationWindow(this);
         window.set_default_size(width, height);
         window.set_title(NAME);
@@ -131,24 +128,20 @@ private class Program : Gtk.Application
         window.set_icon_name(ICON);
         window.set_geometry_hints(window, geometry, Gdk.WindowHints.RESIZE_INC);
         window.show_all();
-        window.delete_event.connect(() =>
-        {
+        window.delete_event.connect(() => {
             action_quit();
             return true;
         });
-
         context_menu = new Gtk.Menu();
         add_popup_menu(context_menu);
         return window;
     }
 
-    private void execute_command(string command)
-    {
+    private void execute_command(string command) {
         term.feed_child(command + "\n", command.length + 1);
     }
 
-    private void create_tab(string path)
-    {
+    private void create_tab(string path) {
         term = new Vte.Terminal();
         term.set_scrollback_lines(4096);
         term.expand = true;
@@ -156,104 +149,94 @@ private class Program : Gtk.Application
         term.set_cursor_shape(Vte.CursorShape.UNDERLINE);
         term.child_exited.connect(action_close_tab);
         term.button_press_event.connect(terminal_button_press);
-        try
-        {   term.set_encoding("ISO-8859-1");
-        } catch (Error e)
-        {   stderr.printf("error: %s\n", e.message);
+        try {
+            term.set_encoding("ISO-8859-1");
+        } catch (Error e) {
+            stderr.printf("error: %s\n", e.message);
         }
-        try
-        {   term.spawn_sync(Vte.PtyFlags.DEFAULT, path, { Vte.get_user_shell() }, null, SpawnFlags.SEARCH_PATH, null, out child_pid);
+        try {
+            term.spawn_sync(Vte.PtyFlags.DEFAULT, path, { Vte.get_user_shell() }, null,
+                            SpawnFlags.SEARCH_PATH, null, out child_pid);
+        } catch(Error e) {
+            stderr.printf("error: %s\n", e.message);
         }
-        catch(Error e)
-        {   stderr.printf("error: %s\n", e.message);
-        }
-
         var scrollbar = new Gtk.Scrollbar(Gtk.Orientation.VERTICAL, term.vadjustment);
-
         var tab_label = new Gtk.Label("");
         tab_label.set_alignment(0, 0.5f);
         tab_label.set_hexpand(true);
         tab_label.set_size_request(100, -1);
         var eventbox = new Gtk.EventBox();
         eventbox.add(tab_label);
-
         var css_stuff = """ * { padding :0; } """;
         var provider = new Gtk.CssProvider();
-        try { 
-            provider.load_from_data(css_stuff, css_stuff.length); } 
-        catch (Error e) { 
-            stderr.printf ("Error: %s\n", e.message); 
+        try {
+            provider.load_from_data(css_stuff, css_stuff.length);
+        } catch (Error e) {
+            stderr.printf ("Error: %s\n", e.message);
         }
-        var tab_button_close = new Gtk.Button.from_icon_name("window-close-symbolic", Gtk.IconSize.MENU);
+        var tab_button_close = new Gtk.Button.from_icon_name("window-close-symbolic",
+                Gtk.IconSize.MENU);
         tab_button_close.set_relief(Gtk.ReliefStyle.NONE);
         tab_button_close.set_hexpand(false);
-        tab_button_close.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-
+        tab_button_close.get_style_context().add_provider(provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         var tab = new Gtk.Grid();
         tab.attach(eventbox,   0, 0, 1, 1);
         tab.attach(tab_button_close, 1, 0, 1, 1);
         tab.set_hexpand(false);
         tab.show_all();
-
         var page_grid = new Gtk.Grid();
         page_grid.attach(term, 0, 0, 1, 1);
         page_grid.attach(scrollbar, 1, 0, 1, 2);
         page_grid.show_all();
-
-        tab_button_close.clicked.connect(() =>
-        {
+        tab_button_close.clicked.connect(() => {
             term = get_current_terminal();
             int page_num = notebook.page_num(page_grid);
             notebook.remove_page(page_num);
-            if (notebook.get_n_pages() == 1)
+            if (notebook.get_n_pages() == 1) {
                 notebook.set_show_tabs(false);
+            }
         });
-
         // Close tab with middle click
-        eventbox.button_press_event.connect((event) =>
-        {
-            if (event.button == 2)
-            {
+        eventbox.button_press_event.connect((event) => {
+            if (event.button == 2) {
                 term = get_current_terminal();
                 int page_num = notebook.page_num(page_grid);
                 notebook.remove_page(page_num);
-                if (notebook.get_n_pages() == 1)
+                if (notebook.get_n_pages() == 1) {
                     notebook.set_show_tabs(false);
+                }
             }
             return false;
         });
-
-        term.window_title_changed.connect(() =>
-        {
+        term.window_title_changed.connect(() => {
             term = get_current_terminal();
             string dir = term.get_window_title();
             string dir_short = dir;
-            if (dir.length > 22)
+            if (dir.length > 22) {
                 dir_short = dir.substring(0, 19) + "...";
+            }
             tab_label.set_tooltip_text(dir);
             tab_label.set_text(dir_short);
         });
-
         notebook.append_page(page_grid, tab);
-        if (notebook.get_n_pages() > 1)
+        if (notebook.get_n_pages() > 1) {
             notebook.set_show_tabs(true);
+        }
         notebook.set_tab_reorderable(page_grid, true);
         notebook.set_current_page(notebook.get_n_pages() - 1);
-
         set_color_from_string(terminal_bgcolor, terminal_fgcolor);
         term.set_font(Pango.FontDescription.from_string(terminal_font));
         term.grab_focus();
     }
 
     // Context menu
-    private void add_popup_menu(Gtk.Menu menu)
-    {
+    private void add_popup_menu(Gtk.Menu menu) {
         var context_new_window = new Gtk.MenuItem.with_label(_("New window"));
         context_new_window.activate.connect(action_new_window);
         var context_new_tab = new Gtk.MenuItem.with_label(_("New tab"));
         context_new_tab.activate.connect(action_new_tab);
         var context_separator1 = new Gtk.SeparatorMenuItem();
-
         var context_copy = new Gtk.MenuItem.with_label(_("Copy"));
         context_copy.activate.connect(action_copy);
         var context_paste = new Gtk.MenuItem.with_label(_("Paste"));
@@ -261,22 +244,18 @@ private class Program : Gtk.Application
         var context_select_all = new Gtk.MenuItem.with_label(_("Select all"));
         context_select_all.activate.connect(action_select_all);
         var context_separator2 = new Gtk.SeparatorMenuItem();
-
         var context_full_screen = new Gtk.MenuItem.with_label(_("Full screen"));
         context_full_screen.activate.connect(action_full_screen);
         var context_separator3 = new Gtk.SeparatorMenuItem();
-        
         var context_pref = new Gtk.MenuItem.with_label(_("Preferences"));
         context_pref.activate.connect(action_pref);
         var context_about = new Gtk.MenuItem.with_label(_("About"));
-        context_about.activate.connect(action_about); 
+        context_about.activate.connect(action_about);
         var context_separator4 = new Gtk.SeparatorMenuItem();
-        
         var context_close = new Gtk.MenuItem.with_label(_("Close tab"));
         context_close.activate.connect(action_close_tab);
         var context_quit = new Gtk.MenuItem.with_label(_("Quit"));
-        context_quit.activate.connect(action_quit); 
-
+        context_quit.activate.connect(action_quit);
         menu.append(context_new_window);
         menu.append(context_new_tab);
         menu.append(context_separator1);
@@ -287,22 +266,21 @@ private class Program : Gtk.Application
         menu.append(context_full_screen);
         menu.append(context_separator3);
         menu.append(context_pref);
-        menu.append(context_about); 
+        menu.append(context_about);
         menu.append(context_separator4);
         menu.append(context_close);
         menu.append(context_quit);
         menu.show_all();
     }
 
-    private bool terminal_button_press(Gdk.EventButton event)
-    {
-        if (event.button == 3)
+    private bool terminal_button_press(Gdk.EventButton event) {
+        if (event.button == 3) {
             context_menu.popup (null, null, null, event.button, event.time);
+        }
         return false;
     }
 
-    private void set_color_from_string(string back, string text)
-    {
+    private void set_color_from_string(string back, string text) {
         var bgcolor = Gdk.RGBA();
         var fgcolor = Gdk.RGBA();
         bgcolor.parse(back);
@@ -311,29 +289,24 @@ private class Program : Gtk.Application
         term.set_color_foreground(fgcolor);
     }
 
-    private Gtk.Notebook get_current_notebook()
-    {
+    private Gtk.Notebook get_current_notebook() {
         var window = this.get_active_window();
         notebook = (Gtk.Notebook) window.get_child();
         return notebook;
     }
 
-    private Vte.Terminal get_current_terminal()
-    {
+    private Vte.Terminal get_current_terminal() {
         notebook = get_current_notebook();
-        
         var grid = (Gtk.Grid) notebook.get_nth_page(notebook.get_current_page());
         term = (Vte.Terminal) grid.get_child_at(0, 0);
         return term;
     }
 
     // Preferences dialog - on font change (1)
-    private void font_changed()
-    {
+    private void font_changed() {
         notebook = get_current_notebook();
         terminal_font = preferences_font_button.get_font().to_string();
-        for (int i = 0; i < notebook.get_n_pages(); i++)
-        {
+        for (int i = 0; i < notebook.get_n_pages(); i++) {
             var grid = (Gtk.Grid) notebook.get_nth_page(i);
             term = (Vte.Terminal) grid.get_child_at(0, 0);
             term.set_font(Pango.FontDescription.from_string(terminal_font));
@@ -342,16 +315,14 @@ private class Program : Gtk.Application
     }
 
     // Preferences dialog - on background change (2)
-    private void bg_color_changed()
-    {
+    private void bg_color_changed() {
         notebook = get_current_notebook();
         var color = preferences_bg_button.get_rgba();;
         int r = (int)Math.round(color.red * 255);
         int g = (int)Math.round(color.green * 255);
         int b = (int)Math.round(color.blue * 255);
         terminal_bgcolor = "#%02x%02x%02x".printf(r, g, b).up();
-        for (int i = 0; i < notebook.get_n_pages(); i++)
-        {
+        for (int i = 0; i < notebook.get_n_pages(); i++) {
             var grid = (Gtk.Grid) notebook.get_nth_page(i);
             term = (Vte.Terminal) grid.get_child_at(0, 0);
             set_color_from_string(terminal_bgcolor, terminal_fgcolor);
@@ -360,16 +331,14 @@ private class Program : Gtk.Application
     }
 
     // Preferences dialog - on foreground change (3)
-    private void fg_color_changed()
-    {
+    private void fg_color_changed() {
         notebook = get_current_notebook();
         var color = preferences_fg_button.get_rgba();;
         int r = (int)Math.round(color.red * 255);
         int g = (int)Math.round(color.green * 255);
         int b = (int)Math.round(color.blue * 255);
         terminal_fgcolor = "#%02x%02x%02x".printf(r, g, b).up();
-        for (int i = 0; i < notebook.get_n_pages(); i++)
-        {
+        for (int i = 0; i < notebook.get_n_pages(); i++) {
             var grid = (Gtk.Grid) notebook.get_nth_page(i);
             term = (Vte.Terminal) grid.get_child_at(0, 0);
             set_color_from_string(terminal_bgcolor, terminal_fgcolor);
@@ -377,162 +346,128 @@ private class Program : Gtk.Application
         settings.set_string("fgcolor", terminal_fgcolor);
     }
 
-    private void save_settings()
-    {
+    private void save_settings() {
         window.get_size(out width, out height);
         settings.set_int("width", width);
         settings.set_int("height", height);
         GLib.Settings.sync();
     }
 
-    private void action_new_window()
-    {
+    private void action_new_window() {
         window = add_new_window();
         create_tab("");
-    }    
+    }
 
     // Preferences dialog
-    private void action_pref()
-    {
+    private void action_pref() {
         var preferences_font_label = new Gtk.Label(_("Font"));
         preferences_font_button = new Gtk.FontButton();
         preferences_font_button.font_name = term.get_font().to_string();
         preferences_font_button.font_set.connect(font_changed);
-
         var rgba_bgcolor = Gdk.RGBA();
         var rgba_fgcolor = Gdk.RGBA();
         rgba_bgcolor.parse(terminal_bgcolor);
         rgba_fgcolor.parse(terminal_fgcolor);
-
         var preferences_bg_label = new Gtk.Label(_("Background"));
         preferences_bg_button = new Gtk.ColorButton.with_rgba(rgba_bgcolor);
         preferences_bg_button.color_set.connect(bg_color_changed);
-
         var preferences_fg_label = new Gtk.Label(_("Foreground"));
         preferences_fg_button = new Gtk.ColorButton.with_rgba(rgba_fgcolor);
         preferences_fg_button.color_set.connect(fg_color_changed);
-
         var preferences_grid = new Gtk.Grid();
         preferences_grid.set_column_spacing(20);
         preferences_grid.set_row_spacing(10);
         preferences_grid.set_border_width(10);
         preferences_grid.set_row_homogeneous(true);
         preferences_grid.set_column_homogeneous(true);
-
         preferences_grid.attach(preferences_font_label, 0, 0, 1, 1);
         preferences_grid.attach(preferences_font_button, 1, 0, 1, 1);
-
         preferences_grid.attach(preferences_bg_label, 0, 1, 1, 1);
         preferences_grid.attach(preferences_bg_button, 1, 1, 1, 1);
-
         preferences_grid.attach(preferences_fg_label, 0, 2, 1, 1);
         preferences_grid.attach(preferences_fg_button, 1, 2, 1, 1);
-
         var window = this.get_active_window();
         preferences = new Gtk.Dialog();
         preferences.set_property("skip-taskbar-hint", true);
         preferences.set_transient_for(window);
         preferences.set_resizable(false);
         preferences.set_title(_("Preferences"));
-
         var content = preferences.get_content_area() as Gtk.Container;
         content.add(preferences_grid);
-
         preferences.show_all();
     }
 
-    private void action_new_tab()
-    {
+    private void action_new_tab() {
         notebook = get_current_notebook();
         create_tab("");
     }
 
-    private void action_close_tab()
-    {
+    private void action_close_tab() {
         notebook = get_current_notebook();
         notebook.remove_page(notebook.get_current_page());
-        if (notebook.get_n_pages() == 0)
-        {
+        if (notebook.get_n_pages() == 0) {
             action_quit();
         }
-        if (notebook.get_n_pages() == 1)
-        {
+        if (notebook.get_n_pages() == 1) {
             notebook.set_show_tabs(false);
         }
     }
 
-    private void action_prev_tab()
-    {
+    private void action_prev_tab() {
         notebook = get_current_notebook();
-        if (notebook.get_n_pages()> 1)
-        {
+        if (notebook.get_n_pages()> 1) {
             get_current_terminal();
             notebook.set_current_page(notebook.get_current_page() - 1);
         }
     }
 
-    private void action_next_tab()
-    {
+    private void action_next_tab() {
         notebook = get_current_notebook();
-        if (notebook.get_n_pages()> 1)
-        {
+        if (notebook.get_n_pages()> 1) {
             get_current_terminal();
-            if ((notebook.get_current_page() + 1)  == notebook.get_n_pages())
-            {
+            if ((notebook.get_current_page() + 1)  == notebook.get_n_pages()) {
                 notebook.set_current_page(0);
-            }
-            else
-            {
+            } else {
                 notebook.set_current_page(notebook.get_current_page() + 1);
             }
         }
     }
 
-    private void action_copy()
-    {
+    private void action_copy() {
         get_current_terminal();
         term.copy_clipboard();
         term.grab_focus();
     }
 
-    private void action_paste()
-    {
+    private void action_paste() {
         get_current_terminal();
         term.paste_clipboard();
         term.grab_focus();
     }
 
-    private void action_select_all()
-    {
+    private void action_select_all() {
         get_current_terminal();
         term.select_all();
         term.grab_focus();
     }
 
-    private void action_full_screen()
-    {
+    private void action_full_screen() {
         var window = this.get_active_window();
-        if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) != 0)
-        {
+        if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) != 0) {
             window.unfullscreen();
-        }
-        else
-        {
+        } else {
             window.fullscreen();
         }
     }
 
-    private void action_show_menu()
-    {
+    private void action_show_menu() {
         var window = this.get_active_window();
-        if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) == 0)
-        {
+        if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) == 0) {
             menubutton.set_active(true);
         }
     }
 
-    private void action_about()
-    {
+    private void action_about() {
         var window = this.get_active_window();
         var about = new Gtk.AboutDialog();
         about.set_program_name(NAME);
@@ -550,16 +485,14 @@ private class Program : Gtk.Application
         about.hide();
     }
 
-    private void action_quit()
-    {
+    private void action_quit() {
         save_settings();
         var window = this.get_active_window();
         remove_window(window);
         window.destroy();
     }
 
-    private static int main (string[] args)
-    {
+    private static int main (string[] args) {
         Program app = new Program();
         return app.run(args);
     }
