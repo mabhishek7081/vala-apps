@@ -36,4 +36,3 @@ set(CMAKE_INSTALL_PREFIX /usr)
 
 install(TARGETS dlauncher DESTINATION bin)
 install(FILES data/dlauncher.desktop DESTINATION share/applications)
-install(FILES data/dlauncher.png DESTINATION share/icons/hicolor/64x64/apps)
