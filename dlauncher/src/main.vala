@@ -58,14 +58,16 @@ public class Application: Gtk.Application {
         view.set_selection_mode(Gtk.SelectionMode.BROWSE);
         view.set_activate_on_single_click(true);
         view.item_activated.connect(icon_clicked);
-        var css_stuff = """ iconview:hover { color: black; background-color: #D3D7CF; } """;
+        var css_stuff =
+            """ iconview:hover { color: black; background-color: #D3D7CF; } """;
         var provider = new Gtk.CssProvider();
         try {
             provider.load_from_data(css_stuff, css_stuff.length);
         } catch (Error e) {
             stderr.printf ("Error: %s\n", e.message);
         }
-        view.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        view.get_style_context().add_provider(provider,
+                                              Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         var cache = new Dlauncher.Cache();
         cache.list_applications();
         var scrolled = new Gtk.ScrolledWindow(null, null);

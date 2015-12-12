@@ -5,10 +5,12 @@ public class Model: GLib.Object {
         Gdk.Pixbuf pix = null;
         var icon_theme = Gtk.IconTheme.get_default();
         try {
-            pix = icon_theme.load_icon(icon, 64, 0); // from icon theme
+            pix = icon_theme.load_icon(icon, 64,
+                                       Gtk.IconLookupFlags.FORCE_SIZE); // from icon theme
         } catch (GLib.Error e) {
             try {
-                pix = icon_theme.load_icon("application-x-executable", 64, 0); // fallback
+                pix = icon_theme.load_icon("application-x-executable", 64,
+                                           Gtk.IconLookupFlags.FORCE_SIZE); // fallback
             } catch (GLib.Error e) {
                 stderr.printf ("%s\n", e.message);
             }
