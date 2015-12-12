@@ -20,6 +20,9 @@ public class Application: Gtk.Application {
         { "quit", action_quit }
     };
 
+    int width = 490;
+    int height = 420;
+
     public Application() {
         Object(application_id: "org.dlauncher.window");
         add_action_entries(action_entries, this);
@@ -30,9 +33,16 @@ public class Application: Gtk.Application {
         set_accels_for_action("app.quit", {"Escape"});
         entry = new Gtk.Entry();
         entry.hexpand = true;
+        entry.height_request = 36;
         entry.set_placeholder_text("Search");
         entry.primary_icon_name = "system-search-symbolic";
-        entry.height_request = 36;
+        entry.secondary_icon_name = "edit-clear-symbolic";
+        entry.secondary_icon_activatable = true;
+        entry.icon_press.connect((position, event) => {
+            if (position == Gtk.EntryIconPosition.SECONDARY) {
+                entry.text = "";
+            }
+        });
         entry.changed.connect(on_entry_changed);
         entry.activate.connect(on_entry_activated);
         liststore = new Gtk.ListStore(4, typeof (Gdk.Pixbuf), typeof (string),
@@ -48,6 +58,14 @@ public class Application: Gtk.Application {
         view.set_selection_mode(Gtk.SelectionMode.BROWSE);
         view.set_activate_on_single_click(true);
         view.item_activated.connect(icon_clicked);
+        var css_stuff = """ iconview:hover { color: black; background-color: #D3D7CF; } """;
+        var provider = new Gtk.CssProvider();
+        try {
+            provider.load_from_data(css_stuff, css_stuff.length);
+        } catch (Error e) {
+            stderr.printf ("Error: %s\n", e.message);
+        }
+        view.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         var cache = new Dlauncher.Cache();
         cache.list_applications();
         var scrolled = new Gtk.ScrolledWindow(null, null);
@@ -56,14 +74,13 @@ public class Application: Gtk.Application {
         var grid = new Gtk.Grid();
         grid.attach(entry,  0, 0,  1, 1);
         grid.attach(scrolled,  0, 1, 1, 1);
-        int height = Gdk.Screen.height();
         window = new Gtk.ApplicationWindow(this);
         window.add(grid);
         window.set_decorated(false);
-        window.set_has_resize_grip(false);
+        window.set_resizable(false);
+        window.set_keep_above(true);
         window.set_property("skip-taskbar-hint", true);
-        window.set_default_size(490, 410);
-        window.move(2, height - 390 - 62);
+        window.set_size_request(width, height);
         window.stick();
         window.focus_out_event.connect(() => {
             action_quit();
@@ -108,6 +125,8 @@ public class Application: Gtk.Application {
         if (window.get_visible() == true) {
             action_quit();
         } else {
+            window.realize();
+            window.move(2, Gdk.Screen.height() - height - 61);
             window.show_all();
             window.present();
         }
