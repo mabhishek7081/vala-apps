@@ -4,7 +4,7 @@
 
 namespace Emendo {
 const string NAME        = "Emendo";
-const string VERSION     = "3.1.0";
+const string VERSION     = "3.2.0";
 const string DESCRIPTION = _("Text editor with syntax highlighting");
 const string ICON        = "accessories-text-editor";
 const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", "Yosef Or Boczko <yoseforb-at-gmail-dot-com>", null };
@@ -24,7 +24,7 @@ private class Application: Gtk.Application {
     }
 
     public override void activate() {
-        if (files.size == 0) {
+        if (files.length() == 0) {
             string fileopen = GLib.Path.build_filename(GLib.Environment.get_tmp_dir(),
                               "untitled");
             var nbook = new Emendo.NBook();

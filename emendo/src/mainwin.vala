@@ -1,5 +1,5 @@
 namespace Emendo {
-private Gee.ArrayList<string> files;
+private GLib.List<string> files;
 private Gtk.ApplicationWindow window;
 private Gtk.Notebook notebook;
 
@@ -24,7 +24,7 @@ public class MainWin: Gtk.ApplicationWindow {
     };
 
     public void add_main_window(Gtk.Application app) {
-        files = new Gee.ArrayList<string>();
+        files = new GLib.List<string>();
         var settings = new Emendo.Settings();
         settings.get_all();
         // accelerators
@@ -77,6 +77,7 @@ public class MainWin: Gtk.ApplicationWindow {
         notebook.popup_enable();
         notebook.set_scrollable(true);
         notebook.switch_page.connect(on_notebook_page_switched);
+        notebook.page_reordered.connect(on_page_reordered);
         window = new Gtk.ApplicationWindow(app);
         window.window_position = Gtk.WindowPosition.CENTER;
         window.set_default_size(width, height);
@@ -97,6 +98,26 @@ public class MainWin: Gtk.ApplicationWindow {
         var tabs = new Emendo.Tabs();
         string path = tabs.get_path_at_tab((int)page_num);
         window.set_title(path);
+    }
+
+    void on_page_reordered (Gtk.Widget page, uint pagenum) {
+        // full path is in the tooltip text of Tab Label
+        var tabs = new Emendo.Tabs();
+        Gtk.Label l = tabs.get_label_at_tab((int)pagenum);
+        string path = l.get_tooltip_text();
+        // find and update file's position in GLib.List
+        for (int i = 0; i < files.length(); i++) {
+            if (files.nth_data(i) == path) {
+                // remove from files list
+                unowned List<string> del_item = files.find_custom (path, strcmp);
+                files.remove_link(del_item);
+                // insert in new position
+                files.insert(path, (int)pagenum);
+            }
+        }
+        for (int i = 0; i < files.length(); i++) {
+            print("NEW LIST %s\n", files.nth_data(i));
+        }
     }
 
     public void action_app_quit() {

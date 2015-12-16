@@ -107,14 +107,14 @@ public class Operations: GLib.Object {
     // save all files
     public void save_all() {
         int i;
-        for (i = 0; i < files.size; i++) {
+        for (i = 0; i < files.length(); i++) {
             save_file_at_pos(i);
         }
     }
 
     // wrap text toggle
     public void wrap_text() {
-        for (int i = 0; i < files.size; i++) {
+        for (int i = 0; i < files.length(); i++) {
             var tabs = new Emendo.Tabs();
             var view = tabs.get_sourceview_at_tab(i);
             if (view.get_wrap_mode() == Gtk.WrapMode.WORD) {
@@ -140,7 +140,7 @@ public class Operations: GLib.Object {
 
     // close all tab
     public void close_all_tabs() {
-        for (int i = files.size - 1; i >= 0; i--) {
+        for (uint i = files.length(); i > 0; i--) {
             var tabs = new Emendo.Tabs();
             var scrolled = (Gtk.ScrolledWindow) notebook.get_nth_page(
                                notebook.get_current_page());

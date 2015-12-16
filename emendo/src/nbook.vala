@@ -3,15 +3,12 @@ public class NBook: Gtk.Notebook {
     private const Gtk.TargetEntry[] targets = { {"text/uri-list", 0, 0} };
 
     public void create_tab(string path) {
-        if (files.contains(path) == true) {
-            int i;
-            for (i = 0; i < files.size; i++) {
-                if (files[i] == path) {
-                    notebook.set_current_page(i);
-                }
+        for (int i = 0; i < files.length(); i++) {
+            if (files.nth_data(i) == path) {
+                notebook.set_current_page(i);
+                //print("debug: refusing to add %s again\n", path);
+                return;
             }
-            print("debug: refusing to add %s again\n", path);
-            return;
         }
         // Page
         var tab_view = new Gtk.SourceView();
@@ -80,12 +77,13 @@ public class NBook: Gtk.Notebook {
         tab.attach(tab_button, 1, 0, 1, 1);
         tab.set_hexpand(false);
         tab.show_all();
-        files.add(path);
+        files.append(path);
         print("debug: added %s\n", path);
         var menu_label = new Gtk.Label(GLib.Path.get_basename(path));
         menu_label.set_alignment(0.0f, 0.5f);
         // Add tab and page to notebook
         notebook.append_page_menu(tab_page, tab, menu_label);
+        notebook.set_tab_reorderable(tab_page, true);
         notebook.set_current_page(notebook.get_n_pages() - 1);
         notebook.show_all();
         tab_view.grab_focus();
@@ -120,7 +118,8 @@ public class NBook: Gtk.Notebook {
             dialogs.changes_one(page_num, path);
         } else {
             notebook.remove_page(page_num);
-            files.remove(path);
+            unowned List<string> del_item = files.find_custom (path, strcmp);
+            files.remove_link(del_item);
             print("debug: removed %s\n", path);
             if (notebook.get_n_pages() == 0) {
                 window.set_title(NAME);

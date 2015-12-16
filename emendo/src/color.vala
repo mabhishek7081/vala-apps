@@ -55,6 +55,5 @@ public class Color: Gtk.Dialog {
         buffer.insert_at_cursor(selected, selected.length);
     }
 
-
 }
 }

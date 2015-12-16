@@ -99,7 +99,8 @@ public class Dialogs: Gtk.Dialog {
         switch (response) {
         case Gtk.ResponseType.NO:
             notebook.remove_page(num);
-            files.remove(path);
+            unowned List<string> del_item = files.find_custom (path, strcmp);
+            files.remove_link(del_item);
             if (notebook.get_n_pages() == 0) {
                 window.set_title("");
             }
@@ -110,7 +111,8 @@ public class Dialogs: Gtk.Dialog {
             var operations = new Emendo.Operations();
             operations.save_file_at_pos(num);
             notebook.remove_page(num);
-            files.remove(path);
+            unowned List<string> del_item = files.find_custom (path, strcmp);
+            files.remove_link(del_item);
             if (notebook.get_n_pages() == 0) {
                 window.set_title("");
             }
@@ -122,14 +124,15 @@ public class Dialogs: Gtk.Dialog {
     public void changes_all() {
         var settings = new Emendo.Settings();
         settings.set_recent_files();
-        for (int i = files.size - 1; i >= 0; i--) {
+        for (int i = (int)files.length() - 1; i >= 0; i--) {
             var tabs = new Emendo.Tabs();
             string path = tabs.get_path_at_tab(i);
             var view = tabs.get_sourceview_at_tab(i);
             var buffer = (Gtk.SourceBuffer) view.get_buffer();
             if (buffer.get_modified() == false) {
                 notebook.remove_page(i);
-                files.remove(path);
+                unowned List<string> del_item = files.find_custom (path, strcmp);
+                files.remove_link(del_item);
             } else {
                 var dialogs = new Emendo.Dialogs();
                 dialogs.changes_one(i, path);

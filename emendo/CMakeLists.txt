@@ -7,13 +7,9 @@ include(ValaPrecompile)
 find_package(PkgConfig)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 pkg_check_modules(GTKSOURCEVIEW3 REQUIRED gtksourceview-3.0)
-pkg_check_modules(GEE-0.8 REQUIRED gee-0.8)
 
 include_directories(${GTKSOURCEVIEW3_INCLUDE_DIRS})
 link_directories(${GTKSOURCEVIEW3_LIBRARY_DIRS})
-
-include_directories(${GEE-0.8_INCLUDE_DIRS})
-link_directories(${GEE-0.8_LIBRARY_DIRS})
 
 set(GETTEXT_PACKAGE emendo)
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
@@ -36,10 +32,9 @@ vala_precompile(VALA_C
 PACKAGES
     gtk+-3.0
     gtksourceview-3.0
-    gee-0.8
 OPTIONS)
 add_executable(emendo ${VALA_C})
-target_link_libraries(emendo ${GTKSOURCEVIEW3_LIBRARIES} ${GEE-0.8_LIBRARIES} -lm)
+target_link_libraries(emendo ${GTKSOURCEVIEW3_LIBRARIES} -lm)
 
 set(CMAKE_INSTALL_PREFIX /usr)
 

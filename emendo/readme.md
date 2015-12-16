@@ -16,5 +16,4 @@ Dependencies:
 ````
 gtk+-3.0 >= 3.10
 gtksourceview-3.0
-gee-0.8
 ````

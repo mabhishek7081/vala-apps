@@ -1,7 +1,7 @@
 namespace Emendo {
 public class Tabs: GLib.Object {
     public string get_path_at_tab(int pos) {
-        string path = files[pos];
+        string path = files.nth_data(pos);
         return path;
     }
 
@@ -14,12 +14,13 @@ public class Tabs: GLib.Object {
     public Gtk.Label get_label_at_tab(int pos) {
         var scrolled = (Gtk.ScrolledWindow) notebook.get_nth_page(pos);
         var grid = (Gtk.Grid) notebook.get_tab_label(scrolled);
-        var label = (Gtk.Label) grid.get_child_at(0, 0);
+        var eventbox = (Gtk.EventBox) grid.get_child_at(0, 0);
+        var label = (Gtk.Label) eventbox.get_child();
         return label;
     }
 
     public string get_current_path() {
-        string path = files[notebook.get_current_page()];
+        string path = files.nth_data(notebook.get_current_page());
         return path;
     }
 
@@ -34,20 +35,19 @@ public class Tabs: GLib.Object {
         var scrolled = (Gtk.ScrolledWindow) notebook.get_nth_page(
                            notebook.get_current_page());
         var grid = (Gtk.Grid) notebook.get_tab_label(scrolled);
-        var label = (Gtk.Label) grid.get_child_at(0, 0);
+        var eventbox = (Gtk.EventBox) grid.get_child_at(0, 0);
+        var label = (Gtk.Label) eventbox.get_child();
         return label;
     }
 
     public void check_notebook_for_file_name(string path) {
-        if (files.contains(path) == true) {
-            int i;
-            for (i = 0; i < files.size; i++) {
-                if (files[i] == path) {
-                    var scrolled = (Gtk.ScrolledWindow) notebook.get_nth_page(i);
-                    var nbook = new Emendo.NBook();
-                    nbook.destroy_tab(scrolled, path);
-                    print("debug: removed tab number %d with: %s\n", i, path);
-                }
+        notebook.get_current_page();
+        for (int i = 0; i < files.length(); i++) {
+            if (files.nth_data(i) == path) {
+                var scrolled = (Gtk.ScrolledWindow) notebook.get_nth_page(i);
+                var nbook = new Emendo.NBook();
+                nbook.destroy_tab(scrolled, path);
+                print("debug: removed tab number %d with: %s\n", i, path);
             }
         }
     }

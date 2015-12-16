@@ -3,12 +3,10 @@
  */
 
 namespace Dlauncher {
-Gtk.ApplicationWindow window;
-Gtk.Entry entry;
+
 Gtk.IconView view;
-Gtk.TreeIter iter;
 Gtk.ListStore liststore;
-Gtk.TreeModelFilter filter;
+Gtk.TreeIter iter;
 
 public class Application: Gtk.Application {
     const string NAME        = "Dlauncher";
@@ -16,12 +14,15 @@ public class Application: Gtk.Application {
     const string DESCRIPTION = _("Desktop file launcher");
     const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };
 
+    Gtk.ApplicationWindow window;
+    Gtk.Entry entry;
+    Gtk.TreeModelFilter filter;
+    private int width = 490;
+    private int height = 430;
+
     private const GLib.ActionEntry[] action_entries = {
         { "quit", action_quit }
     };
-
-    int width = 490;
-    int height = 420;
 
     public Application() {
         Object(application_id: "org.dlauncher.window");
@@ -59,7 +60,7 @@ public class Application: Gtk.Application {
         view.set_activate_on_single_click(true);
         view.item_activated.connect(icon_clicked);
         var css_stuff =
-            """ iconview:hover { color: black; background-color: #D3D7CF; } """;
+            """ iconview:hover { color: black; background-color: #D3D7CF; border-radius: 3%; } """;
         var provider = new Gtk.CssProvider();
         try {
             provider.load_from_data(css_stuff, css_stuff.length);
@@ -91,6 +92,17 @@ public class Application: Gtk.Application {
         entry.grab_focus();
     }
 
+    public override void activate() {
+        if (window.get_visible() == true) {
+            action_quit();
+        } else {
+            window.realize();
+            window.move(2, Gdk.Screen.height() - height - 60);
+            window.show_all();
+            window.present();
+        }
+    }
+
     // refilter on entry change
     void on_entry_changed() {
         filter.refilter();
@@ -120,17 +132,6 @@ public class Application: Gtk.Application {
             return strval.contains(search);
         } else {
             return true;
-        }
-    }
-
-    public override void activate() {
-        if (window.get_visible() == true) {
-            action_quit();
-        } else {
-            window.realize();
-            window.move(2, Gdk.Screen.height() - height - 61);
-            window.show_all();
-            window.present();
         }
     }
 

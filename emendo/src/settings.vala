@@ -157,8 +157,8 @@ public class Settings: GLib.Object {
 
     public void set_recent_files() {
         recent_files = {};
-        for (int i = 0; i < files.size; i++) {
-            recent_files += files[i];
+        for (int i = 0; i < files.length(); i++) {
+            recent_files += files.nth_data(i);
         }
         settings.set_strv("recent-files", recent_files);
     }
