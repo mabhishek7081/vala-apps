@@ -134,7 +134,7 @@ private class Program : Gtk.Application {
         treeview.set_activate_on_single_click(true);
         treeview.row_activated.connect(show_selected_image);
         treeview.insert_column_with_attributes (-1, _("Preview"),
-                                                new Gtk.CellRendererPixbuf(), "pixbuf");
+                                                new Gtk.CellRendererPixbuf(), "pixbuf", 0);
         // ScrolledWindow
         scrolled_window_image = new Gtk.ScrolledWindow(null, null);
         scrolled_window_image.set_policy(Gtk.PolicyType.AUTOMATIC,

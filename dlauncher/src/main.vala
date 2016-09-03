@@ -80,10 +80,10 @@ public class Application: Gtk.Application {
         window = new Gtk.ApplicationWindow(this);
         window.add(grid);
         window.set_decorated(false);
-        window.set_resizable(false);
+        //window.set_resizable(false);
         window.set_keep_above(true);
         window.set_property("skip-taskbar-hint", true);
-        window.set_size_request(width, height);
+        window.set_default_size(width, height);
         window.stick();
         window.focus_out_event.connect(() => {
             action_quit();
@@ -97,9 +97,9 @@ public class Application: Gtk.Application {
             action_quit();
         } else {
             window.realize();
-            window.move(2, Gdk.Screen.height() - height - 60);
             window.show_all();
             window.present();
+            window.move(2, Gdk.Screen.height() - height - 60);
         }
     }
 

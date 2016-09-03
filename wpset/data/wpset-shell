@@ -3,8 +3,7 @@
 # Author: simargl <https://github.com/simargl>
 # License: GPL v3
 
-WALLPAPER=$(gsettings get org.gnome.desktop.background picture-uri | sed 's|file://||g' | cut -c 2-)
-WALLPAPER=${WALLPAPER%?}
+WALLPAPER=$(gsettings get org.gnome.desktop.background picture-uri | sed 's|file://||g' | cut -d "'" -f 2)
 
 wallpaper_set()
 {
