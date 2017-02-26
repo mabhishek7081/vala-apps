@@ -25,8 +25,8 @@ private class Program : Gtk.Application {
     string terminal_bgcolor;
     string terminal_fgcolor;
     string terminal_font;
-    int width;
-    int height;
+    const int width = 752;
+    const int height = 464;
 
     GLib.Settings settings;
     GLib.Pid child_pid;
@@ -102,31 +102,23 @@ private class Program : Gtk.Application {
 
     private Gtk.ApplicationWindow add_new_window() {
         settings = new GLib.Settings(APP_ID_PREF);
-        width = settings.get_int("width");
-        height = settings.get_int("height");
         terminal_bgcolor = settings.get_string("bgcolor");
         terminal_fgcolor = settings.get_string("fgcolor");
         terminal_font = settings.get_string("font");
-        if (width < 752 ) {
-            width = 752;
-        }
-        if (height < 464) {
-            height = 464;
-        }
         notebook = new Gtk.Notebook();
         notebook.expand = true;
         notebook.set_scrollable(true);
         notebook.set_show_tabs(false);
         notebook.set_can_focus(false);
-        var geometry = Gdk.Geometry();
-        geometry.height_inc = 20;
-        geometry.width_inc = 20;
         window = new Gtk.ApplicationWindow(this);
+        Gdk.Geometry hints = Gdk.Geometry();
+        hints.height_inc = 19;
+        hints.width_inc = 10;
+        window.set_geometry_hints(null, hints, Gdk.WindowHints.RESIZE_INC);
         window.set_default_size(width, height);
         window.set_title(NAME);
         window.add(notebook);
         window.set_icon_name(ICON);
-        window.set_geometry_hints(window, geometry, Gdk.WindowHints.RESIZE_INC);
         window.show_all();
         window.delete_event.connect(() => {
             action_quit();
@@ -346,13 +338,6 @@ private class Program : Gtk.Application {
         settings.set_string("fgcolor", terminal_fgcolor);
     }
 
-    private void save_settings() {
-        window.get_size(out width, out height);
-        settings.set_int("width", width);
-        settings.set_int("height", height);
-        GLib.Settings.sync();
-    }
-
     private void action_new_window() {
         window = add_new_window();
         create_tab("");
@@ -486,7 +471,6 @@ private class Program : Gtk.Application {
     }
 
     private void action_quit() {
-        save_settings();
         var window = this.get_active_window();
         remove_window(window);
         window.destroy();

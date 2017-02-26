@@ -85,7 +85,8 @@ public class Settings: GLib.Object {
                 "gtk-icon-theme-name=%s\n".printf(button_icon.get_active_text()) +
                 "gtk-font-name=%s\n".printf(button_font.get_font().to_string()) +
                 "gtk-cursor-theme-name=%s\n".printf(button_cursor.get_active_text()) +
-                "gtk-decoration-layout=%s\n".printf(button_decoration.get_active_id());
+                "gtk-decoration-layout=%s\n".printf(button_decoration.get_active_id()) +
+                "gtk-menu-images=true\n";
             FileUtils.set_contents(gtk3file, gtk3content);
         } catch (FileError e) {
             stderr.printf ("%s\n", e.message);

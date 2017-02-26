@@ -1,15 +1,5 @@
 <schemalist>
   <schema id="org.vala-apps.taeni.preferences" path="/org/vala-apps/taeni/preferences/">
-    <key name="width" type="i">
-      <default>752</default>
-      <summary>Width</summary>
-      <description>Main window width</description>
-    </key>
-    <key name="height" type="i">
-      <default>464</default>
-      <summary>Heigth</summary>
-      <description>Main window heigth</description>
-    </key>
     <key name="bgcolor" type="s">
       <default>'#252E32'</default>
       <summary>Background</summary>

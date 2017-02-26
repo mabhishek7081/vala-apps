@@ -18,7 +18,7 @@ public class Application: Gtk.Application {
     Gtk.Entry entry;
     Gtk.TreeModelFilter filter;
     private int width = 490;
-    private int height = 430;
+    private int height = 440;
 
     private const GLib.ActionEntry[] action_entries = {
         { "quit", action_quit }
