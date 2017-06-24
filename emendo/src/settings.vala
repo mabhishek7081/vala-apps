@@ -14,6 +14,7 @@ private bool     highlight;
 private bool     margin_show;
 private bool     spaces;
 private bool     auto_indent;
+private bool     pattern_show;
 
 private string[] recent_files;
 
@@ -37,6 +38,7 @@ public class Settings: GLib.Object {
         get_margin_show();
         get_spaces();
         get_auto_indent();
+        get_pattern_show();
         get_recent_files();
         get_active_tab();
     }
@@ -92,6 +94,10 @@ public class Settings: GLib.Object {
 
     public bool get_auto_indent() {
         return auto_indent = settings.get_boolean("auto-indent");
+    }
+
+    public bool get_pattern_show() {
+        return pattern_show = settings.get_boolean("pattern-show");
     }
 
     public string[] get_recent_files() {
@@ -153,6 +159,10 @@ public class Settings: GLib.Object {
 
     public void set_auto_indent() {
         settings.set_boolean("auto-indent", auto_indent);
+    }
+
+    public void set_pattern_show() {
+        settings.set_boolean("pattern-show", pattern_show);
     }
 
     public void set_recent_files() {

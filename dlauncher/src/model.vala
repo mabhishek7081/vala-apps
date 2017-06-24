@@ -9,14 +9,17 @@ public class Model: GLib.Object {
             icon_info = icon_theme.lookup_icon(icon, 64,
                                                Gtk.IconLookupFlags.FORCE_SIZE); // from icon theme
             pixbuf = icon_info.load_icon();
-        } catch (Error e) {
-            try {
-                icon_info = icon_theme.lookup_icon("application-x-executable", 64,
-                                                   Gtk.IconLookupFlags.FORCE_SIZE); // fallback
-                pixbuf = icon_info.load_icon();
-            } catch (GLib.Error e) {
-                stderr.printf ("%s\n", e.message);
+            if (pixbuf == null) {
+                try {
+                    icon_info = icon_theme.lookup_icon("application-x-executable", 64,
+                                                       Gtk.IconLookupFlags.FORCE_SIZE); // fallback
+                    pixbuf = icon_info.load_icon();
+                } catch (Error e) {
+                    stderr.printf ("%s\n", e.message);
+                }
             }
+        } catch (Error e) {
+            stderr.printf ("%s\n", e.message);
         }
         liststore.append(out iter);
         liststore.set(iter, 0, pixbuf, 1, name, 2, comment, 3, exec);
@@ -26,8 +29,8 @@ public class Model: GLib.Object {
         List<Gtk.TreePath> paths = view.get_selected_items();
         GLib.Value exec;
         foreach (Gtk.TreePath path in paths) {
-            liststore.get_iter(out iter, path);
-            liststore.get_value(iter, 3, out exec);
+            filter.get_iter(out iter, path);
+            filter.get_value(iter, 3, out exec);
             spawn_command((string)exec);
         }
     }

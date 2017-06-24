@@ -152,7 +152,6 @@ private class Program : Gtk.Application {
         } catch(Error e) {
             stderr.printf("error: %s\n", e.message);
         }
-        var scrollbar = new Gtk.Scrollbar(Gtk.Orientation.VERTICAL, term.vadjustment);
         var tab_label = new Gtk.Label("");
         tab_label.set_alignment(0, 0.5f);
         tab_label.set_hexpand(true);
@@ -177,13 +176,13 @@ private class Program : Gtk.Application {
         tab.attach(tab_button_close, 1, 0, 1, 1);
         tab.set_hexpand(false);
         tab.show_all();
-        var page_grid = new Gtk.Grid();
-        page_grid.attach(term, 0, 0, 1, 1);
-        page_grid.attach(scrollbar, 1, 0, 1, 2);
-        page_grid.show_all();
+        var scrolled = new Gtk.ScrolledWindow(null, null);
+        scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS);
+        scrolled.add(term);
+        scrolled.show_all();
         tab_button_close.clicked.connect(() => {
             term = get_current_terminal();
-            int page_num = notebook.page_num(page_grid);
+            int page_num = notebook.page_num(scrolled);
             notebook.remove_page(page_num);
             if (notebook.get_n_pages() == 1) {
                 notebook.set_show_tabs(false);
@@ -193,7 +192,7 @@ private class Program : Gtk.Application {
         eventbox.button_press_event.connect((event) => {
             if (event.button == 2) {
                 term = get_current_terminal();
-                int page_num = notebook.page_num(page_grid);
+                int page_num = notebook.page_num(scrolled);
                 notebook.remove_page(page_num);
                 if (notebook.get_n_pages() == 1) {
                     notebook.set_show_tabs(false);
@@ -211,11 +210,11 @@ private class Program : Gtk.Application {
             tab_label.set_tooltip_text(dir);
             tab_label.set_text(dir_short);
         });
-        notebook.append_page(page_grid, tab);
+        notebook.append_page(scrolled, tab);
         if (notebook.get_n_pages() > 1) {
             notebook.set_show_tabs(true);
         }
-        notebook.set_tab_reorderable(page_grid, true);
+        notebook.set_tab_reorderable(scrolled, true);
         notebook.set_current_page(notebook.get_n_pages() - 1);
         set_color_from_string(terminal_bgcolor, terminal_fgcolor);
         term.set_font(Pango.FontDescription.from_string(terminal_font));
@@ -289,8 +288,9 @@ private class Program : Gtk.Application {
 
     private Vte.Terminal get_current_terminal() {
         notebook = get_current_notebook();
-        var grid = (Gtk.Grid) notebook.get_nth_page(notebook.get_current_page());
-        term = (Vte.Terminal) grid.get_child_at(0, 0);
+        var widget = (Gtk.ScrolledWindow) notebook.get_nth_page(
+                         notebook.get_current_page());
+        term = (Vte.Terminal) widget.get_child();
         return term;
     }
 
@@ -299,8 +299,8 @@ private class Program : Gtk.Application {
         notebook = get_current_notebook();
         terminal_font = preferences_font_button.get_font().to_string();
         for (int i = 0; i < notebook.get_n_pages(); i++) {
-            var grid = (Gtk.Grid) notebook.get_nth_page(i);
-            term = (Vte.Terminal) grid.get_child_at(0, 0);
+            var widget = (Gtk.ScrolledWindow) notebook.get_nth_page(i);
+            term = (Vte.Terminal) widget.get_child();
             term.set_font(Pango.FontDescription.from_string(terminal_font));
         }
         settings.set_string("font", terminal_font);
@@ -315,8 +315,8 @@ private class Program : Gtk.Application {
         int b = (int)Math.round(color.blue * 255);
         terminal_bgcolor = "#%02x%02x%02x".printf(r, g, b).up();
         for (int i = 0; i < notebook.get_n_pages(); i++) {
-            var grid = (Gtk.Grid) notebook.get_nth_page(i);
-            term = (Vte.Terminal) grid.get_child_at(0, 0);
+            var widget = (Gtk.ScrolledWindow) notebook.get_nth_page(i);
+            term = (Vte.Terminal) widget.get_child();
             set_color_from_string(terminal_bgcolor, terminal_fgcolor);
         }
         settings.set_string("bgcolor", terminal_bgcolor);
@@ -331,8 +331,8 @@ private class Program : Gtk.Application {
         int b = (int)Math.round(color.blue * 255);
         terminal_fgcolor = "#%02x%02x%02x".printf(r, g, b).up();
         for (int i = 0; i < notebook.get_n_pages(); i++) {
-            var grid = (Gtk.Grid) notebook.get_nth_page(i);
-            term = (Vte.Terminal) grid.get_child_at(0, 0);
+            var widget = (Gtk.ScrolledWindow) notebook.get_nth_page(i);
+            term = (Vte.Terminal) widget.get_child();
             set_color_from_string(terminal_bgcolor, terminal_fgcolor);
         }
         settings.set_string("fgcolor", terminal_fgcolor);

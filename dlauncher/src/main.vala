@@ -7,6 +7,7 @@ namespace Dlauncher {
 Gtk.IconView view;
 Gtk.ListStore liststore;
 Gtk.TreeIter iter;
+Gtk.TreeModelFilter filter;
 
 public class Application: Gtk.Application {
     const string NAME        = "Dlauncher";
@@ -16,7 +17,7 @@ public class Application: Gtk.Application {
 
     Gtk.ApplicationWindow window;
     Gtk.Entry entry;
-    Gtk.TreeModelFilter filter;
+
     private int width = 490;
     private int height = 440;
 
@@ -99,7 +100,10 @@ public class Application: Gtk.Application {
             window.realize();
             window.show_all();
             window.present();
-            window.move(2, Gdk.Screen.height() - height - 60);
+            int rh;
+            var root_window = Gdk.get_default_root_window();
+            root_window.get_geometry(null, null, null, out rh);
+            window.move(2, rh - height - 60);
         }
     }
 

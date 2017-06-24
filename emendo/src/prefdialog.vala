@@ -11,6 +11,7 @@ public class PrefDialog: Gtk.Dialog {
     Gtk.Switch       button_margin_show;
     Gtk.Switch       button_spaces;
     Gtk.Switch       button_auto_indent;
+    Gtk.Switch       button_pattern_show;
 
     public void on_activate() {
         // Labels
@@ -24,6 +25,7 @@ public class PrefDialog: Gtk.Dialog {
         var label_margin_show   = new Gtk.Label(_("Show margin on right"));
         var label_spaces        = new Gtk.Label(_("Insert spaces instead of tabs"));
         var label_auto_indent   = new Gtk.Label(_("Text auto indentation"));
+        var label_pattern_show  = new Gtk.Label(_("Show grid pattern"));
         // Buttons
         button_font         = new Gtk.FontButton();
         button_scheme       = new Gtk.ComboBoxText();
@@ -35,6 +37,7 @@ public class PrefDialog: Gtk.Dialog {
         button_margin_show  = new Gtk.Switch();
         button_spaces       = new Gtk.Switch();
         button_auto_indent  = new Gtk.Switch();
+        button_pattern_show = new Gtk.Switch();
         // Default values
         button_font.set_font_name     (font);
         get_styles_list               (button_scheme);
@@ -46,6 +49,7 @@ public class PrefDialog: Gtk.Dialog {
         button_margin_show.set_active (margin_show);
         button_spaces.set_active      (spaces);
         button_auto_indent.set_active (auto_indent);
+        button_pattern_show.set_active(pattern_show);
         // Connect signals
         button_font.font_set.connect                (on_button_font_changed);
         button_scheme.changed.connect               (on_button_scheme_changed);
@@ -57,6 +61,7 @@ public class PrefDialog: Gtk.Dialog {
         button_margin_show.notify["active"].connect (on_button_margin_show_changed);
         button_spaces.notify["active"].connect      (on_button_spaces_changed);
         button_auto_indent.notify["active"].connect (on_button_auto_indent_changed);
+        button_pattern_show.notify["active"].connect (on_button_pattern_show_changed);
         // Dialog
         var preferences = new Gtk.Dialog();
         preferences.set_title(_("Preferences"));
@@ -92,9 +97,11 @@ public class PrefDialog: Gtk.Dialog {
         grid_view.attach(button_spaces,        4, 3, 1, 1);
         grid_view.attach(label_auto_indent,    0, 4, 4, 1);
         grid_view.attach(button_auto_indent,   4, 4, 1, 1);
+        grid_view.attach(label_pattern_show,   0, 5, 4, 1);
+        grid_view.attach(button_pattern_show,  4, 5, 1, 1);
         grid_view.set_column_spacing(5);
-        grid_view.set_row_spacing(15);
-        grid_view.set_border_width(15);
+        grid_view.set_row_spacing(5);
+        grid_view.set_border_width(10);
         grid_view.set_column_homogeneous(true);
         var pref_notebook = new Gtk.Notebook();
         pref_notebook.append_page(grid_editor, new Gtk.Label(_("Editor")));
@@ -216,6 +223,18 @@ public class PrefDialog: Gtk.Dialog {
         var apply = new Emendo.Apply();
         settings.set_auto_indent();
         apply.set_auto_indent();
+    }
+
+    private void on_button_pattern_show_changed() {
+        if (button_pattern_show.active) {
+            pattern_show = true;
+        } else {
+            pattern_show = false;
+        }
+        var settings = new Emendo.Settings();
+        var apply = new Emendo.Apply();
+        settings.set_pattern_show();
+        apply.set_pattern_show();
     }
 }
 }

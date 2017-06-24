@@ -60,18 +60,18 @@ public class Application: Gtk.Application {
         var settings = new Agatha.Settings();
         settings.get_all();
         // accelerator
-        add_accelerator("Left",        "app.previous-page", null);
-        add_accelerator("Right",       "app.next-page", null);
-        add_accelerator("Up",          "app.scroll-up", null);
-        add_accelerator("Down",        "app.scroll-down", null);
-        add_accelerator("Page_Up",     "app.page-up", null);
-        add_accelerator("Page_Down",   "app.page-down", null);
-        add_accelerator("KP_Add",      "app.zoom-plus", null);
-        add_accelerator("KP_Subtract", "app.zoom-minus", null);
-        add_accelerator("F11",         "app.full-screen-toggle", null);
-        add_accelerator("<Control>O",  "app.open", null);
-        add_accelerator("<Control>G",  "app.goto", null);
-        add_accelerator("<Control>Q",  "app.quit", null);
+        set_accels_for_action("app.previous-page",          {"Left"});
+        set_accels_for_action("app.next-page",              {"Right"});
+        set_accels_for_action("app.scroll-up",              {"Up"});
+        set_accels_for_action("app.scroll-down",            {"Down"});
+        set_accels_for_action("app.page-up",                {"Page_Up"});
+        set_accels_for_action("app.page-down",              {"Page_Down"});
+        set_accels_for_action("app.zoom-plus",              {"KP_Add"});
+        set_accels_for_action("app.zoom-minus",             {"KP_Subtract"});
+        set_accels_for_action("app.full-screen-toggle",     {"F11"});
+        set_accels_for_action("app.open",                   {"<Control>O"});
+        set_accels_for_action("app.goto",                   {"<Control>G"});
+        set_accels_for_action("app.quit",                   {"<Control>Q"});
         // context menu
         var menu_popup = new GLib.Menu();
         menu_popup.append(_("Open"), "app.open");
@@ -189,10 +189,12 @@ public class Application: Gtk.Application {
 
     // Mouse EventButton Scroll
     private bool button_scroll_event(Gdk.EventScroll event) {
-        double direction = event.delta_y;
-        if (direction < 0) {
+        Gdk.ScrollDirection direction;
+        event.get_scroll_direction (out direction);
+        if (direction == Gdk.ScrollDirection.UP) {
             action_scroll_up();
-        } else {
+        }
+        if (direction == Gdk.ScrollDirection.DOWN) {
             action_scroll_down();
         }
         return false;
@@ -239,7 +241,7 @@ public class Application: Gtk.Application {
         if (vadj_value == 0) {
             action_previous_page();
         } else {
-            vadj.set_value(vadj.get_value() - vadj.get_page_increment() / 10);
+            vadj.set_value(vadj.get_value() - vadj.get_page_increment() / 5);
         }
     }
 
@@ -248,7 +250,7 @@ public class Application: Gtk.Application {
         if (vadj_value == vadj.get_upper() - vadj.get_page_size() ) {
             action_next_page();
         } else {
-            vadj.set_value(vadj.get_value() + vadj.get_page_increment() / 10);
+            vadj.set_value(vadj.get_value() + vadj.get_page_increment() / 5);
         }
     }
 

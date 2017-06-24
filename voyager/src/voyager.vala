@@ -21,8 +21,6 @@ private class Program : Gtk.Application {
     GLib.Settings settings;
     int width;
     int height;
-    int screen_width;
-    int screen_height;
     int pixbuf_width;
     int pixbuf_height;
     int saved_pixbuf_width;
@@ -122,8 +120,6 @@ private class Program : Gtk.Application {
         height = settings.get_int("height");
         slideshow_delay = settings.get_uint("slideshow-delay");
         list_visible = true;
-        screen_width = Gdk.Screen.width();
-        screen_height = Gdk.Screen.height();
         image = new Gtk.Image();
         // TreeView
         liststore = new Gtk.ListStore(3, typeof (Gdk.Pixbuf), typeof (string),
@@ -582,6 +578,10 @@ private class Program : Gtk.Application {
             window.fullscreen();
             saved_pixbuf_width = (int)pixbuf_scaled.get_width();
             saved_pixbuf_height = (int)pixbuf_scaled.get_height();
+            int screen_width;
+            int screen_height;
+            var root_window = Gdk.get_default_root_window();
+            root_window.get_geometry(null, null, out screen_width, out screen_height);
             load_pixbuf_with_size(screen_width, screen_height);
         }
     }

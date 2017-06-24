@@ -66,6 +66,11 @@
       <summary>auto-indent</summary>
       <description>Auto indentation of text</description>
     </key>
+    <key name="pattern-show" type="b">
+      <default>true</default>
+      <summary>pattern-show</summary>
+      <description>Show grid pattern</description>
+    </key>
     <key name="recent-files" type="as">
       <default>[]</default>
       <summary>Recently opened files</summary>

@@ -84,5 +84,17 @@ public class Apply: GLib.Object {
             view.set_auto_indent(auto_indent);
         }
     }
+
+    public void set_pattern_show() {
+        for (int i = 0; i < files.length(); i++) {
+            var tabs = new Emendo.Tabs();
+            var view = tabs.get_sourceview_at_tab(i);
+            if (pattern_show == true) {
+                view.set_background_pattern(Gtk.SourceBackgroundPatternType.GRID);
+            } else {
+                view.set_background_pattern(Gtk.SourceBackgroundPatternType.NONE);
+            }
+        }
+    }
 }
 }
