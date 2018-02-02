@@ -8,6 +8,8 @@ public class Menu: GLib.Object {
         var file_copy = new Gtk.MenuItem.with_label(_("Copy"));
         var file_rename = new Gtk.MenuItem.with_label(_("Rename"));
         var file_delete = new Gtk.MenuItem.with_label(_("Delete"));
+        var context_separator2 = new Gtk.SeparatorMenuItem();
+        var file_properties = new Gtk.MenuItem.with_label(_("Properties"));
         menu = new Gtk.Menu();
         menu.append(file_open);
         menu.append(file_open_with);
@@ -16,6 +18,8 @@ public class Menu: GLib.Object {
         menu.append(file_copy);
         menu.append(file_rename);
         menu.append(file_delete);
+        menu.append(context_separator2);
+        menu.append(file_properties);
         var op = new Vestigo.Operations();
         file_open.activate.connect(() => {
             op.file_open_activate();
@@ -34,6 +38,9 @@ public class Menu: GLib.Object {
         });
         file_delete.activate.connect(() => {
             op.file_delete_activate();
+        });
+        file_properties.activate.connect(() => {
+            op.file_properties_activate();
         });
         menu.show_all();
         return menu;
