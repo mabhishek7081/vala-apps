@@ -57,7 +57,6 @@ public class Window: Gtk.ApplicationWindow {
         } catch (Error e) {
             stdout.printf ("Error: %s\n", e.message);
         }
-        new Vestigo.IconView().open_location(GLib.File.new_for_path(saved_dir), true);
     }
 
     private void add_widgets(Gtk.ApplicationWindow appwindow) {

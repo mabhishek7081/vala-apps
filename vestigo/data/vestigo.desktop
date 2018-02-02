@@ -6,5 +6,5 @@ Exec=vestigo %F
 Icon=system-file-manager
 Terminal=false
 Categories=Application;Utility;
-MimeType=
+MimeType=inode/directory;inode/mount-point;
 StartupNotify=true

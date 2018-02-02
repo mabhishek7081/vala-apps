@@ -6,7 +6,7 @@ namespace Vestigo {
 private class Main: Gtk.Application {
     public Main() {
         Object(application_id: "org.vala-apps.vestigo",
-               flags: GLib.ApplicationFlags.FLAGS_NONE);
+               flags: GLib.ApplicationFlags.HANDLES_OPEN);
     }
 
     public override void startup() {
@@ -14,8 +14,15 @@ private class Main: Gtk.Application {
         new Vestigo.Window().add_app_window(this);
     }
 
+    public override void open(File[] files, string hint) {
+        foreach (File f in files) {
+            saved_dir = f.get_path();
+        }
+        new Vestigo.IconView().open_location(GLib.File.new_for_path(saved_dir), true);
+    }
+
     public override void activate() {
-        get_active_window().present();
+        new Vestigo.IconView().open_location(GLib.File.new_for_path(saved_dir), true);
     }
 
     private static int main (string[] args) {
