@@ -407,7 +407,7 @@ private class Program : Gtk.Application {
             if (direction == Gdk.ScrollDirection.DOWN) {
                 zoom_image(false, 0.20, 0.04);
             } else {
-               zoom_image(true, 0.20, 0.04); 
+                zoom_image(true, 0.20, 0.04);
             }
         }
         return true;

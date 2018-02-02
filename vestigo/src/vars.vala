@@ -9,7 +9,6 @@ Gtk.ApplicationWindow window;
 Gtk.IconView view;
 Gtk.ListStore model;
 Gtk.Menu menu;
-Gtk.MenuButton menubutton;
 Gtk.PlacesSidebar places;
 Gtk.TreeIter iter;
 GLib.FileMonitor current_monitor;

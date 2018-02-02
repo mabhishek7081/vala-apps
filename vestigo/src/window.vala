@@ -61,21 +61,6 @@ public class Window: Gtk.ApplicationWindow {
     }
 
     private void add_widgets(Gtk.ApplicationWindow appwindow) {
-        var gear = new GLib.Menu();
-        var section_one = new GLib.Menu();
-        var section_two = new GLib.Menu();
-        section_one.append(_("Create folder"),    "app.create-folder");
-        section_one.append(_("Create file"),      "app.create-file");
-        section_one.append(_("Add to Bookmarks"), "app.add-bookmark");
-        gear.append_section(null, section_one);
-        section_two.append(_("Open in Terminal"), "app.terminal");
-        gear.append_section(null, section_two);
-        menubutton = new Gtk.MenuButton();
-        menubutton.valign = Gtk.Align.CENTER;
-        menubutton.set_use_popover(true);
-        menubutton.set_menu_model(gear);
-        menubutton.set_image(new Gtk.Image.from_icon_name("open-menu-symbolic",
-                             Gtk.IconSize.MENU));
         places = new Gtk.PlacesSidebar();
         places.set_show_trash(false);
         places.width_request = 200;

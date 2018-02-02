@@ -80,6 +80,23 @@ public class IconView : GLib.Object {
                                               null);
                     string content = file_info.get_content_type();
                     string mime = GLib.ContentType.get_mime_type(content);
+                    if (mime == "application/x-bzip-compressed-tar"
+                            || mime == "application/x-compressed-tar"
+                            || mime == "application/zip"
+                            || mime == "application/x-xz-compressed-tar") {
+                        string uncomp_dir_s = file_check.get_basename().replace(".tar.bz2",
+                                              "").replace(".tar.gz", "").replace(".zip", "").replace(".tar.xz", "");
+                        string uncomp_dir_path = GLib.Path.get_dirname((string)filepath) + "/" +
+                                                 uncomp_dir_s;
+                        var uncomp_dir = File.new_for_path(uncomp_dir_path);
+                        if (uncomp_dir.query_exists() == false) {
+                            new Vestigo.Operations().execute_command_async("mkdir -p %s".printf(
+                                        uncomp_dir_path));
+                            new Vestigo.Operations().execute_command_async("bsdtar -xf %s -C %s".printf((
+                                        string)filepath, uncomp_dir_path));
+                        }
+                        return;
+                    }
                     var appinfo = AppInfo.get_default_for_type(mime, false);
                     if (appinfo != null) {
                         new Vestigo.Operations().execute_command_async("%s '%s'".printf(
