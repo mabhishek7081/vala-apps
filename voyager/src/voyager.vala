@@ -309,8 +309,6 @@ private class Program : Gtk.Application {
             pixbuf_width = scrolled_window_image.get_allocated_width();
             pixbuf_height = scrolled_window_image.get_allocated_height();
         }
-        print("%s\n", pixbuf_width.to_string());
-        print("%s\n", pixbuf_height.to_string());
         load_pixbuf_with_size(pixbuf_width, pixbuf_height);
     }
 
@@ -404,11 +402,12 @@ private class Program : Gtk.Application {
     // Mouse EventButton Scroll
     private bool button_scroll_event(Gdk.EventScroll event) {
         if (file != null) {
-            double dir = event.delta_y;
-            if (dir < 0) {
-                zoom_image(true, 0.20, 0.03);
+            Gdk.ScrollDirection direction;
+            event.get_scroll_direction (out direction);
+            if (direction == Gdk.ScrollDirection.DOWN) {
+                zoom_image(false, 0.20, 0.04);
             } else {
-                zoom_image(false, 0.20, 0.03);
+               zoom_image(true, 0.20, 0.04); 
             }
         }
         return true;

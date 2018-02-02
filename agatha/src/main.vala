@@ -191,11 +191,10 @@ public class Application: Gtk.Application {
     private bool button_scroll_event(Gdk.EventScroll event) {
         Gdk.ScrollDirection direction;
         event.get_scroll_direction (out direction);
-        if (direction == Gdk.ScrollDirection.UP) {
-            action_scroll_up();
-        }
         if (direction == Gdk.ScrollDirection.DOWN) {
             action_scroll_down();
+        } else {
+            action_scroll_up();
         }
         return false;
     }
@@ -294,6 +293,8 @@ public class Application: Gtk.Application {
         settings.set_width();
         settings.set_height();
         settings.set_maximized();
+        settings.set_last_file();
+        settings.set_last_page();
         GLib.Settings.sync();
         quit();
     }

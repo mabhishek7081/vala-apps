@@ -1,20 +1,25 @@
 # Vala apps
 
-* **Agatha**  
+* **Agatha**
 PDF Viewer in GTK3 and Poppler
 
-* **Dlauncher**  
-Desktop file launcher
+* **Dlauncher**
+Application launcher
 
-* **Emendo**  
+* **Emendo**
 Text editor with syntax highlighting
 
-* **Taeni**  
+* **Gtk Appearance**
+Utility for adjusting Gtk appearance
+
+* **Taeni**
 Multi-tabbed terminal emulator based on VTE
 
-* **Voyager**  
+* **Vestigo**
+A GTK3 file manager
+
+* **Voyager**
 Fast and elegant image browser
 
-* **WPSet**  
+* **WPSet**
 A simple tool for changing your desktop wallpaper
-

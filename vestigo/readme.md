@@ -1,11 +1,11 @@
-Dlauncher
+Vestigo
 =======
 
-Application launcher
+A GTK3 file manager
 
 How to install?
 ````
-cd vala-apps/dlauncher
+cd vala-apps/vestigo
 mkdir build; cd build
 cmake ..
 make; make install
@@ -14,6 +14,5 @@ glib-compile-schemas /usr/share/glib-2.0/schemas
 ````
 Dependencies:
 ````
-gtk+-3.0 >= 3.10
-libgnome-menu-3.0
+gtk+-3.0 >= 3.20
 ````

@@ -12,14 +12,14 @@ Gtk.TreeModelFilter filter;
 public class Application: Gtk.Application {
     const string NAME        = "Dlauncher";
     const string VERSION     = "0.0.1";
-    const string DESCRIPTION = _("Desktop file launcher");
+    const string DESCRIPTION = _("Application launcher");
     const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };
 
     Gtk.ApplicationWindow window;
     Gtk.Entry entry;
 
     private int width = 490;
-    private int height = 440;
+    private int height = 460;
 
     private const GLib.ActionEntry[] action_entries = {
         { "quit", action_quit }
@@ -61,7 +61,7 @@ public class Application: Gtk.Application {
         view.set_activate_on_single_click(true);
         view.item_activated.connect(icon_clicked);
         var css_stuff =
-            """ iconview:hover { color: black; background-color: #D3D7CF; border-radius: 3%; } """;
+            """ iconview:hover { color: black; background-color: #EEEEEE; border-radius: 3%; } """;
         var provider = new Gtk.CssProvider();
         try {
             provider.load_from_data(css_stuff, css_stuff.length);

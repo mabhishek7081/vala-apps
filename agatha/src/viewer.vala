@@ -34,9 +34,6 @@ public class Viewer: Gtk.Application {
         // save
         last_file = filename;
         last_page = cpage;
-        var settings = new Agatha.Settings();
-        settings.set_last_file();
-        settings.set_last_page();
     }
 }
 }
