@@ -126,6 +126,7 @@ private class Program : Gtk.Application {
                                       typeof (string));
         treeview = new Gtk.TreeView();
         treeview.set_model(liststore);
+        treeview.set_tooltip_column(2);
         treeview.set_headers_visible(false);
         treeview.set_activate_on_single_click(true);
         treeview.row_activated.connect(show_selected_image);

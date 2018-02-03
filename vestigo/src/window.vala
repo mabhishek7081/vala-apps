@@ -75,7 +75,9 @@ public class Window: Gtk.ApplicationWindow {
         view.set_activate_on_single_click(true);
         view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
         var css_stuff =
-            """ iconview:hover { color: black; background-color: #EEEEEE; border-radius: 3%; } """;
+            """ iconview:hover { color: black; background-color: #EEEEEE; border-radius: 3%; } 
+                iconview:selected:hover { color: #ffffff; background-color: #4a90d9; border-radius: 3%; }
+            """;
         var provider = new Gtk.CssProvider();
         try {
             provider.load_from_data(css_stuff, css_stuff.length);
@@ -111,7 +113,6 @@ public class Window: Gtk.ApplicationWindow {
             return true;
         });
     }
-
 
     private bool context_menu_activate(Gdk.EventButton event) {
         Gtk.TreePath? path = null;

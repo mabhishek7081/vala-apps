@@ -4,21 +4,27 @@ public class Menu: GLib.Object {
         var file_open = new Gtk.MenuItem.with_label(_("Open"));
         var file_open_with = new Gtk.MenuItem.with_label(_("Open With..."));
         var context_separator1 = new Gtk.SeparatorMenuItem();
+        var file_compress_tar_gz = new Gtk.MenuItem.with_label(_("Compress (as TAR.GZ)"));
+        var file_compress_zip = new Gtk.MenuItem.with_label(_("Compress (as ZIP)"));
+        var context_separator2 = new Gtk.SeparatorMenuItem();
         var file_cut = new Gtk.MenuItem.with_label(_("Cut"));
         var file_copy = new Gtk.MenuItem.with_label(_("Copy"));
         var file_rename = new Gtk.MenuItem.with_label(_("Rename"));
         var file_delete = new Gtk.MenuItem.with_label(_("Delete"));
-        var context_separator2 = new Gtk.SeparatorMenuItem();
+        var context_separator3 = new Gtk.SeparatorMenuItem();
         var file_properties = new Gtk.MenuItem.with_label(_("Properties"));
         menu = new Gtk.Menu();
         menu.append(file_open);
         menu.append(file_open_with);
         menu.append(context_separator1);
+        menu.append(file_compress_tar_gz);
+        menu.append(file_compress_zip);
+        menu.append(context_separator2);
         menu.append(file_cut);
         menu.append(file_copy);
         menu.append(file_rename);
         menu.append(file_delete);
-        menu.append(context_separator2);
+        menu.append(context_separator3);
         menu.append(file_properties);
         var op = new Vestigo.Operations();
         file_open.activate.connect(() => {
@@ -26,6 +32,12 @@ public class Menu: GLib.Object {
         });
         file_open_with.activate.connect(() => {
             op.file_open_with_activate();
+        });
+        file_compress_tar_gz.activate.connect(() => {
+            op.file_compress_tar_gz_activate();
+        });
+        file_compress_zip.activate.connect(() => {
+            op.file_compress_zip_activate();
         });
         file_cut.activate.connect(() => {
             op.file_cut_activate();

@@ -54,6 +54,7 @@ public class IconView : GLib.Object {
                 window.set_title("%s".printf(current_dir));
                 list_dir = null;
                 list_file = null;
+                places.set_location(file);
                 view.grab_focus();
                 if (start_monitor == true) {
                     var m = new Vestigo.DirectoryMonitor();
@@ -90,9 +91,9 @@ public class IconView : GLib.Object {
                                                  uncomp_dir_s;
                         var uncomp_dir = File.new_for_path(uncomp_dir_path);
                         if (uncomp_dir.query_exists() == false) {
-                            new Vestigo.Operations().execute_command_async("mkdir -p %s".printf(
+                            new Vestigo.Operations().execute_command_async("mkdir -p \"%s\"".printf(
                                         uncomp_dir_path));
-                            new Vestigo.Operations().execute_command_async("bsdtar -xf %s -C %s".printf((
+                            new Vestigo.Operations().execute_command_async("bsdtar -xf \"%s\" -C \"%s\"".printf((
                                         string)filepath, uncomp_dir_path));
                         }
                         return;

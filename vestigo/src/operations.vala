@@ -124,6 +124,32 @@ public class Operations: GLib.Object {
         }
     }
 
+    // Compress tar gz
+    public void file_compress_tar_gz_activate() {
+        var file_compress_tar_gz = new GLib.List<string>();
+        file_compress_tar_gz = get_files_selection();
+        if (file_compress_tar_gz.length() == 1) {   
+            string tar_gz_file = file_compress_tar_gz.nth_data(0) + "." + "tar.gz";
+            string compress_in_dir = GLib.Path.get_dirname(file_compress_tar_gz.nth_data(0));
+            string compress_dir = GLib.Path.get_basename(file_compress_tar_gz.nth_data(0));
+            GLib.Environment.set_current_dir(compress_in_dir);
+            execute_command_async("bsdtar -czf \"%s\" \"%s\"".printf(tar_gz_file, compress_dir));
+        }
+    }
+
+    // Compress zip
+    public void file_compress_zip_activate() {
+        var file_compress_zip = new GLib.List<string>();
+        file_compress_zip = get_files_selection();
+        if (file_compress_zip.length() == 1) {   
+            string zip_file = file_compress_zip.nth_data(0) + "." + "zip";
+            string compress_in_dir = GLib.Path.get_dirname(file_compress_zip.nth_data(0));
+            string compress_dir = GLib.Path.get_basename(file_compress_zip.nth_data(0));
+            GLib.Environment.set_current_dir(compress_in_dir);
+            execute_command_async("bsdtar -a -cf \"%s\" \"%s\"".printf(zip_file, compress_dir));
+        }
+    }
+
     // Cut
     public void file_cut_activate() {
         if (files_copy != null) {
