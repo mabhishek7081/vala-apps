@@ -12,6 +12,7 @@ public class Window: Gtk.ApplicationWindow {
         { "copy",          action_copy                 },
         { "rename",        action_rename               },
         { "delete",        action_delete               },
+        { "properties",    action_properties           },
         { "paste",         action_paste                },
         { "about",         action_about                },
         { "quit",          action_quit                 }
@@ -21,31 +22,34 @@ public class Window: Gtk.ApplicationWindow {
         app.add_action_entries(action_entries, app);
         var menu = new GLib.Menu();
         var section = new GLib.Menu();
-        section.append(_("Previous Directory"),  "app.go-prev");
-        section.append(_("Up Directory"),  "app.go-up");
-        section.append(_("Home Directory"),  "app.go-home");
-        menu.append_section(null, section);
-        section = new GLib.Menu();
         section.append(_("Create folder"), "app.create-folder");
         section.append(_("Create file"),  "app.create-file");
+        menu.append_section(null, section);
+        section = new GLib.Menu();
+        section.append(_("Paste"), "app.paste");
+        menu.append_section(null, section);
+        section = new GLib.Menu();
         section.append(_("Add to Bookmarks"), "app.add-bookmark");
-        section.append(_("Open in Terminal"),  "app.terminal");
+        section.append(_("Open in Terminal"), "app.terminal");
         menu.append_section(null, section);
         section = new GLib.Menu();
         section.append(_("About"), "app.about");
         section.append(_("Quit"),  "app.quit");
         menu.append_section(null, section);
         app.set_app_menu(menu);
-        app.add_accelerator("<Alt>Left",  "app.go-prev", null);
-        app.add_accelerator("BackSpace",  "app.go-up", null);
-        app.add_accelerator("<Alt>Home",  "app.go-home", null);
-        app.add_accelerator("F4",         "app.terminal", null);
-        app.add_accelerator("<Control>X", "app.cut", null);
-        app.add_accelerator("<Control>C", "app.copy", null);
-        app.add_accelerator("F2",         "app.rename", null);
-        app.add_accelerator("<Control>V", "app.paste", null);
-        app.add_accelerator("Delete",     "app.delete", null);
-        app.add_accelerator("<Control>Q", "app.quit", null);
+        app.add_accelerator("<Alt>Left",         "app.go-prev", null);
+        app.add_accelerator("BackSpace",         "app.go-up", null);
+        app.add_accelerator("<Alt>Home",         "app.go-home", null);
+        app.add_accelerator("<Control>N",        "app.create-folder", null);
+        app.add_accelerator("<Control><Shift>N", "app.create-file", null);
+        app.add_accelerator("F4",                "app.terminal", null);
+        app.add_accelerator("<Control>X",        "app.cut", null);
+        app.add_accelerator("<Control>C",        "app.copy", null);
+        app.add_accelerator("F2",                "app.rename", null);
+        app.add_accelerator("<Control>V",        "app.paste", null);
+        app.add_accelerator("Delete",            "app.delete", null);
+        app.add_accelerator("<Control>I",        "app.properties", null);
+        app.add_accelerator("<Control>Q",        "app.quit", null);
         new Vestigo.Settings().get_settings();
         window = new Gtk.ApplicationWindow(app);
         add_widgets(window);
@@ -63,7 +67,19 @@ public class Window: Gtk.ApplicationWindow {
         places = new Gtk.PlacesSidebar();
         places.set_show_trash(false);
         places.width_request = 200;
-        places.expand = false;
+        places.vexpand = true;
+        places.hexpand = false;
+        var button_up = new Gtk.Button.with_label("Up Directory");
+        button_up.set_always_show_image(true);
+        button_up.set_image(new Gtk.Image.from_icon_name("go-up-symbolic", Gtk.IconSize.MENU));
+        button_up.set_relief(Gtk.ReliefStyle.NONE);
+        button_up.set_alignment(0.0f, 0.0f);
+        button_up.clicked.connect(() => {
+            action_go_to_up_directory();
+        });
+        var places_grid = new Gtk.Grid();
+        places_grid.attach(button_up, 0, 0, 1, 1);
+        places_grid.attach(places,    0, 1, 1, 1);
         model = new Gtk.ListStore(4, typeof (Gdk.Pixbuf), typeof (string),
                                   typeof (string), typeof (string));
         view = new Gtk.IconView.with_model(model);
@@ -75,8 +91,18 @@ public class Window: Gtk.ApplicationWindow {
         view.set_activate_on_single_click(true);
         view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
         var css_stuff =
-            """ iconview:hover { color: black; background-color: #EEEEEE; border-radius: 3%; } 
-                iconview:selected:hover { color: #ffffff; background-color: #4a90d9; border-radius: 3%; }
+            """ 
+            button { color: black; background-color: #f4f4f4; } 
+            
+            button { border-right-width: 0.5px; border-right-color: grey; color: black; background-color: #f4f4f4; transition: none; }
+
+            button:hover { background-image: none; border-color: transparent; color: black; box-shadow: none;
+                            border-right-width: 0.5px; border-right-color: grey; background-color: #ebebea; }
+
+            button:focus { background-color: #4a90d9; color: white; border-right-width: 0.5px; border-right-color: grey; }
+
+            iconview:hover { color: black; background-color: #EEEEEE; border-radius: 3%; } 
+            iconview:selected:hover { color: #ffffff; background-color: #4a90d9; border-radius: 3%; }
             """;
         var provider = new Gtk.CssProvider();
         try {
@@ -84,15 +110,18 @@ public class Window: Gtk.ApplicationWindow {
         } catch (Error e) {
             stderr.printf ("Error: %s\n", e.message);
         }
+        
         view.get_style_context().add_provider(provider,
+                                              Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        button_up.get_style_context().add_provider(provider,
                                               Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         var scrolled = new Gtk.ScrolledWindow(null, null);
         scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
         scrolled.add(view);
         scrolled.expand = true;
         var grid = new Gtk.Grid();
-        grid.attach(places,   0, 0, 1, 1);
-        grid.attach(scrolled, 1, 0, 1, 1);
+        grid.attach(places_grid, 0, 0, 1, 1);
+        grid.attach(scrolled,    1, 0, 1, 1);
         window.add(grid);
         window.set_title(NAME);
         window.set_default_size(width, height);
@@ -176,6 +205,10 @@ public class Window: Gtk.ApplicationWindow {
 
     private void action_delete() {
         new Vestigo.Operations().file_delete_activate();
+    }
+
+    private void action_properties() {
+        new Vestigo.Operations().file_properties_activate();
     }
 
     private void action_paste() {

@@ -286,9 +286,11 @@ public class Operations: GLib.Object {
             try {
                 var file_check = GLib.File.new_for_path(fullpath);
                 GLib.FileInfo file_info = file_check.query_info("*", 0, null);
-                size = file_info.get_size().to_string();
+                int64 bytes = file_info.get_size();
+                int64 mb = file_info.get_size() / 1048576;
+                size = "%s MB (%s bytes)".printf(mb.to_string(), bytes.to_string());
                 string content = file_info.get_content_type();
-                type = GLib.ContentType.get_mime_type(content);
+                type = GLib.ContentType.get_description(content);
                 modified = file_info.get_modification_time().to_iso8601();
             } catch (GLib.Error e) {
                 stderr.printf ("%s\n", e.message);
@@ -298,7 +300,7 @@ public class Operations: GLib.Object {
             label_name.set_markup(_("<b>Name:</b> %s".printf(name)));
             label_name.set_xalign(0.0f);
             var label_size = new Gtk.Label("");
-            label_size.set_markup(_("<b>Size:</b> %s bytes".printf(size)));
+            label_size.set_markup(_("<b>Size:</b> %s".printf(size)));
             label_size.set_xalign(0.0f);
             var label_type = new Gtk.Label("");
             label_type.set_markup(_("<b>Type:</b> %s".printf(type)));
@@ -315,7 +317,7 @@ public class Operations: GLib.Object {
             grid.attach(label_type,     0, 2, 1, 1);
             grid.attach(label_location, 0, 3, 1, 1);
             grid.attach(label_modified, 0, 4, 1, 1);
-            grid.set_column_spacing(5);
+            grid.set_column_spacing(10);
             grid.set_row_spacing(5);
             grid.set_border_width(10);
             grid.set_column_homogeneous(true);
