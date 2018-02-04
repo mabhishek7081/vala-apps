@@ -128,12 +128,11 @@ public class Operations: GLib.Object {
     public void file_compress_tar_gz_activate() {
         var file_compress_tar_gz = new GLib.List<string>();
         file_compress_tar_gz = get_files_selection();
-        if (file_compress_tar_gz.length() == 1) {   
+        if (file_compress_tar_gz.length() == 1) {
             string tar_gz_file = file_compress_tar_gz.nth_data(0) + "." + "tar.gz";
-            string compress_in_dir = GLib.Path.get_dirname(file_compress_tar_gz.nth_data(0));
             string compress_dir = GLib.Path.get_basename(file_compress_tar_gz.nth_data(0));
-            GLib.Environment.set_current_dir(compress_in_dir);
-            execute_command_async("bsdtar -czf \"%s\" \"%s\"".printf(tar_gz_file, compress_dir));
+            execute_command_async("bsdtar -czf \"%s\" \"%s\"".printf(tar_gz_file,
+                                  compress_dir));
         }
     }
 
@@ -141,12 +140,11 @@ public class Operations: GLib.Object {
     public void file_compress_zip_activate() {
         var file_compress_zip = new GLib.List<string>();
         file_compress_zip = get_files_selection();
-        if (file_compress_zip.length() == 1) {   
+        if (file_compress_zip.length() == 1) {
             string zip_file = file_compress_zip.nth_data(0) + "." + "zip";
-            string compress_in_dir = GLib.Path.get_dirname(file_compress_zip.nth_data(0));
             string compress_dir = GLib.Path.get_basename(file_compress_zip.nth_data(0));
-            GLib.Environment.set_current_dir(compress_in_dir);
-            execute_command_async("bsdtar -a -cf \"%s\" \"%s\"".printf(zip_file, compress_dir));
+            execute_command_async("bsdtar -a -cf \"%s\" \"%s\"".printf(zip_file,
+                                  compress_dir));
         }
     }
 
@@ -287,8 +285,13 @@ public class Operations: GLib.Object {
                 var file_check = GLib.File.new_for_path(fullpath);
                 GLib.FileInfo file_info = file_check.query_info("*", 0, null);
                 int64 bytes = file_info.get_size();
+                int64 kb = file_info.get_size() / 1024;
                 int64 mb = file_info.get_size() / 1048576;
-                size = "%s MB (%s bytes)".printf(mb.to_string(), bytes.to_string());
+                if ( bytes > 1048576) {
+                    size = "%s MB (%s bytes)".printf(mb.to_string(), bytes.to_string());
+                } else {
+                    size = "%s KB (%s bytes)".printf(kb.to_string(), bytes.to_string());
+                }
                 string content = file_info.get_content_type();
                 type = GLib.ContentType.get_description(content);
                 modified = file_info.get_modification_time().to_iso8601();

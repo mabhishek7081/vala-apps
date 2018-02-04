@@ -55,6 +55,7 @@ public class IconView : GLib.Object {
                 list_dir = null;
                 list_file = null;
                 places.set_location(file);
+                GLib.Environment.set_current_dir(current_dir);
                 view.grab_focus();
                 if (start_monitor == true) {
                     var m = new Vestigo.DirectoryMonitor();

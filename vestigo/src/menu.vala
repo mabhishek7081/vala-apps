@@ -4,7 +4,8 @@ public class Menu: GLib.Object {
         var file_open = new Gtk.MenuItem.with_label(_("Open"));
         var file_open_with = new Gtk.MenuItem.with_label(_("Open With..."));
         var context_separator1 = new Gtk.SeparatorMenuItem();
-        var file_compress_tar_gz = new Gtk.MenuItem.with_label(_("Compress (as TAR.GZ)"));
+        var file_compress_tar_gz = new Gtk.MenuItem.with_label(
+            _("Compress (as TAR.GZ)"));
         var file_compress_zip = new Gtk.MenuItem.with_label(_("Compress (as ZIP)"));
         var context_separator2 = new Gtk.SeparatorMenuItem();
         var file_cut = new Gtk.MenuItem.with_label(_("Cut"));
