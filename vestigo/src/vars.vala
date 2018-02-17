@@ -14,6 +14,9 @@ Gtk.TreeIter iter;
 GLib.FileMonitor current_monitor;
 GLib.TimeoutSource time;
 GLib.MainLoop loop;
+Gtk.Statusbar statusbar;
+uint context_id;
+const Gtk.TargetEntry[] targets = { {"text/uri-list",0,0} };
 
 int width;
 int height;
@@ -23,7 +26,8 @@ string saved_dir;
 string terminal;
 
 string current_dir;
-GLib.List<string> history;
+GLib.List<string> list_dir;
+GLib.List<string> list_file;
 GLib.List<string> files_copy;
 GLib.List<string> files_cut;
 }

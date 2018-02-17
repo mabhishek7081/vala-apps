@@ -3,18 +3,12 @@ public class IconView : GLib.Object {
     string content;
 
     public void open_location(GLib.File file, bool start_monitor) {
-        var list_dir  = new GLib.List<string>();
-        var list_file = new GLib.List<string>();
-        history = new GLib.List<string>();
-        string prev_dir = current_dir;
-        if (prev_dir != null) {
-            history.append(prev_dir);
-        }
+        list_dir  = new GLib.List<string>();
+        list_file = new GLib.List<string>();
         string name;
         string fullpath;
         current_dir = file.get_path();
         Gdk.Pixbuf pbuf = null;
-        history.append(current_dir);
         if (current_dir != null && file.query_file_type(0) == GLib.FileType.DIRECTORY) {
             try {
                 var d = Dir.open(file.get_path());
@@ -51,9 +45,9 @@ public class IconView : GLib.Object {
                     model.append(out iter);
                     model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, i.replace("&", "&amp;"));
                 }
-                window.set_title("%s".printf(current_dir));
-                list_dir = null;
-                list_file = null;
+                window.set_title("%s".printf(current_dir)); 
+                uint len = list_dir.length() + list_file.length();
+                statusbar.push(context_id, "%s item(s)".printf(len.to_string()));
                 places.set_location(file);
                 GLib.Environment.set_current_dir(current_dir);
                 view.grab_focus();
@@ -121,16 +115,69 @@ public class IconView : GLib.Object {
         }
     }
 
+    public void on_selection_changed() {
+        var selection = new GLib.List<string>();
+        selection = new Vestigo.Operations().get_files_selection();
+        uint len_s = selection.length();
+        if (len_s == 0) {
+            uint len = list_dir.length() + list_file.length();
+            statusbar.push(context_id, "%s item(s)".printf(len.to_string()));            
+        }
+        if (len_s == 1) {
+            string name = "";
+            string size = "";
+            string type = "";
+            try {
+                string fullpath = selection.nth_data(0);
+                var file_check = GLib.File.new_for_path(fullpath);
+                GLib.FileInfo file_info = file_check.query_info("*", 0, null);
+                int64 bytes = file_info.get_size();
+                int64 kb = bytes / 1024;
+                int64 mb = bytes / 1048576;
+                if ( bytes > 1048576) {
+                    size = "%s MB".printf(mb.to_string());
+                } else {
+                    size = "%s KB".printf(kb.to_string());
+                }
+                name = GLib.Path.get_basename(fullpath);
+                string content = file_info.get_content_type();
+                type = GLib.ContentType.get_description(content);
+            } catch (GLib.Error e) {
+                stderr.printf ("%s\n", e.message);
+            }
+            statusbar.push(context_id, "\"%s\" (%s) %s".printf(name, type, size));
+        }
+        if (len_s > 1) {  
+            int64 bytes_one = 0;
+            int64 bytes = 0;
+            string size = "";
+            foreach(string i in selection) {
+                try {
+                    string fullpath = i;
+                    var file_check = GLib.File.new_for_path(fullpath);
+                    GLib.FileInfo file_info = file_check.query_info("*", 0, null);
+                    bytes_one = file_info.get_size();
+                    bytes = bytes + bytes_one;
+                } catch (GLib.Error e) {
+                    stderr.printf ("%s\n", e.message);
+                }
+            }
+            int64 kb = bytes / 1024;
+            int64 mb = bytes / 1048576;
+            if ( bytes > 1048576) {
+                size = "%s MB".printf(mb.to_string());
+            } else {
+                size = "%s KB".printf(kb.to_string());
+            }
+            statusbar.push(context_id, "%s items selected (%s)".printf(len_s.to_string(), size));
+        }
+    }
+
     public string get_file_content(string filepath) throws GLib.Error {
         var file_check = File.new_for_path(filepath);
         var file_info = file_check.query_info("standard::content-type", 0, null);
         content = file_info.get_content_type();
         return content;
-    }
-
-    public void go_to_prev_directory() {
-        string name = history.nth_data(0);
-        open_location(GLib.File.new_for_path(name), true);
     }
 
 }

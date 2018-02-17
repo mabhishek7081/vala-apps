@@ -1,7 +1,6 @@
 namespace Vestigo {
 public class Window: Gtk.ApplicationWindow {
     private const GLib.ActionEntry[] action_entries = {
-        { "go-prev",       action_go_to_prev_directory },
         { "go-up",         action_go_to_up_directory   },
         { "go-home",       action_go_to_home_directory },
         { "create-folder", action_create_folder        },
@@ -37,19 +36,18 @@ public class Window: Gtk.ApplicationWindow {
         section.append(_("Quit"),  "app.quit");
         menu.append_section(null, section);
         app.set_app_menu(menu);
-        app.add_accelerator("<Alt>Left",         "app.go-prev", null);
-        app.add_accelerator("BackSpace",         "app.go-up", null);
-        app.add_accelerator("<Alt>Home",         "app.go-home", null);
-        app.add_accelerator("<Control>N",        "app.create-folder", null);
-        app.add_accelerator("<Control><Shift>N", "app.create-file", null);
-        app.add_accelerator("F4",                "app.terminal", null);
-        app.add_accelerator("<Control>X",        "app.cut", null);
-        app.add_accelerator("<Control>C",        "app.copy", null);
-        app.add_accelerator("F2",                "app.rename", null);
-        app.add_accelerator("<Control>V",        "app.paste", null);
-        app.add_accelerator("Delete",            "app.delete", null);
-        app.add_accelerator("<Control>I",        "app.properties", null);
-        app.add_accelerator("<Control>Q",        "app.quit", null);
+        app.set_accels_for_action("app.go-up",            {"BackSpace"});
+        app.set_accels_for_action("app.go-home",          {"<Alt>Home"});
+        app.set_accels_for_action("app.create-folder",    {"<Control>N"});
+        app.set_accels_for_action("app.create-file",      {"<Control><Shift>N"});
+        app.set_accels_for_action("app.terminal",         {"F4"});
+        app.set_accels_for_action("app.cut",              {"<Control>X"});
+        app.set_accels_for_action("app.copy",             {"<Control>C"});
+        app.set_accels_for_action("app.rename",           {"F2"});
+        app.set_accels_for_action("app.paste",            {"<Control>V"});
+        app.set_accels_for_action("app.delete",           {"Delete"});
+        app.set_accels_for_action("app.properties",       {"<Control>I"});
+        app.set_accels_for_action("app.quit",             {"<Control>Q"});        
         new Vestigo.Settings().get_settings();
         window = new Gtk.ApplicationWindow(app);
         add_widgets(window);
@@ -93,6 +91,9 @@ public class Window: Gtk.ApplicationWindow {
         view.set_item_width(70);
         view.set_activate_on_single_click(true);
         view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
+        view.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY);
+        view.drag_data_get.connect(drag_source_operation);
+        Gtk.drag_source_add_text_targets(view);
         var css_stuff =
             """
             placessidebar row { min-height: 25px; }
@@ -113,20 +114,37 @@ public class Window: Gtk.ApplicationWindow {
             stderr.printf ("Error: %s\n", e.message);
         }
         Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default(), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        Gtk.Settings.get_default().gtk_theme_name = "Adwaita";
         var scrolled = new Gtk.ScrolledWindow(null, null);
         scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
         scrolled.add(view);
         scrolled.expand = true;
         scrolled.width_request = 250;
+        statusbar = new Gtk.Statusbar();
+        context_id = statusbar.get_context_id("vestigo");
+		statusbar.push(context_id, "Starting up...");
         var grid = new Gtk.Grid();
         grid.attach(places_grid, 0, 0, 1, 1);
         grid.attach(scrolled,    1, 0, 1, 1);
+        grid.attach(statusbar,   0, 1, 2, 1);
         window.add(grid);
         window.set_title(NAME);
         window.set_default_size(width, height);
         window.set_icon_name(ICON);
         window.show_all();
-                             }
+        }
+
+        private void drag_source_operation(Gdk.DragContext ctx, Gtk.SelectionData data, uint info, uint time_) {
+            var path = view.get_selected_items().nth_data(0);
+            var model = view.get_model();
+            Gtk.TreeIter iter;
+            model.get_iter(out iter, path);
+            GLib.Value filepath;
+            model.get_value(iter, 2, out filepath);
+            string[] uris = {""};
+            uris[0] = filepath.get_string();
+            data.set_uris(uris);
+        }
 
         private void connect_signals(Gtk.ApplicationWindow appwindow) {
             places.open_location.connect(() => {
@@ -134,6 +152,9 @@ public class Window: Gtk.ApplicationWindow {
             });
             view.item_activated.connect(() => {
                 (new Vestigo.IconView().icon_clicked());
+            });
+            view.selection_changed.connect(() => {
+                (new Vestigo.IconView().on_selection_changed());
             });
             view.button_press_event.connect(context_menu_activate);
             window.delete_event.connect(() => {
@@ -149,11 +170,11 @@ public class Window: Gtk.ApplicationWindow {
                 if (path != null) {
                     view.select_path(path);
                     menu = new Vestigo.Menu().activate_file_menu();
-                    menu.popup(null, null, null, event.button, event.time);
+                    menu.popup_at_pointer(event);
                 } else {
                     view.unselect_all();
                     menu = new Vestigo.Menu().activate_context_menu();
-                    menu.popup(null, null, null, event.button, event.time);
+                    menu.popup_at_pointer(event);
                 }
             }
             return false;
@@ -169,10 +190,6 @@ public class Window: Gtk.ApplicationWindow {
 
         private void action_add_bookmark() {
             new Vestigo.Operations().add_bookmark();
-        }
-
-        private void action_go_to_prev_directory() {
-            new Vestigo.IconView().go_to_prev_directory();
         }
 
         private void action_go_to_up_directory() {

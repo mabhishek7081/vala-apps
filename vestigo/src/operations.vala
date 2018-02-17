@@ -330,7 +330,7 @@ public class Operations: GLib.Object {
         }
     }
 
-    private GLib.List<string> get_files_selection() {
+    public GLib.List<string> get_files_selection() {
         var list = new GLib.List<string>();
         List<Gtk.TreePath> paths = view.get_selected_items();
         GLib.Value filepath;
