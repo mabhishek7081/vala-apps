@@ -1,19 +1,19 @@
 namespace Vestigo {
 public class Menu: GLib.Object {
     public Gtk.Menu activate_file_menu() {
-        var file_open = new Gtk.MenuItem.with_label(_("Open"));
-        var file_open_with = new Gtk.MenuItem.with_label(_("Open With..."));
+        var file_open = new Gtk.MenuItem.with_label("Open");
+        var file_open_with = new Gtk.MenuItem.with_label("Open With...");
         var context_separator1 = new Gtk.SeparatorMenuItem();
         var file_compress_tar_gz = new Gtk.MenuItem.with_label(
-            _("Compress (as TAR.GZ)"));
-        var file_compress_zip = new Gtk.MenuItem.with_label(_("Compress (as ZIP)"));
+            "Compress (as TAR.GZ)");
+        var file_compress_zip = new Gtk.MenuItem.with_label("Compress (as ZIP)");
         var context_separator2 = new Gtk.SeparatorMenuItem();
-        var file_cut = new Gtk.MenuItem.with_label(_("Cut"));
-        var file_copy = new Gtk.MenuItem.with_label(_("Copy"));
-        var file_rename = new Gtk.MenuItem.with_label(_("Rename"));
-        var file_delete = new Gtk.MenuItem.with_label(_("Delete"));
+        var file_cut = new Gtk.MenuItem.with_label("Cut");
+        var file_copy = new Gtk.MenuItem.with_label("Copy");
+        var file_rename = new Gtk.MenuItem.with_label("Rename");
+        var file_delete = new Gtk.MenuItem.with_label("Delete");
         var context_separator3 = new Gtk.SeparatorMenuItem();
-        var file_properties = new Gtk.MenuItem.with_label(_("Properties"));
+        var file_properties = new Gtk.MenuItem.with_label("Properties");
         menu = new Gtk.Menu();
         menu.append(file_open);
         menu.append(file_open_with);
@@ -60,13 +60,13 @@ public class Menu: GLib.Object {
     }
 
     public Gtk.Menu activate_context_menu() {
-        var context_folder = new Gtk.MenuItem.with_label(_("Create Folder"));
-        var context_file = new Gtk.MenuItem.with_label(_("Create File"));
+        var context_folder = new Gtk.MenuItem.with_label("Create Folder");
+        var context_file = new Gtk.MenuItem.with_label("Create File");
         var context_separator1 = new Gtk.SeparatorMenuItem();
-        var context_paste = new Gtk.MenuItem.with_label(_("Paste"));
+        var context_paste = new Gtk.MenuItem.with_label("Paste");
         var context_separator2 = new Gtk.SeparatorMenuItem();
-        var context_bookmark = new Gtk.MenuItem.with_label(_("Add to Bookmarks"));
-        var context_terminal = new Gtk.MenuItem.with_label(_("Open in Terminal"));
+        var context_bookmark = new Gtk.MenuItem.with_label("Add to Bookmarks");
+        var context_terminal = new Gtk.MenuItem.with_label("Open in Terminal");
         var op = new Vestigo.Operations();
         context_folder.activate.connect(() => {
             op.make_new(false);

@@ -15,17 +15,17 @@ public class PrefDialog: Gtk.Dialog {
 
     public void on_activate() {
         // Labels
-        var label_font          = new Gtk.Label(_("Editor font"));
-        var label_scheme        = new Gtk.Label(_("Color scheme"));
-        var label_margin_pos    = new Gtk.Label(_("Margin width"));
-        var label_indent_size   = new Gtk.Label(_("Indent width"));
-        var label_tab_size      = new Gtk.Label(_("Tab width"));
-        var label_numbers_show  = new Gtk.Label(_("Show line numbers"));
-        var label_highlight     = new Gtk.Label(_("Highlight current line"));
-        var label_margin_show   = new Gtk.Label(_("Show margin on right"));
-        var label_spaces        = new Gtk.Label(_("Insert spaces instead of tabs"));
-        var label_auto_indent   = new Gtk.Label(_("Text auto indentation"));
-        var label_pattern_show  = new Gtk.Label(_("Show grid pattern"));
+        var label_font          = new Gtk.Label("Editor font");
+        var label_scheme        = new Gtk.Label("Color scheme");
+        var label_margin_pos    = new Gtk.Label("Margin width");
+        var label_indent_size   = new Gtk.Label("Indent width");
+        var label_tab_size      = new Gtk.Label("Tab width");
+        var label_numbers_show  = new Gtk.Label("Show line numbers");
+        var label_highlight     = new Gtk.Label("Highlight current line");
+        var label_margin_show   = new Gtk.Label("Show margin on right");
+        var label_spaces        = new Gtk.Label("Insert spaces instead of tabs");
+        var label_auto_indent   = new Gtk.Label("Text auto indentation");
+        var label_pattern_show  = new Gtk.Label("Show grid pattern");
         // Buttons
         button_font         = new Gtk.FontButton();
         button_scheme       = new Gtk.ComboBoxText();
@@ -64,7 +64,7 @@ public class PrefDialog: Gtk.Dialog {
         button_pattern_show.notify["active"].connect (on_button_pattern_show_changed);
         // Dialog
         var preferences = new Gtk.Dialog();
-        preferences.set_title(_("Preferences"));
+        preferences.set_title("Preferences");
         preferences.set_border_width(5);
         preferences.set_transient_for(window);
         preferences.set_property("skip-taskbar-hint", true);
@@ -104,8 +104,8 @@ public class PrefDialog: Gtk.Dialog {
         grid_view.set_border_width(10);
         grid_view.set_column_homogeneous(true);
         var pref_notebook = new Gtk.Notebook();
-        pref_notebook.append_page(grid_editor, new Gtk.Label(_("Editor")));
-        pref_notebook.append_page(grid_view, new Gtk.Label(_("View")));
+        pref_notebook.append_page(grid_editor, new Gtk.Label("Editor"));
+        pref_notebook.append_page(grid_view, new Gtk.Label("View"));
         pref_notebook.set_tab_pos(Gtk.PositionType.LEFT);
         var content = preferences.get_content_area() as Gtk.Container;
         content.add(pref_notebook);

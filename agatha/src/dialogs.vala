@@ -3,10 +3,10 @@ public class Dialogs: Gtk.Dialog {
     private Gtk.SpinButton spinbutton;
 
     public void show_open() {
-        var dialog = new Gtk.FileChooserDialog(_("Open"), window,
+        var dialog = new Gtk.FileChooserDialog("Open", window,
                                                Gtk.FileChooserAction.OPEN,
-                                               _("Cancel"), Gtk.ResponseType.CANCEL,
-                                               _("Open"),   Gtk.ResponseType.ACCEPT);
+                                               "Cancel", Gtk.ResponseType.CANCEL,
+                                               "Open",   Gtk.ResponseType.ACCEPT);
         if (filename != null) {
             dialog.set_current_folder(Path.get_dirname(filename));
         }
@@ -24,7 +24,7 @@ public class Dialogs: Gtk.Dialog {
 
     public void show_goto() {
         var dialog = new Gtk.Dialog();
-        dialog.set_title(_("Go to page"));
+        dialog.set_title("Go to page");
         dialog.set_border_width(10);
         dialog.set_property("skip-taskbar-hint", true);
         dialog.set_transient_for(window);
@@ -37,7 +37,7 @@ public class Dialogs: Gtk.Dialog {
         });
         var content = dialog.get_content_area() as Gtk.Box;
         content.pack_start(spinbutton, true, true, 10);
-        dialog.add_button(_("Close"), Gtk.ResponseType.CLOSE);
+        dialog.add_button("Close", Gtk.ResponseType.CLOSE);
         dialog.delete_event.connect(() => {
             dialog.destroy();
             return true;

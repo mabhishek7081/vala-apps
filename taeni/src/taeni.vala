@@ -5,7 +5,7 @@
 private class Program : Gtk.Application {
     const string NAME        = "Taeni";
     const string VERSION     = "2.2.0";
-    const string DESCRIPTION = _("Multi-tabbed terminal emulator based on VTE");
+    const string DESCRIPTION = "Multi-tabbed terminal emulator based on VTE";
     const string ICON        = "utilities-terminal";
     const string APP_ID      = "org.vala-apps.taeni";
     const string APP_ID_PREF = "org.vala-apps.taeni.preferences";
@@ -223,29 +223,29 @@ private class Program : Gtk.Application {
 
     // Context menu
     private void add_popup_menu(Gtk.Menu menu) {
-        var context_new_window = new Gtk.MenuItem.with_label(_("New window"));
+        var context_new_window = new Gtk.MenuItem.with_label("New window");
         context_new_window.activate.connect(action_new_window);
-        var context_new_tab = new Gtk.MenuItem.with_label(_("New tab"));
+        var context_new_tab = new Gtk.MenuItem.with_label("New tab");
         context_new_tab.activate.connect(action_new_tab);
         var context_separator1 = new Gtk.SeparatorMenuItem();
-        var context_copy = new Gtk.MenuItem.with_label(_("Copy"));
+        var context_copy = new Gtk.MenuItem.with_label("Copy");
         context_copy.activate.connect(action_copy);
-        var context_paste = new Gtk.MenuItem.with_label(_("Paste"));
+        var context_paste = new Gtk.MenuItem.with_label("Paste");
         context_paste.activate.connect(action_paste);
-        var context_select_all = new Gtk.MenuItem.with_label(_("Select all"));
+        var context_select_all = new Gtk.MenuItem.with_label("Select all");
         context_select_all.activate.connect(action_select_all);
         var context_separator2 = new Gtk.SeparatorMenuItem();
-        var context_full_screen = new Gtk.MenuItem.with_label(_("Full screen"));
+        var context_full_screen = new Gtk.MenuItem.with_label("Full screen");
         context_full_screen.activate.connect(action_full_screen);
         var context_separator3 = new Gtk.SeparatorMenuItem();
-        var context_pref = new Gtk.MenuItem.with_label(_("Preferences"));
+        var context_pref = new Gtk.MenuItem.with_label("Preferences");
         context_pref.activate.connect(action_pref);
-        var context_about = new Gtk.MenuItem.with_label(_("About"));
+        var context_about = new Gtk.MenuItem.with_label("About");
         context_about.activate.connect(action_about);
         var context_separator4 = new Gtk.SeparatorMenuItem();
-        var context_close = new Gtk.MenuItem.with_label(_("Close tab"));
+        var context_close = new Gtk.MenuItem.with_label("Close tab");
         context_close.activate.connect(action_close_tab);
-        var context_quit = new Gtk.MenuItem.with_label(_("Quit"));
+        var context_quit = new Gtk.MenuItem.with_label("Quit");
         context_quit.activate.connect(action_quit);
         menu.append(context_new_window);
         menu.append(context_new_tab);
@@ -345,7 +345,7 @@ private class Program : Gtk.Application {
 
     // Preferences dialog
     private void action_pref() {
-        var preferences_font_label = new Gtk.Label(_("Font"));
+        var preferences_font_label = new Gtk.Label("Font");
         preferences_font_button = new Gtk.FontButton();
         preferences_font_button.font_name = term.get_font().to_string();
         preferences_font_button.font_set.connect(font_changed);
@@ -353,10 +353,10 @@ private class Program : Gtk.Application {
         var rgba_fgcolor = Gdk.RGBA();
         rgba_bgcolor.parse(terminal_bgcolor);
         rgba_fgcolor.parse(terminal_fgcolor);
-        var preferences_bg_label = new Gtk.Label(_("Background"));
+        var preferences_bg_label = new Gtk.Label("Background");
         preferences_bg_button = new Gtk.ColorButton.with_rgba(rgba_bgcolor);
         preferences_bg_button.color_set.connect(bg_color_changed);
-        var preferences_fg_label = new Gtk.Label(_("Foreground"));
+        var preferences_fg_label = new Gtk.Label("Foreground");
         preferences_fg_button = new Gtk.ColorButton.with_rgba(rgba_fgcolor);
         preferences_fg_button.color_set.connect(fg_color_changed);
         var preferences_grid = new Gtk.Grid();
@@ -376,7 +376,7 @@ private class Program : Gtk.Application {
         preferences.set_property("skip-taskbar-hint", true);
         preferences.set_transient_for(window);
         preferences.set_resizable(false);
-        preferences.set_title(_("Preferences"));
+        preferences.set_title("Preferences");
         var content = preferences.get_content_area() as Gtk.Container;
         content.add(preferences_grid);
         preferences.show_all();

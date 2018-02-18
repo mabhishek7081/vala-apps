@@ -15,14 +15,14 @@ public class Replace: Gtk.Dialog {
         dialog.set_border_width(5);
         dialog.set_property("skip-taskbar-hint", true);
         dialog.set_resizable(false);
-        dialog.set_title(_("Replace"));
-        var label_sch = new Gtk.Label.with_mnemonic(_("Search for:"));
+        dialog.set_title("Replace");
+        var label_sch = new Gtk.Label.with_mnemonic("Search for:");
         entry_sch = new Gtk.Entry();
-        var label_rep = new Gtk.Label.with_mnemonic(_("Repace with:"));
+        var label_rep = new Gtk.Label.with_mnemonic("Repace with:");
         entry_rep = new Gtk.Entry();
-        check_case = new Gtk.CheckButton.with_mnemonic(_("Case sensitive"));
+        check_case = new Gtk.CheckButton.with_mnemonic("Case sensitive");
         check_case.set_active(true);
-        check_back = new Gtk.CheckButton.with_mnemonic(_("Search backwards"));
+        check_back = new Gtk.CheckButton.with_mnemonic("Search backwards");
         check_back.set_active(false);
         var grid = new Gtk.Grid();
         grid.set_column_spacing(30);
@@ -38,10 +38,10 @@ public class Replace: Gtk.Dialog {
         grid.show_all();
         var content = dialog.get_content_area() as Gtk.Container;
         content.add(grid);
-        dialog.add_button(_("Close"),       1);
-        dialog.add_button(_("Replace"),     2);
-        dialog.add_button(_("Replace All"), 3);
-        dialog.add_button(_("Find"),        4);
+        dialog.add_button("Close",       1);
+        dialog.add_button("Replace",     2);
+        dialog.add_button("Replace All", 3);
+        dialog.add_button("Find",        4);
         dialog.delete_event.connect(() => {
             context.set_highlight(false);
             dialog.destroy();

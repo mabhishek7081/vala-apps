@@ -6,7 +6,7 @@ namespace Appearance {
 public class Program: Gtk.Application {
     const string NAME        = "Gtk Appearance";
     const string VERSION     = "1.2.0";
-    const string DESCRIPTION = _("Utility for adjusting Gtk appearance");
+    const string DESCRIPTION = "Utility for adjusting Gtk appearance";
     const string ICON        = "preferences-desktop-theme";
     const string APP_ID      = "org.vala-apps.gtk-appearance";
     const string APP_ID_PREF = "org.vala-apps.gtk-appearance.preferences";
@@ -28,8 +28,8 @@ public class Program: Gtk.Application {
         base.startup();
         var menu = new GLib.Menu();
         var section = new GLib.Menu();
-        section.append(_("About"), "app.about");
-        section.append(_("Quit"), "app.quit");
+        section.append("About", "app.about");
+        section.append("Quit", "app.quit");
         menu.append_section(null, section);
         set_app_menu(menu);
         set_accels_for_action("app.quit", {"<Primary><Shift>Q", "<Primary>Q"});
@@ -42,13 +42,13 @@ public class Program: Gtk.Application {
 
     private void action_add_widgets() {
         // Labels
-        var label_dark       = new Gtk.Label(_("Global dark theme"));
-        var label_header     = new Gtk.Label(_("Dialogs use header bar"));
-        var label_theme      = new Gtk.Label(_("Gtk theme"));
-        var label_icon       = new Gtk.Label(_("Icons"));
-        var label_font       = new Gtk.Label(_("Default font"));
-        var label_cursor     = new Gtk.Label(_("Cursor"));
-        var label_decoration = new Gtk.Label(_("Decoration layout "));
+        var label_dark       = new Gtk.Label("Global dark theme");
+        var label_header     = new Gtk.Label("Dialogs use header bar");
+        var label_theme      = new Gtk.Label("Gtk theme");
+        var label_icon       = new Gtk.Label("Icons");
+        var label_font       = new Gtk.Label("Default font");
+        var label_cursor     = new Gtk.Label("Cursor");
+        var label_decoration = new Gtk.Label("Decoration layout ");
         label_dark.set_halign(Gtk.Align.START);
         label_header.set_halign(Gtk.Align.START);
         label_theme.set_halign(Gtk.Align.START);

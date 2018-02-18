@@ -2,10 +2,10 @@ namespace Emendo {
 public class Dialogs: Gtk.Dialog {
     public void show_open() {
         string selected;
-        var dialog = new Gtk.FileChooserDialog(_("Open"), window,
+        var dialog = new Gtk.FileChooserDialog("Open", window,
                                                Gtk.FileChooserAction.OPEN,
-                                               _("Cancel"), Gtk.ResponseType.CANCEL,
-                                               _("Open"),   Gtk.ResponseType.ACCEPT);
+                                               "Cancel", Gtk.ResponseType.CANCEL,
+                                               "Open",   Gtk.ResponseType.ACCEPT);
         if (notebook.get_n_pages() > 0) {
             var tabs = new Emendo.Tabs();
             string cf = tabs.get_current_path();
@@ -29,10 +29,10 @@ public class Dialogs: Gtk.Dialog {
             return;
         }
         string newname;
-        var dialog = new Gtk.FileChooserDialog(_("Save As..."), window,
+        var dialog = new Gtk.FileChooserDialog("Save As...", window,
                                                Gtk.FileChooserAction.SAVE,
-                                               _("Cancel"), Gtk.ResponseType.CANCEL,
-                                               _("Save"),   Gtk.ResponseType.ACCEPT);
+                                               "Cancel", Gtk.ResponseType.CANCEL,
+                                               "Save",   Gtk.ResponseType.ACCEPT);
         var tabs = new Emendo.Tabs();
         string cf = tabs.get_current_path();
         dialog.set_current_folder(Path.get_dirname(cf));
@@ -51,11 +51,11 @@ public class Dialogs: Gtk.Dialog {
     public void save_fallback(string path) {
         var dialog = new Gtk.MessageDialog( window,
                                             Gtk.DialogFlags.MODAL, Gtk.MessageType.ERROR, Gtk.ButtonsType.NONE,
-                                            _("Error saving file %s.\nThe file on disk may now be truncated!"), path);
-        dialog.add_button(_("Close Without Saving"), Gtk.ResponseType.NO);
-        dialog.add_button(_("Select New Location"),  Gtk.ResponseType.YES);
+                                            "Error saving file %s.\nThe file on disk may now be truncated!", path);
+        dialog.add_button("Close Without Saving", Gtk.ResponseType.NO);
+        dialog.add_button("Select New Location",  Gtk.ResponseType.YES);
         dialog.set_resizable(false);
-        dialog.set_title(_("Error"));
+        dialog.set_title("Error");
         dialog.set_default_response(Gtk.ResponseType.YES);
         int response = dialog.run();
         switch (response) {
@@ -88,12 +88,12 @@ public class Dialogs: Gtk.Dialog {
     public void changes_one(int num, string path) {
         var dialog = new Gtk.MessageDialog( window,
                                             Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION, Gtk.ButtonsType.NONE,
-                                            _("The file '%s' is not saved.\nDo you want to save it before closing?"), path);
-        dialog.add_button(_("Close Without Saving"), Gtk.ResponseType.NO);
-        dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
-        dialog.add_button(_("Save"),  Gtk.ResponseType.YES);
+                                            "The file '%s' is not saved.\nDo you want to save it before closing?", path);
+        dialog.add_button("Close Without Saving", Gtk.ResponseType.NO);
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL);
+        dialog.add_button("Save",  Gtk.ResponseType.YES);
         dialog.set_resizable(false);
-        dialog.set_title(_("Question"));
+        dialog.set_title("Question");
         dialog.set_default_response(Gtk.ResponseType.YES);
         int response = dialog.run();
         switch (response) {

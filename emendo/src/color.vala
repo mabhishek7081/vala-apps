@@ -8,7 +8,7 @@ public class Color: Gtk.Dialog {
             return;
         }
         var rgba = Gdk.RGBA();
-        dialog = new Gtk.ColorChooserDialog(_("Select Color"), window);
+        dialog = new Gtk.ColorChooserDialog("Select Color", window);
         dialog.set_property("skip-taskbar-hint", true);
         get_start_color();
         if (dialog.run() == Gtk.ResponseType.OK) {

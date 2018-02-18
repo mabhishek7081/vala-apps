@@ -15,7 +15,7 @@ int total;
 
 const string NAME        = "Agatha";
 const string VERSION     = "1.0.0";
-const string DESCRIPTION = _("PDF Viewer in GTK3 and Poppler");
+const string DESCRIPTION = "PDF Viewer in GTK3 and Poppler";
 const string ICON        = "evince";
 const string[] AUTHORS   = { "Simargl <archpup-at-gmail-dot-com>", null };
 
@@ -74,10 +74,10 @@ public class Application: Gtk.Application {
         set_accels_for_action("app.quit",                   {"<Control>Q"});
         // context menu
         var menu_popup = new GLib.Menu();
-        menu_popup.append(_("Open"), "app.open");
-        menu_popup.append(_("Go to page"), "app.goto");
-        menu_popup.append(_("About"), "app.about");
-        menu_popup.append(_("Quit"), "app.quit");
+        menu_popup.append("Open", "app.open");
+        menu_popup.append("Go to page", "app.goto");
+        menu_popup.append("About", "app.about");
+        menu_popup.append("Quit", "app.quit");
         // widgets
         image = new Gtk.Image();
         scrolled = new Gtk.ScrolledWindow(null, null);

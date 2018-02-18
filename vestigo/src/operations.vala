@@ -5,9 +5,9 @@ public class Operations: GLib.Object {
         string entry_title = null;
         string typed = null;
         if (file == true) {
-            entry_title = _("Create File");
+            entry_title = "Create File";
         } else {
-            entry_title = _("Create Folder");
+            entry_title = "Create Folder";
         }
         var dialog = new Gtk.Dialog();
         dialog.set_title(entry_title);
@@ -26,8 +26,8 @@ public class Operations: GLib.Object {
         });
         var content = dialog.get_content_area() as Gtk.Box;
         content.pack_start(entry, true, true, 10);
-        dialog.add_button(_("Close"), Gtk.ResponseType.CLOSE);
-        dialog.add_button(_("Create"), Gtk.ResponseType.OK);
+        dialog.add_button("Close", Gtk.ResponseType.CLOSE);
+        dialog.add_button("Create", Gtk.ResponseType.OK);
         dialog.set_default_response(Gtk.ResponseType.OK);
         dialog.show_all();
         if (dialog.run() == Gtk.ResponseType.OK) {
@@ -189,7 +189,7 @@ public class Operations: GLib.Object {
         string typed = null;
         if (files_rename.length() == 1) {
             var dialog = new Gtk.Dialog();
-            dialog.set_title(_("Rename File/Folder"));
+            dialog.set_title("Rename File/Folder");
             dialog.set_border_width(10);
             dialog.set_property("skip-taskbar-hint", true);
             dialog.set_transient_for(window);
@@ -203,8 +203,8 @@ public class Operations: GLib.Object {
             });
             var content = dialog.get_content_area() as Gtk.Box;
             content.pack_start(entry, true, true, 10);
-            dialog.add_button(_("Close"), Gtk.ResponseType.CLOSE);
-            dialog.add_button(_("Rename"), Gtk.ResponseType.OK);
+            dialog.add_button("Close", Gtk.ResponseType.CLOSE);
+            dialog.add_button("Rename", Gtk.ResponseType.OK);
             dialog.set_default_response(Gtk.ResponseType.OK);
             dialog.show_all();
             if (dialog.run() == Gtk.ResponseType.OK) {
@@ -231,17 +231,17 @@ public class Operations: GLib.Object {
         var files_delete = new GLib.List<string>();
         files_delete = get_files_selection();
         var dialog = new Gtk.Dialog();
-        dialog.set_title(_("Delete File/Folder"));
+        dialog.set_title("Delete File/Folder");
         dialog.set_border_width(10);
         dialog.set_property("skip-taskbar-hint", true);
         dialog.set_transient_for(window);
         dialog.set_resizable(false);
-        var label = new Gtk.Label(_("Delete %d selected item(s)?").printf(
+        var label = new Gtk.Label("Delete %d selected item(s)?".printf(
                                       (int)files_delete.length()));
         var content = dialog.get_content_area() as Gtk.Box;
         content.pack_start(label, true, true, 10);
-        dialog.add_button(_("Close"), Gtk.ResponseType.CLOSE);
-        dialog.add_button(_("Delete"), Gtk.ResponseType.OK);
+        dialog.add_button("Close", Gtk.ResponseType.CLOSE);
+        dialog.add_button("Delete", Gtk.ResponseType.OK);
         dialog.set_default_response(Gtk.ResponseType.OK);
         dialog.show_all();
         if (dialog.run() == Gtk.ResponseType.OK) {
@@ -266,7 +266,7 @@ public class Operations: GLib.Object {
         files_properties = get_files_selection();
         if (files_properties.length() == 1) {
             var dialog = new Gtk.Dialog();
-            dialog.set_title(_("File properties"));
+            dialog.set_title("File properties");
             dialog.set_border_width(10);
             dialog.set_property("skip-taskbar-hint", true);
             dialog.set_transient_for(window);
@@ -300,19 +300,19 @@ public class Operations: GLib.Object {
             }
             // ui
             var label_name = new Gtk.Label("");
-            label_name.set_markup(_("<b>Name:</b> %s".printf(name)));
+            label_name.set_markup("<b>Name:</b> %s".printf(name));
             label_name.set_xalign(0.0f);
             var label_size = new Gtk.Label("");
-            label_size.set_markup(_("<b>Size:</b> %s".printf(size)));
+            label_size.set_markup("<b>Size:</b> %s".printf(size));
             label_size.set_xalign(0.0f);
             var label_type = new Gtk.Label("");
-            label_type.set_markup(_("<b>Type:</b> %s".printf(type)));
+            label_type.set_markup("<b>Type:</b> %s".printf(type));
             label_type.set_xalign(0.0f);
             var label_location = new Gtk.Label("");
-            label_location.set_markup(_("<b>Location:</b> %s".printf(location)));
+            label_location.set_markup("<b>Location:</b> %s".printf(location));
             label_location.set_xalign(0.0f);
             var label_modified = new Gtk.Label("");
-            label_modified.set_markup(_("<b>Modified:</b> %s".printf(modified)));
+            label_modified.set_markup("<b>Modified:</b> %s".printf(modified));
             label_modified.set_xalign(0.0f);
             var grid = new Gtk.Grid();
             grid.attach(label_name,     0, 0, 1, 1);

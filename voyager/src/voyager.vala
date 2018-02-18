@@ -5,7 +5,7 @@
 private class Program : Gtk.Application {
     const string NAME        = "Voyager";
     const string VERSION     = "1.4.0";
-    const string DESCRIPTION = _("Fast and elegant image browser");
+    const string DESCRIPTION = "Fast and elegant image browser";
     const string ICON        = "eog";
     const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };
 
@@ -92,27 +92,27 @@ private class Program : Gtk.Application {
         set_accels_for_action("app.quit",                  {"Q", "<Primary>Q"});
         var menu = new Menu();
         var section = new GLib.Menu();
-        section.append(_("Open"),               "app.open");
-        section.append(_("Set as Wallpaper"),   "app.set-as-wallpaper");
-        section.append(_("Thumbnails On/Off"),  "app.toggle-thumbnails");
+        section.append("Open",               "app.open");
+        section.append("Set as Wallpaper",   "app.set-as-wallpaper");
+        section.append("Thumbnails On/Off",  "app.toggle-thumbnails");
         menu.append_section(null, section);
         section = new GLib.Menu();
-        section.append(_("Rotate Right"),       "app.rotate-right");
-        section.append(_("Rotate Left"),        "app.rotate-left");
+        section.append("Rotate Right",       "app.rotate-right");
+        section.append("Rotate Left",        "app.rotate-left");
         menu.append_section(null, section);
         section = new GLib.Menu();
-        section.append(_("Zoom In"),            "app.zoom-in");
-        section.append(_("Zoom Out"),           "app.zoom-out");
-        section.append(_("Zoom to Fit"),        "app.zoom-to-fit");
-        section.append(_("Actual Size"),        "app.zoom-actual");
+        section.append("Zoom In",            "app.zoom-in");
+        section.append("Zoom Out",           "app.zoom-out");
+        section.append("Zoom to Fit",        "app.zoom-to-fit");
+        section.append("Actual Size",        "app.zoom-actual");
         menu.append_section(null, section);
         section = new GLib.Menu();
-        section.append(_("Slideshow"),          "app.slideshow");
-        section.append(_("Edit With Gimp"),     "app.edit-with-gimp");
+        section.append("Slideshow",          "app.slideshow");
+        section.append("Edit With Gimp",     "app.edit-with-gimp");
         menu.append_section(null, section);
         section = new GLib.Menu();
-        section.append(_("About"),              "app.about");
-        section.append(_("Quit"),               "app.quit");
+        section.append("About",              "app.about");
+        section.append("Quit",               "app.quit");
         menu.append_section(null, section);
         set_app_menu(menu);
         settings = new GLib.Settings("org.vala-apps.voyager.preferences");
@@ -130,7 +130,7 @@ private class Program : Gtk.Application {
         treeview.set_headers_visible(false);
         treeview.set_activate_on_single_click(true);
         treeview.row_activated.connect(show_selected_image);
-        treeview.insert_column_with_attributes (-1, _("Preview"),
+        treeview.insert_column_with_attributes (-1, "Preview",
                                                 new Gtk.CellRendererPixbuf(), "pixbuf", 0);
         // ScrolledWindow
         scrolled_window_image = new Gtk.ScrolledWindow(null, null);
@@ -480,7 +480,7 @@ private class Program : Gtk.Application {
     }
 
     private void action_open() {
-        var dialog = new Gtk.FileChooserDialog(_("Open"), window,
+        var dialog = new Gtk.FileChooserDialog("Open", window,
                                                Gtk.FileChooserAction.OPEN,
                                                "gtk-cancel", Gtk.ResponseType.CANCEL,
                                                "gtk-open", Gtk.ResponseType.ACCEPT);

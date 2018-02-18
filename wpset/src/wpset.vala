@@ -6,7 +6,7 @@ private class Program : Gtk.Application {
     const string NAME = "WPSet";
     const string VERSION = "1.9.0";
     const string DESCRIPTION =
-        _("A simple tool for changing your desktop wallpaper");
+        "A simple tool for changing your desktop wallpaper";
     const string ICON = "preferences-desktop-wallpaper";
     const string[] AUTHORS = { "Jonathan Koren (imlibsetroot) <jonathan-at-jonathankoren-dot-com>", "Simargl <https://github.com/simargl>", null };
 
@@ -40,12 +40,12 @@ private class Program : Gtk.Application {
         // app menu
         var menu = new GLib.Menu();
         var section = new GLib.Menu();
-        section.append(_("Add folder"), "app.add");
-        section.append(_("Reset list"), "app.reset");
+        section.append("Add folder", "app.add");
+        section.append("Reset list", "app.reset");
         menu.append_section(null, section);
         section = new GLib.Menu();
-        section.append(_("About"),     "app.about");
-        section.append(_("Quit"),      "app.quit");
+        section.append("About",     "app.about");
+        section.append("Quit",      "app.quit");
         menu.append_section(null, section);
         set_app_menu(menu);
         set_accels_for_action("app.add",       {"<Primary><Shift>A"});
@@ -164,10 +164,10 @@ private class Program : Gtk.Application {
     }
 
     private void action_add() {
-        var dialog = new Gtk.FileChooserDialog(_("Add folder"), window,
+        var dialog = new Gtk.FileChooserDialog("Add folder", window,
                                                Gtk.FileChooserAction.SELECT_FOLDER,
-                                               _("Cancel"), Gtk.ResponseType.CANCEL,
-                                               _("Open"), Gtk.ResponseType.ACCEPT);
+                                               "Cancel", Gtk.ResponseType.CANCEL,
+                                               "Open", Gtk.ResponseType.ACCEPT);
         dialog.set_transient_for(window);
         if (dialog.run() == Gtk.ResponseType.ACCEPT) {
             string dirname = dialog.get_current_folder();

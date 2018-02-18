@@ -12,7 +12,7 @@ Gtk.TreeModelFilter filter;
 public class Application: Gtk.Application {
     const string NAME        = "Dlauncher";
     const string VERSION     = "0.0.1";
-    const string DESCRIPTION = _("Application launcher");
+    const string DESCRIPTION = "Application launcher";
     const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };
 
     Gtk.ApplicationWindow window;

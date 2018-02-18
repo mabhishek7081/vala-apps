@@ -12,8 +12,8 @@ public class Find: Gtk.Dialog {
         dialog.set_border_width(5);
         dialog.set_property("skip-taskbar-hint", true);
         dialog.set_resizable(false);
-        dialog.set_title(_("Find"));
-        var label_sch = new Gtk.Label.with_mnemonic(_("Search for:"));
+        dialog.set_title("Find");
+        var label_sch = new Gtk.Label.with_mnemonic("Search for:");
         entry = new Gtk.Entry();
         var grid = new Gtk.Grid();
         grid.set_column_spacing(30);
@@ -25,9 +25,9 @@ public class Find: Gtk.Dialog {
         grid.show_all();
         var content = dialog.get_content_area() as Gtk.Container;
         content.add(grid);
-        dialog.add_button(_("Close"),       1);
-        dialog.add_button(_("Previous"),    2);
-        dialog.add_button(_("Next"),        3);
+        dialog.add_button("Close",       1);
+        dialog.add_button("Previous",    2);
+        dialog.add_button("Next",        3);
         dialog.delete_event.connect(() => {
             context.set_highlight(false);
             dialog.destroy();
