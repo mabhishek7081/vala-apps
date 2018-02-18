@@ -1,6 +1,7 @@
 namespace Vestigo {
 public class IconView : GLib.Object {
     string content;
+    bool symlink;
 
     public void open_location(GLib.File file, bool start_monitor) {
         list_dir  = new GLib.List<string>();
@@ -27,7 +28,11 @@ public class IconView : GLib.Object {
                 foreach(string i in list_dir) {
                     fullpath = GLib.Path.build_filename(current_dir, i);
                     Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
+                    check_if_symlink(fullpath);
                     pbuf = icon_theme.load_icon("folder", icon_size, 0);
+                    if (symlink == true) {
+                        pbuf = add_emblem(pbuf);
+                    }
                     model.append(out iter);
                     model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, i.replace("&", "&amp;"));
                 }
@@ -37,10 +42,17 @@ public class IconView : GLib.Object {
                     GLib.Icon icon = GLib.ContentType.get_icon(content);
                     Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
                     Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size, 0);
+                    check_if_symlink(fullpath);
                     if (icon_info != null) {
                         pbuf = icon_info.load_icon();
+                        if (symlink == true) {
+                            pbuf = add_emblem(pbuf);
+                        }
                     } else {
                         pbuf = icon_theme.load_icon("gtk-file", icon_size, 0);
+                        if (symlink == true) {
+                            pbuf = add_emblem(pbuf);
+                        }
                     }
                     model.append(out iter);
                     model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, i.replace("&", "&amp;"));
@@ -59,6 +71,25 @@ public class IconView : GLib.Object {
                 stderr.printf("%s\n", e.message);
             }
         }
+    }
+
+    private Gdk.Pixbuf add_emblem(Gdk.Pixbuf p) {
+        Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
+        var icon_info = icon_theme.lookup_icon ("emblem-symbolic-link", 24, Gtk.IconLookupFlags.FORCE_SIZE);
+        Gdk.Pixbuf emblem = null;
+        try {
+            emblem = icon_info.load_icon();
+        } catch (GLib.Error e) {
+            stderr.printf ("%s\n", e.message);
+        }
+        var emblemed = p.copy();
+        emblem.composite(emblemed,
+            icon_size - 26, icon_size - 26,
+            24, 24,
+            icon_size - 26, icon_size - 26,
+            1.0, 1.0,
+            Gdk.InterpType.BILINEAR, 242);
+        return emblemed;
     }
 
     public void icon_clicked() {
@@ -130,6 +161,9 @@ public class IconView : GLib.Object {
             try {
                 string fullpath = selection.nth_data(0);
                 var file_check = GLib.File.new_for_path(fullpath);
+                if (file_check.query_exists() == false) {
+                    return;
+                }
                 GLib.FileInfo file_info = file_check.query_info("*", 0, null);
                 int64 bytes = file_info.get_size();
                 int64 kb = bytes / 1024;
@@ -155,6 +189,9 @@ public class IconView : GLib.Object {
                 try {
                     string fullpath = i;
                     var file_check = GLib.File.new_for_path(fullpath);
+                    if (file_check.query_exists() == false) {
+                        return;
+                    }
                     GLib.FileInfo file_info = file_check.query_info("*", 0, null);
                     bytes_one = file_info.get_size();
                     bytes = bytes + bytes_one;
@@ -178,6 +215,13 @@ public class IconView : GLib.Object {
         var file_info = file_check.query_info("standard::content-type", 0, null);
         content = file_info.get_content_type();
         return content;
+    }
+
+    public bool check_if_symlink(string filepath) throws GLib.Error {
+        var file_check = File.new_for_path(filepath);
+        var file_info = file_check.query_info("standard::is-symlink", 0, null);
+        symlink = file_info.get_is_symlink();
+        return symlink;
     }
 
 }
