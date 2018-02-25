@@ -156,6 +156,7 @@ public class Window: Gtk.ApplicationWindow {
             view.selection_changed.connect(() => {
                 (new Vestigo.IconView().on_selection_changed());
             });
+            view.key_press_event.connect(on_key_press_event);
             view.button_press_event.connect(context_menu_activate);
             window.delete_event.connect(() => {
                 action_quit();
@@ -163,9 +164,40 @@ public class Window: Gtk.ApplicationWindow {
             });
         }
 
+        private bool on_key_press_event(Gdk.EventKey event) {
+            string match = event.str;
+            if (match != "") {
+                var model = view.get_model();
+                GLib.Value val;
+                int i = 0;
+                while (i < model.iter_n_children(null)) {
+                    var path = new Gtk.TreePath.from_indices(i, -1);
+                    model.get_iter(out iter, path);
+                    model.get_value(iter, 3, out val);
+                    string strval = val.get_string();
+                    if (strval.substring(0, 1).down().contains(match.down()) == true) {
+                        view.unselect_all();
+                        view.select_path(path);
+                        view.set_cursor(path, null, false);
+                        view.scroll_to_path(path, false, 0, 0);
+                        view.grab_focus();
+                        break;
+                    }
+                    i++;
+                }
+            }
+            return false;
+        }
+
         private bool context_menu_activate(Gdk.EventButton event) {
             Gtk.TreePath? path = null;
             if (event.button == 3) {
+                var selection = new GLib.List<string>();
+                selection = new Vestigo.Operations().get_files_selection();
+                uint len_s = selection.length();
+                if (len_s == 1) {
+                    view.unselect_all();
+                }
                 path = view.get_path_at_pos((int) event.x, (int) event.y);
                 if (path != null) {
                     view.select_path(path);

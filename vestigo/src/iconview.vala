@@ -57,7 +57,7 @@ public class IconView : GLib.Object {
                     model.append(out iter);
                     model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, i.replace("&", "&amp;"));
                 }
-                window.set_title("%s".printf(current_dir)); 
+                window.set_title("%s".printf(current_dir));
                 uint len = list_dir.length() + list_file.length();
                 statusbar.push(context_id, "%s item(s)".printf(len.to_string()));
                 places.set_location(file);
@@ -75,7 +75,8 @@ public class IconView : GLib.Object {
 
     private Gdk.Pixbuf add_emblem(Gdk.Pixbuf p) {
         Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-        var icon_info = icon_theme.lookup_icon ("emblem-symbolic-link", 24, Gtk.IconLookupFlags.FORCE_SIZE);
+        var icon_info = icon_theme.lookup_icon ("emblem-symbolic-link", 24,
+                                                Gtk.IconLookupFlags.FORCE_SIZE);
         Gdk.Pixbuf emblem = null;
         try {
             emblem = icon_info.load_icon();
@@ -84,11 +85,11 @@ public class IconView : GLib.Object {
         }
         var emblemed = p.copy();
         emblem.composite(emblemed,
-            icon_size - 26, icon_size - 26,
-            24, 24,
-            icon_size - 26, icon_size - 26,
-            1.0, 1.0,
-            Gdk.InterpType.BILINEAR, 242);
+                         icon_size - 26, icon_size - 26,
+                         24, 24,
+                         icon_size - 26, icon_size - 26,
+                         1.0, 1.0,
+                         Gdk.InterpType.BILINEAR, 242);
         return emblemed;
     }
 
@@ -152,7 +153,7 @@ public class IconView : GLib.Object {
         uint len_s = selection.length();
         if (len_s == 0) {
             uint len = list_dir.length() + list_file.length();
-            statusbar.push(context_id, "%s item(s)".printf(len.to_string()));            
+            statusbar.push(context_id, "%s item(s)".printf(len.to_string()));
         }
         if (len_s == 1) {
             string name = "";
@@ -181,7 +182,7 @@ public class IconView : GLib.Object {
             }
             statusbar.push(context_id, "\"%s\" (%s) %s".printf(name, type, size));
         }
-        if (len_s > 1) {  
+        if (len_s > 1) {
             int64 bytes_one = 0;
             int64 bytes = 0;
             string size = "";
@@ -206,7 +207,8 @@ public class IconView : GLib.Object {
             } else {
                 size = "%s KB".printf(kb.to_string());
             }
-            statusbar.push(context_id, "%s items selected (%s)".printf(len_s.to_string(), size));
+            statusbar.push(context_id, "%s items selected (%s)".printf(len_s.to_string(),
+                           size));
         }
     }
 

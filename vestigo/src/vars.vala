@@ -1,6 +1,6 @@
 namespace Vestigo {
 const string NAME        = "Vestigo";
-const string VERSION     = "0.0.5";
+const string VERSION     = "0.9.0";
 const string DESCRIPTION = "A GTK3 file manager";
 const string ICON        = "system-file-manager";
 const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };

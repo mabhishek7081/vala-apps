@@ -195,8 +195,9 @@ public class Operations: GLib.Object {
             dialog.set_transient_for(window);
             dialog.set_resizable(false);
             var entry = new Gtk.Entry();
-            entry.set_size_request(250, 0);
-            entry.set_text(GLib.Path.get_basename(files_rename.nth_data(0)));
+            entry.set_size_request(270, 0);
+            string etext = GLib.Path.get_basename(files_rename.nth_data(0));
+            entry.set_text(etext);
             entry.activate.connect(() => {
                 typed = entry.get_text();
                 on_rename_dialog_response(entry, dialog, files_rename.nth_data(0), typed);
@@ -207,6 +208,9 @@ public class Operations: GLib.Object {
             dialog.add_button("Rename", Gtk.ResponseType.OK);
             dialog.set_default_response(Gtk.ResponseType.OK);
             dialog.show_all();
+            if( etext.contains(".") == true ) {
+                entry.select_region(0, etext.last_index_of_char('.'));
+            }
             if (dialog.run() == Gtk.ResponseType.OK) {
                 typed = entry.get_text();
                 on_rename_dialog_response(entry, dialog, files_rename.nth_data(0), typed);
@@ -230,6 +234,9 @@ public class Operations: GLib.Object {
     public void file_delete_activate() {
         var files_delete = new GLib.List<string>();
         files_delete = get_files_selection();
+        if (files_delete.length() == 0) {
+            return;
+        }
         var dialog = new Gtk.Dialog();
         dialog.set_title("Delete File/Folder");
         dialog.set_border_width(10);
