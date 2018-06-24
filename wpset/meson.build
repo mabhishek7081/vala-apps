@@ -26,10 +26,14 @@ executable('imlibsetroot',
     dependencies : [imlib, x11, xinerama])
 
 datadir = get_option('datadir')
+bindir = get_option('bindir')
 
 install_data('data/wpset.desktop',
     install_dir : join_paths(datadir, 'applications'))
 
 install_data('data/org.vala-apps.wpset.gschema.xml',
     install_dir: join_paths(datadir, 'glib-2.0' ,'schemas'))
+
+install_data('data/wpset-shell',
+    install_dir: join_paths(bindir))
 

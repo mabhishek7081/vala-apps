@@ -130,7 +130,7 @@ private class Program : Gtk.Application {
     }
 
     private void execute_command(string command) {
-        term.feed_child(command + "\n", command.length + 1);
+        term.feed_child("%s\n".printf(command).to_utf8());
     }
 
     private void create_tab(string path) {

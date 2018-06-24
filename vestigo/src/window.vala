@@ -93,7 +93,8 @@ public class Window: Gtk.ApplicationWindow {
         view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
         view.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY);
         view.drag_data_get.connect(drag_source_operation);
-        Gtk.drag_source_add_text_targets(view);
+        view.drag_data_received.connect(on_drag_data_received);
+        Gtk.drag_dest_set(view, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
         var css_stuff =
             """
             placessidebar row { min-height: 25px; }
@@ -146,6 +147,10 @@ public class Window: Gtk.ApplicationWindow {
             data.set_uris(uris);
         }
 
+        private void on_drag_data_received (Gdk.DragContext ctx, int x, int y, Gtk.SelectionData data, uint info, uint time) {
+            print("received");
+        }
+
         private void connect_signals(Gtk.ApplicationWindow appwindow) {
             places.open_location.connect(() => {
                 new Vestigo.IconView().open_location(places.get_location(), true);
@@ -165,25 +170,47 @@ public class Window: Gtk.ApplicationWindow {
         }
 
         private bool on_key_press_event(Gdk.EventKey event) {
+            if (Gdk.keyval_name(event.keyval) == "Escape") {
+                view.unselect_all();
+            }
             string match = event.str;
             if (match != "") {
                 var model = view.get_model();
                 GLib.Value val;
+                var paths = new List<Gtk.TreePath>();
                 int i = 0;
                 while (i < model.iter_n_children(null)) {
                     var path = new Gtk.TreePath.from_indices(i, -1);
                     model.get_iter(out iter, path);
                     model.get_value(iter, 3, out val);
                     string strval = val.get_string();
-                    if (strval.substring(0, 1).down().contains(match.down()) == true) {
-                        view.unselect_all();
-                        view.select_path(path);
-                        view.set_cursor(path, null, false);
-                        view.scroll_to_path(path, false, 0, 0);
-                        view.grab_focus();
-                        break;
+                    if (strval.substring(0, 1).down() == match.down()) {
+                        paths.append(path);
                     }
                     i++;
+                }
+                if (paths.length() == 0) {
+                    return false;
+                }
+                var test = view.get_selected_items().nth_data(0);
+                if (test == null) {
+                    view.select_path(paths.first().data);
+                    view.set_cursor(paths.first().data, null, false);
+                    view.scroll_to_path(paths.first().data, false, 0, 0);
+                } else {                
+                    uint len = paths.length();
+                    unowned List<Gtk.TreePath> last = paths.nth(len-1);
+                    paths.delete_link(last);
+                    foreach(Gtk.TreePath j in paths) {
+                        if (j.to_string() == test.to_string()) {
+                            j.next();
+                            print(j.to_string());
+                            view.unselect_path(test);
+                            view.select_path(j);
+                            view.set_cursor(j, null, false);
+                            view.scroll_to_path(j, false, 0, 0);
+                        }
+                    }
                 }
             }
             return false;

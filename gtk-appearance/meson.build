@@ -20,6 +20,10 @@ executable('gtk-appearance',
     dependencies : [gtk])
 
 datadir = get_option('datadir')
+bindir = get_option('bindir')
 
 install_data('data/gtk-appearance.desktop',
     install_dir : join_paths(datadir, 'applications'))
+
+install_data('data/gtk-appearance-openbox',
+    install_dir: join_paths(bindir))

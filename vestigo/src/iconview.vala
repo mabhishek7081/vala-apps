@@ -45,14 +45,11 @@ public class IconView : GLib.Object {
                     check_if_symlink(fullpath);
                     if (icon_info != null) {
                         pbuf = icon_info.load_icon();
-                        if (symlink == true) {
-                            pbuf = add_emblem(pbuf);
-                        }
                     } else {
                         pbuf = icon_theme.load_icon("gtk-file", icon_size, 0);
-                        if (symlink == true) {
-                            pbuf = add_emblem(pbuf);
-                        }
+                    }
+                    if (symlink == true) {
+                        pbuf = add_emblem(pbuf);
                     }
                     model.append(out iter);
                     model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, i.replace("&", "&amp;"));
