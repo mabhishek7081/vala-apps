@@ -5,5 +5,5 @@ Comment=Multi-tabbed terminal emulator based on VTE
 Exec=taeni
 Icon=utilities-terminal
 Terminal=false
-Categories=Application;Utility;TerminalEmulator;
+Categories=System;TerminalEmulator;
 StartupNotify=true

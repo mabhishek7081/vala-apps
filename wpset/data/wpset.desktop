@@ -5,6 +5,6 @@ Comment=A simple tool for changing your desktop wallpaper
 Exec=wpset
 Icon=preferences-desktop-wallpaper
 Terminal=false
-Categories=Application;Settings;
+Categories=Settings;
 MimeType=
 StartupNotify=true

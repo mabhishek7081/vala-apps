@@ -204,7 +204,6 @@ public class Window: Gtk.ApplicationWindow {
                     foreach(Gtk.TreePath j in paths) {
                         if (j.to_string() == test.to_string()) {
                             j.next();
-                            print(j.to_string());
                             view.unselect_path(test);
                             view.select_path(j);
                             view.set_cursor(j, null, false);
@@ -229,11 +228,11 @@ public class Window: Gtk.ApplicationWindow {
                 if (path != null) {
                     view.select_path(path);
                     menu = new Vestigo.Menu().activate_file_menu();
-                    menu.popup_at_pointer(event);
+                    menu.popup (null, null, null, event.button, event.time);
                 } else {
                     view.unselect_all();
                     menu = new Vestigo.Menu().activate_context_menu();
-                    menu.popup_at_pointer(event);
+                    menu.popup (null, null, null, event.button, event.time);
                 }
             }
             return false;

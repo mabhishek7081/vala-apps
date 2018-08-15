@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
 Name=Vestigo
-Comment=Lightweight file manager
+Comment=A GTK3 file manager
 Exec=vestigo %F
 Icon=system-file-manager
 Terminal=false
-Categories=Application;Utility;
+Categories=System;FileTools
 MimeType=inode/directory;inode/mount-point;
 StartupNotify=true

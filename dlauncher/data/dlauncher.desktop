@@ -1,11 +1,11 @@
 [Desktop Entry]
 Type=Application
 Name=Dlauncher
-Comment=Dlauncher
+Comment=Application launcher
 Exec=dlauncher
 Icon=start-here
 Terminal=false
-Categories=Application;Other;
+Categories=Utility;
 MimeType=
 StartupNotify=false
 NoDisplay=true

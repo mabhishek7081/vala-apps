@@ -18,10 +18,12 @@ private class Main: Gtk.Application {
         foreach (File f in files) {
             saved_dir = f.get_path();
         }
+        get_active_window().present();
         new Vestigo.IconView().open_location(GLib.File.new_for_path(saved_dir), true);
     }
 
     public override void activate() {
+        get_active_window().present();
         new Vestigo.IconView().open_location(GLib.File.new_for_path(saved_dir), true);
     }
 

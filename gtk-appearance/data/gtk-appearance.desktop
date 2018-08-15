@@ -5,5 +5,5 @@ Comment=Utility for adjusting Gtk appearance
 Exec=gtk-appearance
 Icon=preferences-desktop-theme
 Terminal=false
-Categories=Application;GTK;Settings;DesktopSettings
+Categories=GTK;Settings;DesktopSettings
 StartupNotify=true

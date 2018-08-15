@@ -25,7 +25,7 @@ private class Program : Gtk.Application {
     string terminal_bgcolor;
     string terminal_fgcolor;
     string terminal_font;
-    const int width = 800;
+    const int width = 900;
     const int height = 505;
 
     GLib.Settings settings;
