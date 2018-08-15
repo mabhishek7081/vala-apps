@@ -7,8 +7,8 @@ How to install?
 ````
 cd vala-apps/emendo
 mkdir build; cd build
-meson --prefix=/usr --buildtype=plain
-ninja install
+cmake ..
+make; make install
 gtk-update-icon-cache /usr/share/icons/hicolor
 glib-compile-schemas /usr/share/glib-2.0/schemas
 ````
