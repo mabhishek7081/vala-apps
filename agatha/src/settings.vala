@@ -8,7 +8,7 @@ private int     last_page;
 
 public class Settings: GLib.Object {
     public void get_all() {
-        settings = new GLib.Settings("org.vala-apps.agatha.preferences");
+        settings = new GLib.Settings(APP_ID_PREF);
         get_width();
         get_height();
         get_maximized();

@@ -17,7 +17,9 @@ const string NAME        = "Agatha";
 const string VERSION     = "1.0.0";
 const string DESCRIPTION = "PDF Viewer in GTK3 and Poppler";
 const string ICON        = "evince";
-const string[] AUTHORS   = { "Simargl <archpup-at-gmail-dot-com>", null };
+const string APP_ID      = "org.vala-apps.agatha";
+const string APP_ID_PREF = "org.vala-apps.agatha.preferences";
+const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };
 
 int x_start;
 int y_start;
@@ -50,7 +52,7 @@ public class Application: Gtk.Application {
     };
 
     public Application() {
-        Object(application_id: "org.example.window",
+        Object(application_id: APP_ID,
                flags: GLib.ApplicationFlags.HANDLES_OPEN | GLib.ApplicationFlags.NON_UNIQUE);
         add_action_entries(action_entries, this);
     }
@@ -60,6 +62,7 @@ public class Application: Gtk.Application {
         var settings = new Agatha.Settings();
         settings.get_all();
         // accelerator
+#if GTK_3_22
         set_accels_for_action("app.previous-page",          {"Left"});
         set_accels_for_action("app.next-page",              {"Right"});
         set_accels_for_action("app.scroll-up",              {"Up"});
@@ -72,12 +75,29 @@ public class Application: Gtk.Application {
         set_accels_for_action("app.open",                   {"<Control>O"});
         set_accels_for_action("app.goto",                   {"<Control>G"});
         set_accels_for_action("app.quit",                   {"<Control>Q"});
+#else
+        add_accelerator("Left",             "app.previous-page", null);
+        add_accelerator("Right",            "app.next-page", null);
+        add_accelerator("Up",               "app.scroll-up", null);
+        add_accelerator("Down",             "app.scroll-down", null);
+        add_accelerator("Page_Up",          "app.page-up", null);
+        add_accelerator("Page_Down",        "app.page-down", null);
+        add_accelerator("KP_Add",           "app.zoom-plus", null);
+        add_accelerator("KP_Subtract",      "app.zoom-minus", null);
+        add_accelerator("F11",              "app.full-screen-toggle", null);
+        add_accelerator("<Control>O",       "app.open", null);
+        add_accelerator("<Control>G",       "app.goto", null);
+        add_accelerator("<Control>Q",       "app.quit", null);
+#endif
+
         // context menu
         var menu_popup = new GLib.Menu();
-        menu_popup.append("Open", "app.open");
-        menu_popup.append("Go to page", "app.goto");
-        menu_popup.append("About", "app.about");
-        menu_popup.append("Quit", "app.quit");
+        var section_one = new GLib.Menu();
+        section_one.append("Open", "app.open");
+        section_one.append("Go to page", "app.goto");
+        section_one.append("About", "app.about");
+        section_one.append("Quit", "app.quit");
+        menu_popup.append_section(null, section_one);
         // widgets
         image = new Gtk.Image();
         scrolled = new Gtk.ScrolledWindow(null, null);
@@ -100,9 +120,11 @@ public class Application: Gtk.Application {
         window.add(eventbox);
         window.set_icon_name(ICON);
         window.set_default_size(width, height);
+#if GTK_3_22
         if (maximized == true) {
             window.maximize();
         }
+#endif
         window.show_all();
         window.delete_event.connect(() => {
             action_quit();
@@ -138,7 +160,11 @@ public class Application: Gtk.Application {
     // Mouse EventButton Press
     private bool button_press_event(Gdk.EventButton event) {
         if (event.button == 3) {
-            popup.popup(null, null, null, 0, Gtk.get_current_event_time());
+#if GTK_3_22
+        popup.popup_at_pointer(event);
+#else
+        popup.popup(null, null, null, 0, Gtk.get_current_event_time());
+#endif
         }
         if (event.button == 1 && event.type == Gdk.EventType.2BUTTON_PRESS) {
             action_full_screen_toggle();
@@ -189,14 +215,15 @@ public class Application: Gtk.Application {
 
     // Mouse EventButton Scroll
     private bool button_scroll_event(Gdk.EventScroll event) {
-        Gdk.ScrollDirection direction;
-        event.get_scroll_direction (out direction);
-        if (direction == Gdk.ScrollDirection.DOWN) {
-            action_scroll_down();
-        } else {
+        switch(event.direction) {
+        case Gdk.ScrollDirection.UP:
             action_scroll_up();
+            break;
+        case Gdk.ScrollDirection.DOWN:
+            action_scroll_down();
+            break;
         }
-        return false;
+        return true;
     }
 
     private void action_previous_page() {
@@ -288,7 +315,9 @@ public class Application: Gtk.Application {
 
     private void action_quit() {
         window.get_size(out width, out height);
+#if GTK_3_22
         maximized = window.is_maximized;
+#endif
         var settings = new Agatha.Settings();
         settings.set_width();
         settings.set_height();
