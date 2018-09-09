@@ -15,7 +15,6 @@ private class Program : Gtk.Application {
     Gtk.ApplicationWindow window;
     Gtk.TreeView treeview;
     Gtk.ListStore liststore;
-    Gtk.Revealer revealer;
     Gtk.ScrolledWindow scrolled_window_image;
     Gtk.ScrolledWindow scrolled_window_treeview;
     GLib.Settings settings;
@@ -76,6 +75,7 @@ private class Program : Gtk.Application {
 
     public override void startup() {
         base.startup();
+#if GTK_3_22
         set_accels_for_action("app.next-image",            {"Right"});
         set_accels_for_action("app.previous-image",        {"Left"});
         set_accels_for_action("app.open",                  {"O", "<Primary>O"});
@@ -90,6 +90,22 @@ private class Program : Gtk.Application {
         set_accels_for_action("app.full-screen-toggle",    {"F11"});
         set_accels_for_action("app.show-menu",             {"F10"});
         set_accels_for_action("app.quit",                  {"Q", "<Primary>Q"});
+#else
+        add_accelerator("Right",        "app.next-image", null);
+        add_accelerator("Left",         "app.previous-image", null);
+        add_accelerator("O",            "app.open", null);
+        add_accelerator("W",            "app.set-as-wallpaper", null);
+        add_accelerator("T",            "app.toggle-thumbnails", null);
+        add_accelerator("Page_Down",    "app.rotate-right", null);
+        add_accelerator("Page_Up",      "app.rotate-left", null);
+        add_accelerator("Escape",       "app.full-screen-exit", null);
+        add_accelerator("KP_Add",       "app.zoom-in", null);
+        add_accelerator("KP_Subtract",  "app.zoom-out", null);
+        add_accelerator("KP_0",         "app.zoom-actual", null);
+        add_accelerator("F11",          "app.full-screen-toggle", null);
+        add_accelerator("F10",          "app.show-menu", null);
+        add_accelerator("Q",            "app.quit", null);
+#endif
         var menu = new Menu();
         var section = new GLib.Menu();
         section.append("Open",               "app.open");
@@ -119,7 +135,6 @@ private class Program : Gtk.Application {
         width = settings.get_int("width");
         height = settings.get_int("height");
         slideshow_delay = settings.get_uint("slideshow-delay");
-        list_visible = true;
         image = new Gtk.Image();
         // TreeView
         liststore = new Gtk.ListStore(3, typeof (Gdk.Pixbuf), typeof (string),
@@ -154,13 +169,8 @@ private class Program : Gtk.Application {
                                             Gtk.PolicyType.AUTOMATIC);
         scrolled_window_treeview.set_size_request(200, 0);
         scrolled_window_treeview.add(treeview);
-        revealer = new Gtk.Revealer();
-        revealer.add(scrolled_window_treeview);
-        revealer.set_reveal_child(true);
-        revealer.set_transition_duration(300);
-        revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_LEFT);
         var grid = new Gtk.Grid();
-        grid.attach(revealer,       0, 0, 1, 1);
+        grid.attach(scrolled_window_treeview, 0, 0, 1, 1);
         grid.attach(eventbox_image, 1, 0, 1, 1);
         Gtk.drag_dest_set(grid, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
         grid.drag_data_received.connect(on_drag_data_received);
@@ -179,6 +189,8 @@ private class Program : Gtk.Application {
         add_window(window);
         hadj = scrolled_window_image.get_hadjustment();
         vadj = scrolled_window_image.get_vadjustment();
+        list_visible = false;
+        scrolled_window_treeview.hide();
     }
 
     public override void activate() {
@@ -403,13 +415,15 @@ private class Program : Gtk.Application {
     // Mouse EventButton Scroll
     private bool button_scroll_event(Gdk.EventScroll event) {
         if (file != null) {
-            Gdk.ScrollDirection direction;
-            event.get_scroll_direction (out direction);
-            if (direction == Gdk.ScrollDirection.DOWN) {
-                zoom_image(false, 0.20, 0.04);
-            } else {
+            switch(event.direction) {
+            case Gdk.ScrollDirection.UP:
                 zoom_image(true, 0.20, 0.04);
+                break;
+            case Gdk.ScrollDirection.DOWN:
+                zoom_image(false, 0.20, 0.04);
+                break;
             }
+            return true;
         }
         return true;
     }
@@ -435,10 +449,10 @@ private class Program : Gtk.Application {
 
     private void action_reveal_thumbnails() {
         if (list_visible == false) {
-            revealer.set_reveal_child(true);
+            scrolled_window_treeview.hide();
             list_visible = true;
         } else {
-            revealer.set_reveal_child(false);
+            scrolled_window_treeview.show();
             list_visible = false;
         }
     }
@@ -499,13 +513,26 @@ private class Program : Gtk.Application {
 
     private void action_set_as_wallpaper() {
         if (file != null) {
-            var gnome_settings = new GLib.Settings("org.gnome.desktop.background");
-            gnome_settings.set_string("picture-uri", file);
-            GLib.Settings.sync();
-            try {
-                Process.spawn_command_line_sync("wpset-shell --set");
-            } catch(Error error) {
-                stderr.printf("error: %s\n", error.message);
+            bool test_schemas = GLib.FileUtils.test("/usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml", FileTest.IS_REGULAR);
+            if (test_schemas == true) {
+                var gnome_settings = new GLib.Settings("org.gnome.desktop.background");
+                gnome_settings.set_string("picture-uri", file);
+                GLib.Settings.sync();
+                try {
+                    Process.spawn_command_line_sync("wpset-shell --set");
+                } catch(Error error) {
+                    stderr.printf("error: %s\n", error.message);
+                }
+            } else {
+            Gtk.MessageDialog msg = new Gtk.MessageDialog (window, Gtk.DialogFlags.MODAL, Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, "Error: Settings schema 'org.gnome.desktop.background' is not installed");
+			msg.response.connect ((response_id) => {
+			switch (response_id) {
+				case Gtk.ResponseType.OK:
+                break;
+                }
+                msg.destroy();
+            });
+            msg.show ();
             }
         }
     }
@@ -562,10 +589,23 @@ private class Program : Gtk.Application {
 
     private void action_edit_with_gimp() {
         if (file != null) {
-            try {
-                Process.spawn_command_line_async("gimp %s".printf(file));
-            } catch(Error error) {
-                stderr.printf("error: %s\n", error.message);
+            bool test_gimp = GLib.FileUtils.test("/usr/bin/gimp", FileTest.IS_EXECUTABLE);
+            if (test_gimp == true) {
+                try {
+                    Process.spawn_command_line_async("gimp %s".printf(file));
+                } catch(Error error) {
+                    stderr.printf("error: %s\n", error.message);
+                }
+            } else {
+            Gtk.MessageDialog msg = new Gtk.MessageDialog (window, Gtk.DialogFlags.MODAL, Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, "Error: Gimp is not installed!");
+			msg.response.connect ((response_id) => {
+			switch (response_id) {
+				case Gtk.ResponseType.OK:
+                break;
+                }
+                msg.destroy();
+            });
+            msg.show ();
             }
         }
     }
