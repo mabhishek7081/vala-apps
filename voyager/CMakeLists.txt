@@ -34,4 +34,3 @@ set(CMAKE_INSTALL_PREFIX /usr)
 
 install(TARGETS voyager DESTINATION bin)
 install(FILES data/voyager.desktop DESTINATION share/applications)
-install(FILES data/org.vala-apps.voyager.gschema.xml DESTINATION share/glib-2.0/schemas)

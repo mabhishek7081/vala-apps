@@ -17,14 +17,10 @@ private class Program : Gtk.Application {
     Gtk.ListStore liststore;
     Gtk.ScrolledWindow scrolled_window_image;
     Gtk.ScrolledWindow scrolled_window_treeview;
-    GLib.Settings settings;
-    int width;
-    int height;
     int pixbuf_width;
     int pixbuf_height;
     int saved_pixbuf_width;
     int saved_pixbuf_height;
-    uint slideshow_delay;
     bool slideshow_active;
     bool list_visible;
     string file;
@@ -133,10 +129,6 @@ private class Program : Gtk.Application {
         section.append("Quit",               "app.quit");
         menu.append_section(null, section);
         set_app_menu(menu);
-        settings = new GLib.Settings("org.vala-apps.voyager.preferences");
-        width = settings.get_int("width");
-        height = settings.get_int("height");
-        slideshow_delay = settings.get_uint("slideshow-delay");
         image = new Gtk.Image();
         // TreeView
         liststore = new Gtk.ListStore(3, typeof (Gdk.Pixbuf), typeof (string),
@@ -180,12 +172,10 @@ private class Program : Gtk.Application {
         window = new Gtk.ApplicationWindow(this);
         window.add(grid);
         window.set_title(NAME);
-        window.set_default_size(width, height);
-        window.set_size_request(500, 500);
+        window.set_default_size(640, 550);
         window.set_icon_name(ICON);
         window.show_all();
         window.delete_event.connect(() => {
-            save_settings();
             quit();
             return true;
         });
@@ -443,13 +433,6 @@ private class Program : Gtk.Application {
         Gtk.drag_finish(drag_context, true, false, time);
     }
 
-    private void save_settings() {
-        window.get_size(out width, out height);
-        settings.set_int("width", width);
-        settings.set_int("height", height);
-        GLib.Settings.sync();
-    }
-
     private void action_reveal_thumbnails() {
         if (list_visible == false) {
             scrolled_window_treeview.show();
@@ -498,7 +481,7 @@ private class Program : Gtk.Application {
 
     private void action_open() {
         Gtk.FileFilter filter = new Gtk.FileFilter();
-		filter.add_mime_type("image/*");
+        filter.add_mime_type("image/*");
         var dialog = new Gtk.FileChooserDialog("Open", window,
                                                Gtk.FileChooserAction.OPEN,
                                                "gtk-cancel", Gtk.ResponseType.CANCEL,
@@ -581,7 +564,7 @@ private class Program : Gtk.Application {
     private void action_slideshow() {
         if (file != null) {
             if (slideshow_active == false) {
-                timeout_id = GLib.Timeout.add(slideshow_delay,
+                timeout_id = GLib.Timeout.add(2000,
                                               (GLib.SourceFunc)action_next_image, 0);
                 slideshow_active = true;
             } else {
@@ -620,7 +603,6 @@ private class Program : Gtk.Application {
         if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) != 0) {
             action_full_screen_exit();
         } else {
-            scrolled_window_treeview.hide();
             window.fullscreen();
             saved_pixbuf_width = (int)pixbuf_scaled.get_width();
             saved_pixbuf_height = (int)pixbuf_scaled.get_height();
@@ -634,7 +616,6 @@ private class Program : Gtk.Application {
 
     private void action_full_screen_exit() {
         if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) != 0) {
-            scrolled_window_treeview.show();
             window.unfullscreen();
             load_pixbuf_with_size(saved_pixbuf_width, saved_pixbuf_height);
         }
@@ -658,7 +639,6 @@ private class Program : Gtk.Application {
     }
 
     private void action_quit() {
-        save_settings();
         this.quit();
     }
 
