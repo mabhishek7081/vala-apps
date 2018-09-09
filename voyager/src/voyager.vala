@@ -92,7 +92,9 @@ private class Program : Gtk.Application {
         set_accels_for_action("app.quit",                  {"Q", "<Primary>Q"});
 #else
         add_accelerator("Right",        "app.next-image", null);
+        add_accelerator("L",            "app.next-image", null);
         add_accelerator("Left",         "app.previous-image", null);
+        add_accelerator("K",            "app.previous-image", null);
         add_accelerator("O",            "app.open", null);
         add_accelerator("W",            "app.set-as-wallpaper", null);
         add_accelerator("T",            "app.toggle-thumbnails", null);
@@ -179,6 +181,7 @@ private class Program : Gtk.Application {
         window.add(grid);
         window.set_title(NAME);
         window.set_default_size(width, height);
+        window.set_size_request(500, 500);
         window.set_icon_name(ICON);
         window.show_all();
         window.delete_event.connect(() => {
@@ -449,10 +452,10 @@ private class Program : Gtk.Application {
 
     private void action_reveal_thumbnails() {
         if (list_visible == false) {
-            scrolled_window_treeview.hide();
+            scrolled_window_treeview.show();
             list_visible = true;
         } else {
-            scrolled_window_treeview.show();
+            scrolled_window_treeview.hide();
             list_visible = false;
         }
     }
@@ -494,12 +497,15 @@ private class Program : Gtk.Application {
     }
 
     private void action_open() {
+        Gtk.FileFilter filter = new Gtk.FileFilter();
+		filter.add_mime_type("image/*");
         var dialog = new Gtk.FileChooserDialog("Open", window,
                                                Gtk.FileChooserAction.OPEN,
                                                "gtk-cancel", Gtk.ResponseType.CANCEL,
                                                "gtk-open", Gtk.ResponseType.ACCEPT);
         dialog.set_transient_for(window);
         dialog.set_select_multiple(false);
+        dialog.set_filter(filter);
         if (file != null) {
             dialog.set_current_folder(Path.get_dirname(file));
         }
