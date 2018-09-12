@@ -502,6 +502,25 @@ private class Program : Gtk.Application {
 
     private void action_set_as_wallpaper() {
         if (file != null) {
+            bool test_feh = GLib.FileUtils.test("/usr/bin/feh", FileTest.IS_EXECUTABLE);
+            if (test_feh == true) {
+                try {
+                    Process.spawn_command_line_async("feh --bg-scale \'%s\'".printf(file));
+                } catch(Error error) {
+                    stderr.printf("error: %s\n", error.message);
+                }
+                return;
+            }
+            bool test_xli = GLib.FileUtils.test("/usr/bin/xli", FileTest.IS_EXECUTABLE);
+            bool test_xli_local = GLib.FileUtils.test("/usr/local/bin/xli", FileTest.IS_EXECUTABLE);
+            if (test_xli == true || test_xli_local == true) {
+                try {
+                    Process.spawn_command_line_async("xli -onroot -fillscreen \'%s\'".printf(file));
+                } catch(Error error) {
+                    stderr.printf("error: %s\n", error.message);
+                }
+                return;
+            }
             bool test_schemas = GLib.FileUtils.test("/usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml", FileTest.IS_REGULAR);
             if (test_schemas == true) {
                 var gnome_settings = new GLib.Settings("org.gnome.desktop.background");
@@ -581,7 +600,7 @@ private class Program : Gtk.Application {
             bool test_gimp = GLib.FileUtils.test("/usr/bin/gimp", FileTest.IS_EXECUTABLE);
             if (test_gimp == true) {
                 try {
-                    Process.spawn_command_line_async("gimp %s".printf(file));
+                    Process.spawn_command_line_async("gimp \'%s\'".printf(file));
                 } catch(Error error) {
                     stderr.printf("error: %s\n", error.message);
                 }
