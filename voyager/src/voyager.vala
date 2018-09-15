@@ -511,11 +511,11 @@ private class Program : Gtk.Application {
                 }
                 return;
             }
-            bool test_xli = GLib.FileUtils.test("/usr/bin/xli", FileTest.IS_EXECUTABLE);
-            bool test_xli_local = GLib.FileUtils.test("/usr/local/bin/xli", FileTest.IS_EXECUTABLE);
-            if (test_xli == true || test_xli_local == true) {
+            bool test_xsri = GLib.FileUtils.test("/usr/bin/xsri", FileTest.IS_EXECUTABLE);
+            bool test_xsri_local = GLib.FileUtils.test("/usr/local/bin/xsri", FileTest.IS_EXECUTABLE);
+            if (test_xsri == true || test_xsri_local == true) {
                 try {
-                    Process.spawn_command_line_async("xli -onroot -fillscreen \'%s\'".printf(file));
+                    Process.spawn_command_line_async("xsri --center-x --center-y --scale-width=100 --scale-height=100 \'%s\'".printf(file));
                 } catch(Error error) {
                     stderr.printf("error: %s\n", error.message);
                 }

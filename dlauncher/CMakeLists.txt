@@ -13,7 +13,7 @@ if (GTK_3_22_FOUND)
     set (GLOBAL_VALAC_OPTIONS ${GLOBAL_VALAC_OPTIONS} --define=GTK_3_22)
     message ("-- Compiling for Gtk 3.22")
 else (GTK_3_22_FOUND)
-    message ("-- Compiling for Gtk 3.18")
+    message ("-- Compiling for Gtk < 3.20")
 endif (GTK_3_22_FOUND)
 
 include_directories(${GTK3_INCLUDE_DIRS})
