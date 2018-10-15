@@ -308,19 +308,19 @@ public class Operations: GLib.Object {
             // ui
             var label_name = new Gtk.Label("");
             label_name.set_markup("<b>Name:</b> %s".printf(name));
-            label_name.set_xalign(0.0f);
+            label_name.set_halign(Gtk.Align.START);
             var label_size = new Gtk.Label("");
             label_size.set_markup("<b>Size:</b> %s".printf(size));
-            label_size.set_xalign(0.0f);
+            label_size.set_halign(Gtk.Align.START);
             var label_type = new Gtk.Label("");
             label_type.set_markup("<b>Type:</b> %s".printf(type));
-            label_type.set_xalign(0.0f);
+            label_type.set_halign(Gtk.Align.START);
             var label_location = new Gtk.Label("");
             label_location.set_markup("<b>Location:</b> %s".printf(location));
-            label_location.set_xalign(0.0f);
+            label_location.set_halign(Gtk.Align.START);
             var label_modified = new Gtk.Label("");
             label_modified.set_markup("<b>Modified:</b> %s".printf(modified));
-            label_modified.set_xalign(0.0f);
+            label_modified.set_halign(Gtk.Align.START);
             var grid = new Gtk.Grid();
             grid.attach(label_name,     0, 0, 1, 1);
             grid.attach(label_size,     0, 1, 1, 1);

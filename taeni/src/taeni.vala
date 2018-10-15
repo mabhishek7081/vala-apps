@@ -114,7 +114,8 @@ private class Program : Gtk.Application {
         Gdk.Geometry hints = Gdk.Geometry();
         hints.height_inc = 19;
         hints.width_inc = 10;
-        window.set_geometry_hints(null, hints, Gdk.WindowHints.RESIZE_INC);
+        //window.set_geometry_hints(null, hints, Gdk.WindowHints.RESIZE_INC);
+        window.set_geometry_hints(window, hints, Gdk.WindowHints.RESIZE_INC);
         window.set_default_size(width, height);
         window.set_title(NAME);
         window.add(notebook);
@@ -130,7 +131,8 @@ private class Program : Gtk.Application {
     }
 
     private void execute_command(string command) {
-        term.feed_child("%s\n".printf(command).to_utf8());
+        //term.feed_child("%s\n".printf(command).to_utf8());
+        term.feed_child("%s\n".printf(command), command.length);
     }
 
     private void create_tab(string path) {

@@ -14,6 +14,6 @@ glib-compile-schemas /usr/share/glib-2.0/schemas
 ````
 Dependencies:
 ````
-gtk+-3.0 >= 3.8
+gtk+-3.0
 libgnome-menu-3.0
 ````

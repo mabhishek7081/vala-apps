@@ -5,7 +5,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(ValaPrecompile)
 
 find_package(PkgConfig)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0>=3.22.0)
+pkg_check_modules(GTK3 REQUIRED gtk+-3.0>=3.14.0)
 pkg_check_modules(GTKSOURCEVIEW3 REQUIRED gtksourceview-3.0)
 
 include_directories(${GTKSOURCEVIEW3_INCLUDE_DIRS})

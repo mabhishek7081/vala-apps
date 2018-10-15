@@ -90,9 +90,9 @@ public class Apply: GLib.Object {
             var tabs = new Emendo.Tabs();
             var view = tabs.get_sourceview_at_tab(i);
             if (pattern_show == true) {
-                view.set_background_pattern(Gtk.SourceBackgroundPatternType.GRID);
+                //view.set_background_pattern(Gtk.SourceBackgroundPatternType.GRID);
             } else {
-                view.set_background_pattern(Gtk.SourceBackgroundPatternType.NONE);
+                //view.set_background_pattern(Gtk.SourceBackgroundPatternType.NONE);
             }
         }
     }

@@ -63,7 +63,6 @@ public class Window: Gtk.ApplicationWindow {
 
     private void add_widgets(Gtk.ApplicationWindow appwindow) {
         places = new Gtk.PlacesSidebar();
-        places.set_show_trash(false);
         places.width_request = 180;
         places.vexpand = true;
         places.hexpand = false;

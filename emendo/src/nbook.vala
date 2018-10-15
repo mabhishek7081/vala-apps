@@ -23,14 +23,14 @@ public class NBook: Gtk.Notebook {
         tab_view.set_insert_spaces_instead_of_tabs(spaces);
         tab_view.set_auto_indent(auto_indent);
         if (pattern_show == true) {
-            tab_view.set_background_pattern(Gtk.SourceBackgroundPatternType.GRID);
+            //tab_view.set_background_pattern(Gtk.SourceBackgroundPatternType.GRID);
         } else {
-            tab_view.set_background_pattern(Gtk.SourceBackgroundPatternType.NONE);
+            //tab_view.set_background_pattern(Gtk.SourceBackgroundPatternType.NONE);
         }
         // default
         tab_view.set_cursor_visible(true);
         tab_view.set_left_margin(10);
-        tab_view.set_smart_backspace(true);
+        //tab_view.set_smart_backspace(true);
         // drag and drop
         Gtk.drag_dest_set(tab_view, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
         tab_view.drag_data_received.connect(on_drag_data_received);
