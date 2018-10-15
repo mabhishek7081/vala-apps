@@ -21,7 +21,7 @@
       <description>Editor font</description>
     </key>    
     <key name="scheme" type="s">
-      <default>'kate'</default>
+      <default>'solarized-dark'</default>
       <summary>scheme</summary>
       <description>Color scheme</description>
     </key>    
