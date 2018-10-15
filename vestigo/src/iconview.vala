@@ -2,6 +2,7 @@ namespace Vestigo {
 public class IconView : GLib.Object {
     string content;
     bool symlink;
+    string target;
 
     public void open_location(GLib.File file, bool start_monitor) {
         list_dir  = new GLib.List<string>();
@@ -32,9 +33,12 @@ public class IconView : GLib.Object {
                     pbuf = icon_theme.load_icon("folder", icon_size, 0);
                     if (symlink == true) {
                         pbuf = add_emblem(pbuf);
+                        target = get_target(fullpath);
+                    } else  {
+                        target = i.replace("&", "&amp;");
                     }
                     model.append(out iter);
-                    model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, i.replace("&", "&amp;"));
+                    model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, target);
                 }
                 foreach(string i in list_file) {
                     fullpath = GLib.Path.build_filename(current_dir, i);
@@ -50,9 +54,12 @@ public class IconView : GLib.Object {
                     }
                     if (symlink == true) {
                         pbuf = add_emblem(pbuf);
+                        target= get_target(fullpath);
+                    } else  {
+                        target = i.replace("&", "&amp;");
                     }
                     model.append(out iter);
-                    model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, i.replace("&", "&amp;"));
+                    model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, target);
                 }
                 window.set_title("%s".printf(current_dir));
                 uint len = list_dir.length() + list_file.length();
@@ -221,6 +228,13 @@ public class IconView : GLib.Object {
         var file_info = file_check.query_info("standard::is-symlink", 0, null);
         symlink = file_info.get_is_symlink();
         return symlink;
+    }
+
+    public string get_target(string filepath) throws GLib.Error {
+        var file_check = File.new_for_path(filepath);
+        var file_info = file_check.query_info("standard::symlink-target", 0, null);
+        target = "Link → "+file_info.get_symlink_target();
+        return target;
     }
 
 }
