@@ -2,6 +2,7 @@ namespace Vestigo {
 public class Operations: GLib.Object {
 
     public void add_devices_grid() {
+        clear_grid(grid_devices);
         var uc = new GUdev.Client(null);
         GLib.List<GUdev.Device> devs = uc.query_by_subsystem("block");
         int i = 0;
@@ -18,9 +19,27 @@ public class Operations: GLib.Object {
         var button = new Gtk.Button.with_label(device.replace("/dev/",""));
         button.set_halign(Gtk.Align.START);
         button.set_always_show_image(true);
-        button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
-                         Gtk.IconSize.MENU));
         button.set_relief(Gtk.ReliefStyle.NONE);
+        // set device icon
+        button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
+                            Gtk.IconSize.MENU));
+        if (GLib.File.new_for_path(mount_point).query_exists() == true) {
+            string name;
+            int c=0;
+            try {
+                var d = Dir.open(mount_point);
+                while ((name = d.read_name()) != null) {
+                    c++;
+                }
+                if (c != 0) {
+                button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
+                            Gtk.IconSize.MENU));
+                }
+            } catch (GLib.Error e) {
+                stderr.printf("%s\n", e.message);
+            }
+        }
+        // button clicked
         button.clicked.connect(() => {
             if (GLib.File.new_for_path(mount_point).query_exists() == false) {
                 execute_command_sync("mkdir %s".printf(mount_point));
@@ -35,6 +54,8 @@ public class Operations: GLib.Object {
                     }
                     if (c == 0) {
                         execute_command_sync("mount %s %s".printf(device, mount_point));
+                        button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
+                            Gtk.IconSize.MENU));
                     }
                 } catch (GLib.Error e) {
                     stderr.printf("%s\n", e.message);
@@ -45,7 +66,7 @@ public class Operations: GLib.Object {
         grid_devices.attach(button, 0, position, 1, 1);
     }
 
-    public void clear_bookmarks_grid() {
+    public void clear_grid(Gtk.Grid g) {
         int j = 50;
         while (j != -1) {
             grid_bookmarks.remove_row(j);
@@ -54,7 +75,7 @@ public class Operations: GLib.Object {
     }
 
     public void add_bookmarks_grid() {
-        clear_bookmarks_grid();
+        clear_grid(grid_bookmarks);
         string bookmark = GLib.Path.build_filename(
                               GLib.Environment.get_user_config_dir(), "gtk-3.0/bookmarks");
         var bookmarks_file = File.new_for_path(bookmark);
