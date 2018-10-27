@@ -1,5 +1,138 @@
 namespace Vestigo {
 public class Operations: GLib.Object {
+
+    public void add_devices_grid() {
+        var uc = new GUdev.Client(null);
+        GLib.List<GUdev.Device> devs = uc.query_by_subsystem("block");
+        int i = 0;
+        foreach (GUdev.Device d in devs) {
+            if (d.get_devtype() == "partition") {
+                add_button_to_devices_grid("/mnt/"+d.get_name(), "/dev/"+d.get_name(), i);
+                i++;
+            }
+        }
+    }
+
+    void add_button_to_devices_grid(string mount_point, string device,
+                                    int position) {
+        var button = new Gtk.Button.with_label(device.replace("/dev/",""));
+        button.set_halign(Gtk.Align.START);
+        button.set_always_show_image(true);
+        button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
+                         Gtk.IconSize.MENU));
+        button.set_relief(Gtk.ReliefStyle.NONE);
+        button.clicked.connect(() => {
+            if (GLib.File.new_for_path(mount_point).query_exists() == false) {
+                execute_command_sync("mkdir %s".printf(mount_point));
+                execute_command_sync("mount %s %s".printf(device, mount_point));
+            } else {
+                string name;
+                int c=0;
+                try {
+                    var d = Dir.open(mount_point);
+                    while ((name = d.read_name()) != null) {
+                        c++;
+                    }
+                    if (c == 0) {
+                        execute_command_sync("mount %s %s".printf(device, mount_point));
+                    }
+                } catch (GLib.Error e) {
+                    stderr.printf("%s\n", e.message);
+                }
+            }
+            new Vestigo.IconView().open_location(GLib.File.new_for_path(mount_point), true);
+        });
+        grid_devices.attach(button, 0, position, 1, 1);
+    }
+
+    public void clear_bookmarks_grid() {
+        int j = 50;
+        while (j != -1) {
+            grid_bookmarks.remove_row(j);
+            j--;
+        }
+    }
+
+    public void add_bookmarks_grid() {
+        clear_bookmarks_grid();
+        string bookmark = GLib.Path.build_filename(
+                              GLib.Environment.get_user_config_dir(), "gtk-3.0/bookmarks");
+        var bookmarks_file = File.new_for_path(bookmark);
+        try {
+            var dis = new DataInputStream (bookmarks_file.read ());
+            string line;
+            int i=0;
+            while ((line = dis.read_line (null)) != null) {
+                int l = line.index_of_char(' ');
+                string s = GLib.Path.get_basename(line.slice (0, l));
+                string p = line.slice(0, l).replace("file://", "");
+                add_button_to_bookmarks_grid(p, s, i);
+                i++;
+            }
+        } catch (Error e) {
+            error ("%s", e.message);
+        }
+    }
+
+    void add_button_to_bookmarks_grid(string path, string label, int position) {
+        var button = new Gtk.Button.with_label(label);
+        button.set_halign(Gtk.Align.START);
+        button.set_always_show_image(true);
+        button.set_image(new Gtk.Image.from_icon_name("folder-symbolic",
+                         Gtk.IconSize.MENU));
+        button.set_relief(Gtk.ReliefStyle.NONE);
+        button.button_press_event.connect((w, e) => {
+            if (e.button == 1) {
+                new Vestigo.IconView().open_location(GLib.File.new_for_path(path), true);
+            }
+            if (e.button == 2) {
+                remove_bookmark(button.get_label());
+            }
+            return false;
+        });
+        grid_bookmarks.attach(button, 0, position, 1, 1);
+        grid_bookmarks.show_all();
+    }
+
+    // Bookmark
+    public void add_bookmark() {
+        GLib.FileOutputStream fos = null;
+        string bookmark = GLib.Path.build_filename(
+                              GLib.Environment.get_user_config_dir(), "gtk-3.0/bookmarks");
+        try {
+            fos = File.new_for_path(bookmark).append_to(FileCreateFlags.NONE);
+        } catch (GLib.Error e) {
+            stderr.printf ("%s\n", e.message);
+        }
+        string current_uri = GLib.File.new_for_path(current_dir).get_uri() + " " +
+                             GLib.Path.get_basename(current_dir) + "\n";
+        try {
+            fos.write(current_uri.data);
+        } catch (GLib.IOError e) {
+            stderr.printf ("%s\n", e.message);
+        }
+        add_bookmarks_grid();
+    }
+
+    public void remove_bookmark(string rem) {
+        string bookmark = GLib.Path.build_filename(
+                              GLib.Environment.get_user_config_dir(), "gtk-3.0/bookmarks");
+        var bookmarks_file = File.new_for_path(bookmark);
+        try {
+            var dis = new DataInputStream (bookmarks_file.read ());
+            string line;
+            string match = " " + rem;
+            while ((line = dis.read_line (null)) != null) {
+                if (line.contains(match)) {
+                    execute_command_sync("sed -i '/%s/d' %s".printf(match, bookmark));
+                    add_bookmarks_grid();
+                }
+            }
+        } catch (Error e) {
+            error ("%s", e.message);
+        }
+    }
+
     // Make
     public void make_new(bool file) {
         string entry_title = null;
@@ -48,24 +181,6 @@ public class Operations: GLib.Object {
                                      typed)));
             }
         dialog.destroy();
-    }
-
-    // Bookmark
-    public void add_bookmark() {
-        GLib.FileOutputStream fos = null;
-        string bookmark = GLib.Path.build_filename(
-                              GLib.Environment.get_user_config_dir(), "gtk-3.0/bookmarks");
-        try {
-            fos = File.new_for_path(bookmark).append_to(FileCreateFlags.NONE);
-        } catch (GLib.Error e) {
-            stderr.printf ("%s\n", e.message);
-        }
-        string current_uri = GLib.File.new_for_path(current_dir).get_uri() + "\n";
-        try {
-            fos.write(current_uri.data);
-        } catch (GLib.IOError e) {
-            stderr.printf ("%s\n", e.message);
-        }
     }
 
     // Open

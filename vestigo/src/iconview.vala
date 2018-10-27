@@ -64,7 +64,6 @@ public class IconView : GLib.Object {
                 window.set_title("%s".printf(current_dir));
                 uint len = list_dir.length() + list_file.length();
                 statusbar.push(context_id, "%s item(s)".printf(len.to_string()));
-                places.set_location(file);
                 GLib.Environment.set_current_dir(current_dir);
                 view.grab_focus();
                 if (start_monitor == true) {

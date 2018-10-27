@@ -9,12 +9,13 @@ Gtk.ApplicationWindow window;
 Gtk.IconView view;
 Gtk.ListStore model;
 Gtk.Menu menu;
-Gtk.PlacesSidebar places;
 Gtk.TreeIter iter;
 GLib.FileMonitor current_monitor;
 GLib.TimeoutSource time;
 GLib.MainLoop loop;
 Gtk.Statusbar statusbar;
+Gtk.Grid grid_devices;
+Gtk.Grid grid_bookmarks;
 uint context_id;
 const Gtk.TargetEntry[] targets = { {"text/uri-list",0,0} };
 

@@ -26,7 +26,7 @@
       <description>Saved directory from previous session</description>
     </key>
     <key name="terminal" type="s">
-      <default>'taeni -d '</default>
+      <default>'system-terminal-emulator'</default>
       <summary>Default terminal with command for starting directory</summary>
       <description>Default terminal with command for starting directory</description>
     </key> 

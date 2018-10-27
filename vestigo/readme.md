@@ -15,4 +15,5 @@ glib-compile-schemas /usr/share/glib-2.0/schemas
 Dependencies:
 ````
 gtk+-3.0
+gudev-1.0
 ````

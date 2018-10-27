@@ -89,7 +89,6 @@ public class Application: Gtk.Application {
         add_accelerator("<Control>G",       "app.goto", null);
         add_accelerator("<Control>Q",       "app.quit", null);
 #endif
-
         // context menu
         var menu_popup = new GLib.Menu();
         var section_one = new GLib.Menu();
@@ -161,9 +160,9 @@ public class Application: Gtk.Application {
     private bool button_press_event(Gdk.EventButton event) {
         if (event.button == 3) {
 #if GTK_3_22
-        popup.popup_at_pointer(event);
+            popup.popup_at_pointer(event);
 #else
-        popup.popup(null, null, null, 0, Gtk.get_current_event_time());
+            popup.popup(null, null, null, 0, Gtk.get_current_event_time());
 #endif
         }
         if (event.button == 1 && event.type == Gdk.EventType.2BUTTON_PRESS) {

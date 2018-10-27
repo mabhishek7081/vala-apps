@@ -512,16 +512,20 @@ private class Program : Gtk.Application {
                 return;
             }
             bool test_xsri = GLib.FileUtils.test("/usr/bin/xsri", FileTest.IS_EXECUTABLE);
-            bool test_xsri_local = GLib.FileUtils.test("/usr/local/bin/xsri", FileTest.IS_EXECUTABLE);
+            bool test_xsri_local = GLib.FileUtils.test("/usr/local/bin/xsri",
+                                   FileTest.IS_EXECUTABLE);
             if (test_xsri == true || test_xsri_local == true) {
                 try {
-                    Process.spawn_command_line_async("xsri --center-x --center-y --scale-width=100 --scale-height=100 \'%s\'".printf(file));
+                    Process.spawn_command_line_async("xsri --center-x --center-y --scale-width=100 --scale-height=100 \'%s\'".printf(
+                                                         file));
                 } catch(Error error) {
                     stderr.printf("error: %s\n", error.message);
                 }
                 return;
             }
-            bool test_schemas = GLib.FileUtils.test("/usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml", FileTest.IS_REGULAR);
+            bool test_schemas =
+                GLib.FileUtils.test("/usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml",
+                                    FileTest.IS_REGULAR);
             if (test_schemas == true) {
                 var gnome_settings = new GLib.Settings("org.gnome.desktop.background");
                 gnome_settings.set_string("picture-uri", file);
@@ -532,15 +536,17 @@ private class Program : Gtk.Application {
                     stderr.printf("error: %s\n", error.message);
                 }
             } else {
-            Gtk.MessageDialog msg = new Gtk.MessageDialog (window, Gtk.DialogFlags.MODAL, Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, "Error: Settings schema 'org.gnome.desktop.background' is not installed");
-			msg.response.connect ((response_id) => {
-			switch (response_id) {
-				case Gtk.ResponseType.OK:
-                break;
-                }
-                msg.destroy();
-            });
-            msg.show ();
+                Gtk.MessageDialog msg = new Gtk.MessageDialog (window, Gtk.DialogFlags.MODAL,
+                        Gtk.MessageType.WARNING, Gtk.ButtonsType.OK,
+                        "Error: Settings schema 'org.gnome.desktop.background' is not installed");
+                msg.response.connect ((response_id) => {
+                    switch (response_id) {
+                    case Gtk.ResponseType.OK:
+                        break;
+                    }
+                    msg.destroy();
+                });
+                msg.show ();
             }
         }
     }
@@ -605,15 +611,16 @@ private class Program : Gtk.Application {
                     stderr.printf("error: %s\n", error.message);
                 }
             } else {
-            Gtk.MessageDialog msg = new Gtk.MessageDialog (window, Gtk.DialogFlags.MODAL, Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, "Error: Gimp is not installed!");
-			msg.response.connect ((response_id) => {
-			switch (response_id) {
-				case Gtk.ResponseType.OK:
-                break;
-                }
-                msg.destroy();
-            });
-            msg.show ();
+                Gtk.MessageDialog msg = new Gtk.MessageDialog (window, Gtk.DialogFlags.MODAL,
+                        Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, "Error: Gimp is not installed!");
+                msg.response.connect ((response_id) => {
+                    switch (response_id) {
+                    case Gtk.ResponseType.OK:
+                        break;
+                    }
+                    msg.destroy();
+                });
+                msg.show ();
             }
         }
     }

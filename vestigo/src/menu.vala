@@ -94,6 +94,5 @@ public class Menu: GLib.Object {
         menu.show_all();
         return menu;
     }
-
 }
 }
