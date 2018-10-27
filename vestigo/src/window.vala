@@ -105,10 +105,15 @@ public class Window: Gtk.ApplicationWindow {
         buttons_grid.attach(button_rootfs,       0, 0, 1, 1);
         buttons_grid.attach(button_home,         1, 0, 1, 1);
         buttons_grid.attach(button_up,           2, 0, 1, 1);
+        var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+        var pane = new Gtk.Paned (Gtk.Orientation.VERTICAL);
+        pane.add1(scrolled_devices);
+        pane.add2(scrolled_bookmarks);
+        pane.set_position(180);
         var places_grid = new Gtk.Grid();
-        places_grid.attach(buttons_grid,        0, 0, 1, 1);
-        places_grid.attach(scrolled_devices,    0, 1, 1, 1);
-        places_grid.attach(scrolled_bookmarks,  0, 2, 1, 1);
+        places_grid.attach(buttons_grid,    0, 0, 1, 1);
+        places_grid.attach(separator,       0, 1, 1, 1);
+        places_grid.attach(pane,            0, 2, 1, 1);
         model = new Gtk.ListStore(4, typeof (Gdk.Pixbuf), typeof (string),
                                   typeof (string), typeof (string));
         view = new Gtk.IconView.with_model(model);

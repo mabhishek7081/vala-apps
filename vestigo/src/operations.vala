@@ -22,7 +22,7 @@ public class Operations: GLib.Object {
         button.set_relief(Gtk.ReliefStyle.NONE);
         // set device icon
         button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
-                            Gtk.IconSize.MENU));
+                         Gtk.IconSize.MENU));
         if (GLib.File.new_for_path(mount_point).query_exists() == true) {
             string name;
             int c=0;
@@ -32,8 +32,8 @@ public class Operations: GLib.Object {
                     c++;
                 }
                 if (c != 0) {
-                button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
-                            Gtk.IconSize.MENU));
+                    button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
+                                     Gtk.IconSize.MENU));
                 }
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
@@ -43,28 +43,29 @@ public class Operations: GLib.Object {
         button.button_press_event.connect((w, e) => {
             if (e.button == 1) {
                 if (GLib.File.new_for_path(mount_point).query_exists() == false) {
-                execute_command_sync("mkdir %s".printf(mount_point));
-                execute_command_sync("mount %s %s".printf(device, mount_point));
-            } else {
-                string name;
-                int c=0;
-                try {
-                    var d = Dir.open(mount_point);
-                    while ((name = d.read_name()) != null) {
-                        c++;
+                    execute_command_sync("mkdir %s".printf(mount_point));
+                    execute_command_sync("mount %s %s".printf(device, mount_point));
+                } else {
+                    string name;
+                    int c=0;
+                    try {
+                        var d = Dir.open(mount_point);
+                        while ((name = d.read_name()) != null) {
+                            c++;
+                        }
+                        if (c == 0) {
+                            execute_command_sync("mount %s %s".printf(device, mount_point));
+                            execute_command_sync("notify-send \"Vestigo\" \"Mounted %s\"".printf("/dev/" +
+                                                 button.get_label()));
+                            execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
+                            button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
+                                             Gtk.IconSize.MENU));
+                        }
+                    } catch (GLib.Error e) {
+                        stderr.printf("%s\n", e.message);
                     }
-                    if (c == 0) {
-                        execute_command_sync("mount %s %s".printf(device, mount_point));
-                        execute_command_sync("notify-send \"Vestigo\" \"Mounted %s\"".printf("/dev/" + button.get_label()));
-                        execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
-                        button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
-                            Gtk.IconSize.MENU));
-                    }
-                } catch (GLib.Error e) {
-                    stderr.printf("%s\n", e.message);
                 }
-            }
-            new Vestigo.IconView().open_location(GLib.File.new_for_path(mount_point), true);
+                new Vestigo.IconView().open_location(GLib.File.new_for_path(mount_point), true);
             }
             // middle click unmount
             if (e.button == 2) {
@@ -78,12 +79,14 @@ public class Operations: GLib.Object {
                     }
                     // mount point is empty
                     if (c == 0) {
-                        execute_command_sync("notify-send \"Vestigo\" \"Ejected %s\"".printf("/dev/" + button.get_label()));
+                        execute_command_sync("notify-send \"Vestigo\" \"Ejected %s\"".printf("/dev/" +
+                                             button.get_label()));
                         execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
                         button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
-                            Gtk.IconSize.MENU));
+                                         Gtk.IconSize.MENU));
                     } else {
-                        execute_command_sync("notify-send \"Vestigo\" \"Problem ejecting %s. Device is currently in use.\"".printf("/dev/" + button.get_label()));
+                        execute_command_sync("notify-send \"Vestigo\" \"Problem ejecting %s. Device is currently in use.\"".printf("/dev/"
+                                             + button.get_label()));
                         execute_command_async("mpg123 -q /usr/share/sounds/dialog-error.mp3");
                     }
                 } catch (GLib.Error e) {
@@ -285,6 +288,18 @@ public class Operations: GLib.Object {
                     }
                 }
                 dialog.close();
+            }
+        }
+    }
+
+    // Execute
+    public void file_execute_activate() {
+        var files_execute = new GLib.List<string>();
+        files_execute = get_files_selection();
+        if (files_execute.length() == 1) {
+            string efile = files_execute.nth_data(0);
+            if (GLib.FileUtils.test(efile, FileTest.IS_EXECUTABLE) == true) {
+                execute_command_async("%s\n".printf(efile));
             }
         }
     }

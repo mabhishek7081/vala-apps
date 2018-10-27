@@ -3,6 +3,7 @@ public class Menu: GLib.Object {
     public Gtk.Menu activate_file_menu() {
         var file_open = new Gtk.MenuItem.with_label("Open");
         var file_open_with = new Gtk.MenuItem.with_label("Open With...");
+        var file_execute = new Gtk.MenuItem.with_label("Execute");
         var context_separator1 = new Gtk.SeparatorMenuItem();
         var file_compress_tar_gz = new Gtk.MenuItem.with_label(
             "Compress (as TAR.GZ)");
@@ -17,6 +18,7 @@ public class Menu: GLib.Object {
         menu = new Gtk.Menu();
         menu.append(file_open);
         menu.append(file_open_with);
+        menu.append(file_execute);
         menu.append(context_separator1);
         menu.append(file_compress_tar_gz);
         menu.append(file_compress_zip);
@@ -33,6 +35,9 @@ public class Menu: GLib.Object {
         });
         file_open_with.activate.connect(() => {
             op.file_open_with_activate();
+        });
+        file_execute.activate.connect(() => {
+            op.file_execute_activate();
         });
         file_compress_tar_gz.activate.connect(() => {
             op.file_compress_tar_gz_activate();
