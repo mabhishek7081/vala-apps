@@ -131,7 +131,7 @@ public class Operations: GLib.Object {
         var button = new Gtk.Button.with_label(label);
         button.set_halign(Gtk.Align.START);
         button.set_always_show_image(true);
-        button.set_image(new Gtk.Image.from_icon_name("folder-symbolic",
+        button.set_image(new Gtk.Image.from_icon_name("user-bookmarks",
                          Gtk.IconSize.MENU));
         button.set_relief(Gtk.ReliefStyle.NONE);
         button.button_press_event.connect((w, e) => {

@@ -81,21 +81,21 @@ public class Window: Gtk.ApplicationWindow {
         var button_up = new Gtk.Button();
         var button_home = new Gtk.Button();
         button_rootfs.set_always_show_image(true);
-        button_rootfs.set_image(new Gtk.Image.from_icon_name("computer-symbolic",
+        button_rootfs.set_image(new Gtk.Image.from_icon_name("computer",
                                 Gtk.IconSize.MENU));
         button_rootfs.set_relief(Gtk.ReliefStyle.NONE);
         button_rootfs.clicked.connect(() => {
             action_go_to_rootfs_directory();
         });
         button_home.set_always_show_image(true);
-        button_home.set_image(new Gtk.Image.from_icon_name("user-home-symbolic",
+        button_home.set_image(new Gtk.Image.from_icon_name("go-home",
                               Gtk.IconSize.MENU));
         button_home.set_relief(Gtk.ReliefStyle.NONE);
         button_home.clicked.connect(() => {
             action_go_to_home_directory();
         });
         button_up.set_always_show_image(true);
-        button_up.set_image(new Gtk.Image.from_icon_name("go-up-symbolic",
+        button_up.set_image(new Gtk.Image.from_icon_name("go-up",
                             Gtk.IconSize.MENU));
         button_up.set_relief(Gtk.ReliefStyle.NONE);
         button_up.clicked.connect(() => {
@@ -109,7 +109,7 @@ public class Window: Gtk.ApplicationWindow {
         var pane = new Gtk.Paned (Gtk.Orientation.VERTICAL);
         pane.add1(scrolled_devices);
         pane.add2(scrolled_bookmarks);
-        pane.set_position(180);
+        pane.set_position(200);
         var places_grid = new Gtk.Grid();
         places_grid.attach(buttons_grid,    0, 0, 1, 1);
         places_grid.attach(separator,       0, 1, 1, 1);
