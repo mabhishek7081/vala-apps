@@ -40,8 +40,9 @@ public class Operations: GLib.Object {
             }
         }
         // button clicked
-        button.clicked.connect(() => {
-            if (GLib.File.new_for_path(mount_point).query_exists() == false) {
+        button.button_press_event.connect((w, e) => {
+            if (e.button == 1) {
+                if (GLib.File.new_for_path(mount_point).query_exists() == false) {
                 execute_command_sync("mkdir %s".printf(mount_point));
                 execute_command_sync("mount %s %s".printf(device, mount_point));
             } else {
@@ -54,6 +55,8 @@ public class Operations: GLib.Object {
                     }
                     if (c == 0) {
                         execute_command_sync("mount %s %s".printf(device, mount_point));
+                        execute_command_sync("notify-send \"Vestigo\" \"Mounted %s\"".printf("/dev/" + button.get_label()));
+                        execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
                         button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
                             Gtk.IconSize.MENU));
                     }
@@ -62,6 +65,32 @@ public class Operations: GLib.Object {
                 }
             }
             new Vestigo.IconView().open_location(GLib.File.new_for_path(mount_point), true);
+            }
+            // middle click unmount
+            if (e.button == 2) {
+                execute_command_sync("umount %s".printf("/dev/" + button.get_label()));
+                string name;
+                int c=0;
+                try {
+                    var d = Dir.open("/mnt/" + button.get_label());
+                    while ((name = d.read_name()) != null) {
+                        c++;
+                    }
+                    // mount point is empty
+                    if (c == 0) {
+                        execute_command_sync("notify-send \"Vestigo\" \"Ejected %s\"".printf("/dev/" + button.get_label()));
+                        execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
+                        button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
+                            Gtk.IconSize.MENU));
+                    } else {
+                        execute_command_sync("notify-send \"Vestigo\" \"Problem ejecting %s. Device is currently in use.\"".printf("/dev/" + button.get_label()));
+                        execute_command_async("mpg123 -q /usr/share/sounds/dialog-error.mp3");
+                    }
+                } catch (GLib.Error e) {
+                    stderr.printf("%s\n", e.message);
+                }
+            }
+            return false;
         });
         grid_devices.attach(button, 0, position, 1, 1);
     }
