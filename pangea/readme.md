@@ -1,11 +1,11 @@
-Vestigo
+Pangea
 =======
 
-A GTK3 file manager
+Browse the file system and manage the files
 
 How to install?
 ````
-cd vala-apps/vestigo
+cd vala-apps/pangea
 mkdir build; cd build
 cmake ..
 make; make install

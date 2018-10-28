@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
-project (vestigo)
+project (pangea)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(ValaPrecompile)
@@ -14,8 +14,8 @@ link_directories(${GTK3_LIBRARY_DIRS})
 include_directories(${GUDEV_INCLUDE_DIRS})
 link_directories(${GUDEV_LIBRARY_DIRS})
 
-set(GETTEXT_PACKAGE "vestigo")
-add_definitions(-DGETTEXT_PACKAGE=\"vestigo\")
+set(GETTEXT_PACKAGE "pangea")
+add_definitions(-DGETTEXT_PACKAGE=\"pangea\")
 
 vala_precompile(VALA_C 
     src/iconview.vala
@@ -33,13 +33,13 @@ PACKAGES
 OPTIONS
 )
 
-add_executable(vestigo ${VALA_C})
-target_link_libraries(vestigo ${GTK3_LIBRARIES} ${GUDEV_LIBRARIES})
+add_executable(pangea ${VALA_C})
+target_link_libraries(pangea ${GTK3_LIBRARIES} ${GUDEV_LIBRARIES})
 
 set(CMAKE_INSTALL_PREFIX /usr)
 
-install(TARGETS vestigo DESTINATION bin)
-install(FILES data/vestigo.desktop DESTINATION share/applications)
-install(FILES data/org.vala-apps.vestigo.gschema.xml DESTINATION share/glib-2.0/schemas)
+install(TARGETS pangea DESTINATION bin)
+install(FILES data/pangea.desktop DESTINATION share/applications)
+install(FILES data/org.vala-apps.pangea.gschema.xml DESTINATION share/glib-2.0/schemas)
 
 

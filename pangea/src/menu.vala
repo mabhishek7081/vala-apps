@@ -1,4 +1,4 @@
-namespace Vestigo {
+namespace Pangea {
 public class Menu: GLib.Object {
     public Gtk.Menu activate_file_menu() {
         var file_open = new Gtk.MenuItem.with_label("Open");
@@ -29,7 +29,7 @@ public class Menu: GLib.Object {
         menu.append(file_delete);
         menu.append(context_separator3);
         menu.append(file_properties);
-        var op = new Vestigo.Operations();
+        var op = new Pangea.Operations();
         file_open.activate.connect(() => {
             op.file_open_activate();
         });
@@ -72,7 +72,7 @@ public class Menu: GLib.Object {
         var context_separator2 = new Gtk.SeparatorMenuItem();
         var context_bookmark = new Gtk.MenuItem.with_label("Add to Bookmarks");
         var context_terminal = new Gtk.MenuItem.with_label("Open in Terminal");
-        var op = new Vestigo.Operations();
+        var op = new Pangea.Operations();
         context_folder.activate.connect(() => {
             op.make_new(false);
         });

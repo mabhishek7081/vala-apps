@@ -1,4 +1,4 @@
-namespace Vestigo {
+namespace Pangea {
 
 public class DirectoryMonitor: GLib.Object {
 
@@ -16,7 +16,7 @@ public class DirectoryMonitor: GLib.Object {
                                   GLib.FileMonitorFlags.NONE, null);
             current_monitor.changed.connect(on_file_changed);
             loop = new MainLoop();
-            File tmpfile = File.new_for_path ("/tmp/.vestigo.lock");
+            File tmpfile = File.new_for_path ("/tmp/.pangea.lock");
             time = new TimeoutSource(500);
             time.set_callback(() => {
                 //print("DEBUG: checking for the lock file\n");
@@ -37,7 +37,7 @@ public class DirectoryMonitor: GLib.Object {
     private void on_file_changed(GLib.File src, GLib.File? dest,
                                  GLib.FileMonitorEvent event) {
         //print("DEBUG: %s changed\n", current_dir);
-        new Vestigo.IconView().open_location(GLib.File.new_for_path(current_dir),
+        new Pangea.IconView().open_location(GLib.File.new_for_path(current_dir),
                                              false);
     }
 

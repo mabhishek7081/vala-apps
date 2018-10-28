@@ -1,4 +1,4 @@
-namespace Vestigo {
+namespace Pangea {
 public class Operations: GLib.Object {
 
     public void add_devices_grid() {
@@ -55,7 +55,7 @@ public class Operations: GLib.Object {
                         }
                         if (c == 0) {
                             execute_command_sync("mount %s %s".printf(device, mount_point));
-                            execute_command_sync("notify-send \"Vestigo\" \"Mounted %s\"".printf("/dev/" +
+                            execute_command_sync("notify-send \"Pangea\" \"Mounted %s\"".printf("/dev/" +
                                                  button.get_label()));
                             execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
                             button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
@@ -65,7 +65,7 @@ public class Operations: GLib.Object {
                         stderr.printf("%s\n", e.message);
                     }
                 }
-                new Vestigo.IconView().open_location(GLib.File.new_for_path(mount_point), true);
+                new Pangea.IconView().open_location(GLib.File.new_for_path(mount_point), true);
             }
             // middle click unmount
             if (e.button == 2) {
@@ -79,13 +79,13 @@ public class Operations: GLib.Object {
                     }
                     // mount point is empty
                     if (c == 0) {
-                        execute_command_sync("notify-send \"Vestigo\" \"Ejected %s\"".printf("/dev/" +
+                        execute_command_sync("notify-send \"Pangea\" \"Ejected %s\"".printf("/dev/" +
                                              button.get_label()));
                         execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
                         button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
                                          Gtk.IconSize.MENU));
                     } else {
-                        execute_command_sync("notify-send \"Vestigo\" \"Problem ejecting %s. Device is currently in use.\"".printf("/dev/"
+                        execute_command_sync("notify-send \"Pangea\" \"Problem ejecting %s. Device is currently in use.\"".printf("/dev/"
                                              + button.get_label()));
                         execute_command_async("mpg123 -q /usr/share/sounds/dialog-error.mp3");
                     }
@@ -136,7 +136,7 @@ public class Operations: GLib.Object {
         button.set_relief(Gtk.ReliefStyle.NONE);
         button.button_press_event.connect((w, e) => {
             if (e.button == 1) {
-                new Vestigo.IconView().open_location(GLib.File.new_for_path(path), true);
+                new Pangea.IconView().open_location(GLib.File.new_for_path(path), true);
             }
             if (e.button == 2) {
                 remove_bookmark(button.get_label());
@@ -244,7 +244,7 @@ public class Operations: GLib.Object {
         if (files_open.length() == 1) {
             GLib.File file_check = GLib.File.new_for_path(files_open.nth_data(0));
             if (file_check.query_file_type(0) == GLib.FileType.DIRECTORY) {
-                new Vestigo.IconView().open_location(GLib.File.new_for_path(files_open.nth_data(
+                new Pangea.IconView().open_location(GLib.File.new_for_path(files_open.nth_data(
                         0)),
                                                      true);
             } else {
@@ -303,7 +303,7 @@ public class Operations: GLib.Object {
             }
             string c;
             try {
-                c = new Vestigo.IconView().get_file_content(efile);
+                c = new Pangea.IconView().get_file_content(efile);
             } catch (GLib.Error e) {
                 error("%s\n", e.message);
             }
@@ -537,7 +537,13 @@ public class Operations: GLib.Object {
             grid.set_column_homogeneous(true);
             var container = dialog.get_content_area() as Gtk.Container;
             container.add(grid);
+            dialog.add_button("OK", Gtk.ResponseType.OK);
+            dialog.set_default_response(Gtk.ResponseType.OK);
             dialog.show_all();
+            if (dialog.run() == Gtk.ResponseType.OK) {
+                dialog.destroy();
+            }
+            dialog.destroy();
         }
     }
 

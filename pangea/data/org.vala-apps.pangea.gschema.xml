@@ -1,5 +1,5 @@
 <schemalist>
-  <schema id="org.vala-apps.vestigo.preferences" path="/org/vala-apps/vestigo/preferences/">
+  <schema id="org.vala-apps.pangea.preferences" path="/org/vala-apps/pangea/preferences/">
     <key name="width" type="i">
       <default>770</default>
       <summary>Width</summary>
@@ -9,6 +9,11 @@
       <default>540</default>
       <summary>Heigth</summary>
       <description>Main window heigth</description>
+    </key>
+    <key name="paned-pos" type="i">
+      <default>170</default>
+      <summary>Gtk.Paned position</summary>
+      <description>Gtk.Paned position between devices and bookmarks</description>
     </key>
     <key name="icon-size" type="i">
       <default>64</default>

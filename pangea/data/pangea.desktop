@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=Vestigo
-Comment=A GTK3 file manager
-Exec=vestigo %F
+Name=Pangea
+Comment=Browse the file system and manage the files
+Exec=pangea %F
 Icon=system-file-manager
 Terminal=false
 Categories=System;FileTools

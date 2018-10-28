@@ -1,4 +1,4 @@
-namespace Vestigo {
+namespace Pangea {
 public class IconView : GLib.Object {
     string content;
     bool symlink;
@@ -73,8 +73,8 @@ public class IconView : GLib.Object {
                     model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, target);
                 }
                 foreach(string i in list_images) {
-                    new Vestigo.Thumbnails().get_thumbnail_from_file_name.begin(i, (obj, res) => {
-                        pbuf = new Vestigo.Thumbnails().get_thumbnail_from_file_name.end(res);
+                    new Pangea.Thumbnails().get_thumbnail_from_file_name.begin(i, (obj, res) => {
+                        pbuf = new Pangea.Thumbnails().get_thumbnail_from_file_name.end(res);
                         Gtk.TreeModelForeachFunc replace_image_in_liststore = (m, path, iter) => {
                             GLib.Value cell2;
                             m.get_value(iter, 2, out cell2);
@@ -87,8 +87,8 @@ public class IconView : GLib.Object {
                     });
                 }
                 foreach(string i in list_desktop) {
-                    new Vestigo.Thumbnails().get_desktop_file_icon.begin(i, (obj, res) => {
-                        pbuf = new Vestigo.Thumbnails().get_desktop_file_icon.end(res);
+                    new Pangea.Thumbnails().get_desktop_file_icon.begin(i, (obj, res) => {
+                        pbuf = new Pangea.Thumbnails().get_desktop_file_icon.end(res);
                         Gtk.TreeModelForeachFunc replace_image_in_liststore = (m, path, iter) => {
                             GLib.Value cell2;
                             m.get_value(iter, 2, out cell2);
@@ -106,7 +106,7 @@ public class IconView : GLib.Object {
                 GLib.Environment.set_current_dir(current_dir);
                 view.grab_focus();
                 if (start_monitor == true) {
-                    var m = new Vestigo.DirectoryMonitor();
+                    var m = new Pangea.DirectoryMonitor();
                     m.setup_file_monitor();
                 }
             } catch (GLib.Error e) {
@@ -160,27 +160,27 @@ public class IconView : GLib.Object {
                                                  uncomp_dir_s;
                         var uncomp_dir = File.new_for_path(uncomp_dir_path);
                         if (uncomp_dir.query_exists() == false) {
-                            new Vestigo.Operations().execute_command_async("mkdir -p \"%s\"".printf(
+                            new Pangea.Operations().execute_command_async("mkdir -p \"%s\"".printf(
                                         uncomp_dir_path));
-                            new Vestigo.Operations().execute_command_async("bsdtar -xf \"%s\" -C \"%s\"".printf((
+                            new Pangea.Operations().execute_command_async("bsdtar -xf \"%s\" -C \"%s\"".printf((
                                         string)filepath, uncomp_dir_path));
                         }
                         return;
                     }
                     if (content == "application/x-desktop") {
-                        new Vestigo.Operations().file_execute_activate();
+                        new Pangea.Operations().file_execute_activate();
                         return;
                     }
                     var appinfo = AppInfo.get_default_for_type(mime, false);
                     if (appinfo != null) {
-                        new Vestigo.Operations().execute_command_async("%s '%s'".printf(
+                        new Pangea.Operations().execute_command_async("%s '%s'".printf(
                                     appinfo.get_executable(), (string)filepath));
                     } else {
                         var dialog = new Gtk.AppChooserDialog.for_content_type(window, 0, mime);
                         if (dialog.run() == Gtk.ResponseType.OK) {
                             appinfo = dialog.get_app_info();
                             if (appinfo != null) {
-                                new Vestigo.Operations().execute_command_async("%s '%s'".printf(
+                                new Pangea.Operations().execute_command_async("%s '%s'".printf(
                                             appinfo.get_executable(), (string)filepath));
                             }
                         }
@@ -195,7 +195,7 @@ public class IconView : GLib.Object {
 
     public void on_selection_changed() {
         var selection = new GLib.List<string>();
-        selection = new Vestigo.Operations().get_files_selection();
+        selection = new Pangea.Operations().get_files_selection();
         uint len_s = selection.length();
         if (len_s == 0) {
             uint len = list_dir.length() + list_file.length();

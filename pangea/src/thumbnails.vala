@@ -1,4 +1,4 @@
-namespace Vestigo {
+namespace Pangea {
 public class Thumbnails: GLib.Object {
     Gdk.Pixbuf? pix = null;
 

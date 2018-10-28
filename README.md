@@ -12,11 +12,11 @@ Text editor with syntax highlighting
 * **Gtk Appearance**
 Utility for adjusting Gtk appearance
 
+* **Pangea**
+Browse the file system and manage the files
+
 * **Taeni**
 Multi-tabbed terminal emulator based on VTE
-
-* **Vestigo**
-A GTK3 file manager
 
 * **Voyager**
 Fast and elegant image browser
