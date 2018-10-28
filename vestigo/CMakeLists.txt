@@ -24,6 +24,7 @@ vala_precompile(VALA_C
     src/monitor.vala
     src/operations.vala
     src/settings.vala
+    src/thumbnails.vala
     src/vars.vala
     src/window.vala
 PACKAGES

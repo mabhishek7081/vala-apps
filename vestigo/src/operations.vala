@@ -132,7 +132,7 @@ public class Operations: GLib.Object {
         button.set_halign(Gtk.Align.START);
         button.set_always_show_image(true);
         button.set_image(new Gtk.Image.from_icon_name("user-bookmarks",
-                         Gtk.IconSize.MENU));
+                         Gtk.IconSize.LARGE_TOOLBAR));
         button.set_relief(Gtk.ReliefStyle.NONE);
         button.button_press_event.connect((w, e) => {
             if (e.button == 1) {
@@ -300,6 +300,29 @@ public class Operations: GLib.Object {
             string efile = files_execute.nth_data(0);
             if (GLib.FileUtils.test(efile, FileTest.IS_EXECUTABLE) == true) {
                 execute_command_async("%s\n".printf(efile));
+            }
+            string c;
+            try {
+                c = new Vestigo.IconView().get_file_content(efile);
+            } catch (GLib.Error e) {
+                error("%s\n", e.message);
+            }
+            if (c == "application/x-desktop") {
+                string exec_line;
+                var keyfile = new GLib.KeyFile();
+                try {
+                    keyfile.load_from_file(efile, GLib.KeyFileFlags.NONE);
+                } catch (GLib.Error e) {
+                    error("%s\n", e.message);
+                }
+                try {
+                    exec_line = keyfile.get_string("Desktop Entry", "Exec");
+                    exec_line = exec_line.replace("%F","").replace("%U","").replace("%f",
+                                "").replace("%u","");
+                } catch (GLib.Error e) {
+                    error("%s\n", e.message);
+                }
+                execute_command_async("%s\n".printf(exec_line));
             }
         }
     }
@@ -482,6 +505,7 @@ public class Operations: GLib.Object {
                 string content = file_info.get_content_type();
                 type = GLib.ContentType.get_description(content);
                 modified = file_info.get_modification_time().to_iso8601();
+                modified = modified.slice (0, 10) + " " + modified.slice (11, 19);
             } catch (GLib.Error e) {
                 stderr.printf ("%s\n", e.message);
             }

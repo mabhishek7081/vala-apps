@@ -7,6 +7,8 @@ public class IconView : GLib.Object {
     public void open_location(GLib.File file, bool start_monitor) {
         list_dir  = new GLib.List<string>();
         list_file = new GLib.List<string>();
+        var list_images = new GLib.List<string>();
+        var list_desktop = new GLib.List<string>();
         string name;
         string fullpath;
         current_dir = file.get_path();
@@ -52,6 +54,15 @@ public class IconView : GLib.Object {
                     } else {
                         pbuf = icon_theme.load_icon("gtk-file", icon_size, 0);
                     }
+                    //print("%s\n", content);
+                    // thumbnails
+                    if (content == "image/jpeg" || content == "image/png"
+                            || content == "image/svg+xml") {
+                        list_images.append(fullpath);
+                    }
+                    if (content == "application/x-desktop") {
+                        list_desktop.append(fullpath);
+                    }
                     if (symlink == true) {
                         pbuf = add_emblem(pbuf);
                         target= get_target(fullpath);
@@ -60,6 +71,34 @@ public class IconView : GLib.Object {
                     }
                     model.append(out iter);
                     model.set(iter, 0, pbuf, 1, i, 2, fullpath, 3, target);
+                }
+                foreach(string i in list_images) {
+                    new Vestigo.Thumbnails().get_thumbnail_from_file_name.begin(i, (obj, res) => {
+                        pbuf = new Vestigo.Thumbnails().get_thumbnail_from_file_name.end(res);
+                        Gtk.TreeModelForeachFunc replace_image_in_liststore = (m, path, iter) => {
+                            GLib.Value cell2;
+                            m.get_value(iter, 2, out cell2);
+                            if ((string)cell2 == i) {
+                                model.set(iter, 0, pbuf);
+                            }
+                            return false;
+                        };
+                        model.foreach (replace_image_in_liststore);
+                    });
+                }
+                foreach(string i in list_desktop) {
+                    new Vestigo.Thumbnails().get_desktop_file_icon.begin(i, (obj, res) => {
+                        pbuf = new Vestigo.Thumbnails().get_desktop_file_icon.end(res);
+                        Gtk.TreeModelForeachFunc replace_image_in_liststore = (m, path, iter) => {
+                            GLib.Value cell2;
+                            m.get_value(iter, 2, out cell2);
+                            if ((string)cell2 == i) {
+                                model.set(iter, 0, pbuf);
+                            }
+                            return false;
+                        };
+                        model.foreach (replace_image_in_liststore);
+                    });
                 }
                 window.set_title("%s".printf(current_dir));
                 uint len = list_dir.length() + list_file.length();
@@ -126,6 +165,10 @@ public class IconView : GLib.Object {
                             new Vestigo.Operations().execute_command_async("bsdtar -xf \"%s\" -C \"%s\"".printf((
                                         string)filepath, uncomp_dir_path));
                         }
+                        return;
+                    }
+                    if (content == "application/x-desktop") {
+                        new Vestigo.Operations().file_execute_activate();
                         return;
                     }
                     var appinfo = AppInfo.get_default_for_type(mime, false);
