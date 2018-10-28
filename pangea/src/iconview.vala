@@ -101,6 +101,12 @@ public class IconView : GLib.Object {
                     });
                 }
                 window.set_title("%s".printf(current_dir));
+                var combo_path_menu_item = new Gtk.MenuItem.with_label(current_dir);
+                combo_path_menu_item.activate.connect (() => {
+                    open_location(GLib.File.new_for_path(combo_path_menu_item.get_label()), true);
+                });
+                combo_path_menu.append(combo_path_menu_item);
+                combo_path_menu.show_all();
                 uint len = list_dir.length() + list_file.length();
                 statusbar.push(context_id, "%s item(s)".printf(len.to_string()));
                 GLib.Environment.set_current_dir(current_dir);

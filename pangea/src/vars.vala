@@ -17,6 +17,8 @@ Gtk.Statusbar statusbar;
 Gtk.Grid grid_devices;
 Gtk.Grid grid_bookmarks;
 Gtk.Paned pane;
+Gtk.MenuButton combo_path;
+Gtk.Menu combo_path_menu;
 uint context_id;
 const Gtk.TargetEntry[] targets = { {"text/uri-list",0,0} };
 

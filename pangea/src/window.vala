@@ -78,8 +78,8 @@ public class Window: Gtk.ApplicationWindow {
         scrolled_bookmarks.vexpand = true;
         scrolled_bookmarks.width_request = 180;
         var button_rootfs = new Gtk.Button();
-        var button_up = new Gtk.Button();
         var button_home = new Gtk.Button();
+        var button_up = new Gtk.Button();
         button_rootfs.set_always_show_image(true);
         button_rootfs.set_image(new Gtk.Image.from_icon_name("computer",
                                 Gtk.IconSize.MENU));
@@ -101,18 +101,22 @@ public class Window: Gtk.ApplicationWindow {
         button_up.clicked.connect(() => {
             action_go_to_up_directory();
         });
+        // Dropdown Menu
+        combo_path_menu = new Gtk.Menu();
+        combo_path = new Gtk.MenuButton();
+        combo_path.set_relief(Gtk.ReliefStyle.NONE);
+        combo_path.set_popup(combo_path_menu);
+        combo_path.set_image(new Gtk.Image.from_icon_name("go-down", Gtk.IconSize.MENU));
         var buttons_grid = new Gtk.Grid();
         buttons_grid.attach(button_rootfs,       0, 0, 1, 1);
         buttons_grid.attach(button_home,         1, 0, 1, 1);
         buttons_grid.attach(button_up,           2, 0, 1, 1);
+        buttons_grid.attach(combo_path,          3, 0, 1, 1);
         var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
         pane = new Gtk.Paned (Gtk.Orientation.VERTICAL);
         pane.add1(scrolled_devices);
         pane.add2(scrolled_bookmarks);
         pane.set_position(paned_pos);
-        
-        print(paned_pos.to_string());
-        
         var places_grid = new Gtk.Grid();
         places_grid.attach(buttons_grid,    0, 0, 1, 1);
         places_grid.attach(separator,       0, 1, 1, 1);
@@ -277,14 +281,14 @@ public class Window: Gtk.ApplicationWindow {
         new Pangea.IconView().open_location(GLib.File.new_for_path("/"), true);
     }
 
-    private void action_go_to_up_directory() {
-        new Pangea.IconView().open_location(GLib.File.new_for_path(
-                GLib.Path.get_dirname(current_dir)), true);
-    }
-
     private void action_go_to_home_directory() {
         string home = GLib.Environment.get_home_dir();
         new Pangea.IconView().open_location(GLib.File.new_for_path(home), true);
+    }
+
+    private void action_go_to_up_directory() {
+        new Pangea.IconView().open_location(GLib.File.new_for_path(
+                GLib.Path.get_dirname(current_dir)), true);
     }
 
     private void action_terminal() {
