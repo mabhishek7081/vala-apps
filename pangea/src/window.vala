@@ -80,7 +80,6 @@ public class Window: Gtk.ApplicationWindow {
         scrolled_bookmarks.width_request = 180;
         var button_up = new Gtk.Button();
         var button_home = new Gtk.Button();
-        var button_rootfs = new Gtk.Button();
         button_up.set_always_show_image(true);
         button_up.set_image(new Gtk.Image.from_icon_name("go-up",
                             Gtk.IconSize.MENU));
@@ -95,13 +94,6 @@ public class Window: Gtk.ApplicationWindow {
         button_home.clicked.connect(() => {
             action_go_to_home_directory();
         });
-        button_rootfs.set_always_show_image(true);
-        button_rootfs.set_image(new Gtk.Image.from_icon_name("computer",
-                                Gtk.IconSize.MENU));
-        button_rootfs.set_relief(Gtk.ReliefStyle.NONE);
-        button_rootfs.clicked.connect(() => {
-            action_go_to_rootfs_directory();
-        });
         // Dropdown Menu
         combo_path_menu = new Gtk.Menu();
         var combo_path = new Gtk.MenuButton();
@@ -112,8 +104,7 @@ public class Window: Gtk.ApplicationWindow {
         var buttons_grid = new Gtk.Grid();
         buttons_grid.attach(button_up,           0, 0, 1, 1);
         buttons_grid.attach(button_home,         1, 0, 1, 1);
-        buttons_grid.attach(button_rootfs,       2, 0, 1, 1);
-        buttons_grid.attach(combo_path,          3, 0, 1, 1);
+        buttons_grid.attach(combo_path,          2, 0, 1, 1);
         var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
         pane = new Gtk.Paned (Gtk.Orientation.VERTICAL);
         pane.add1(scrolled_devices);
@@ -277,10 +268,6 @@ public class Window: Gtk.ApplicationWindow {
 
     private void action_add_bookmark() {
         new Pangea.Operations().add_bookmark();
-    }
-
-    private void action_go_to_rootfs_directory() {
-        new Pangea.IconView().open_location(GLib.File.new_for_path("/"), true);
     }
 
     private void action_go_to_home_directory() {
