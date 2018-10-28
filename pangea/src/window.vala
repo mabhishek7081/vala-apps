@@ -49,6 +49,7 @@ public class Window: Gtk.ApplicationWindow {
         app.set_accels_for_action("app.properties",       {"<Control>I"});
         app.set_accels_for_action("app.quit",             {"<Control>Q"});
         new Pangea.Settings().get_settings();
+        list_dir_history = new GLib.List<string>();
         window = new Gtk.ApplicationWindow(app);
         add_widgets(window);
         connect_signals(window);
@@ -77,15 +78,15 @@ public class Window: Gtk.ApplicationWindow {
                                       Gtk.PolicyType.AUTOMATIC);
         scrolled_bookmarks.vexpand = true;
         scrolled_bookmarks.width_request = 180;
-        var button_rootfs = new Gtk.Button();
-        var button_home = new Gtk.Button();
         var button_up = new Gtk.Button();
-        button_rootfs.set_always_show_image(true);
-        button_rootfs.set_image(new Gtk.Image.from_icon_name("computer",
-                                Gtk.IconSize.MENU));
-        button_rootfs.set_relief(Gtk.ReliefStyle.NONE);
-        button_rootfs.clicked.connect(() => {
-            action_go_to_rootfs_directory();
+        var button_home = new Gtk.Button();
+        var button_rootfs = new Gtk.Button();
+        button_up.set_always_show_image(true);
+        button_up.set_image(new Gtk.Image.from_icon_name("go-up",
+                            Gtk.IconSize.MENU));
+        button_up.set_relief(Gtk.ReliefStyle.NONE);
+        button_up.clicked.connect(() => {
+            action_go_to_up_directory();
         });
         button_home.set_always_show_image(true);
         button_home.set_image(new Gtk.Image.from_icon_name("go-home",
@@ -94,23 +95,24 @@ public class Window: Gtk.ApplicationWindow {
         button_home.clicked.connect(() => {
             action_go_to_home_directory();
         });
-        button_up.set_always_show_image(true);
-        button_up.set_image(new Gtk.Image.from_icon_name("go-up",
-                            Gtk.IconSize.MENU));
-        button_up.set_relief(Gtk.ReliefStyle.NONE);
-        button_up.clicked.connect(() => {
-            action_go_to_up_directory();
+        button_rootfs.set_always_show_image(true);
+        button_rootfs.set_image(new Gtk.Image.from_icon_name("computer",
+                                Gtk.IconSize.MENU));
+        button_rootfs.set_relief(Gtk.ReliefStyle.NONE);
+        button_rootfs.clicked.connect(() => {
+            action_go_to_rootfs_directory();
         });
         // Dropdown Menu
         combo_path_menu = new Gtk.Menu();
-        combo_path = new Gtk.MenuButton();
+        var combo_path = new Gtk.MenuButton();
         combo_path.set_relief(Gtk.ReliefStyle.NONE);
         combo_path.set_popup(combo_path_menu);
-        combo_path.set_image(new Gtk.Image.from_icon_name("go-down", Gtk.IconSize.MENU));
+        combo_path.set_image(new Gtk.Image.from_icon_name("go-down",
+                             Gtk.IconSize.MENU));
         var buttons_grid = new Gtk.Grid();
-        buttons_grid.attach(button_rootfs,       0, 0, 1, 1);
+        buttons_grid.attach(button_up,           0, 0, 1, 1);
         buttons_grid.attach(button_home,         1, 0, 1, 1);
-        buttons_grid.attach(button_up,           2, 0, 1, 1);
+        buttons_grid.attach(button_rootfs,       2, 0, 1, 1);
         buttons_grid.attach(combo_path,          3, 0, 1, 1);
         var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
         pane = new Gtk.Paned (Gtk.Orientation.VERTICAL);
@@ -288,7 +290,7 @@ public class Window: Gtk.ApplicationWindow {
 
     private void action_go_to_up_directory() {
         new Pangea.IconView().open_location(GLib.File.new_for_path(
-                GLib.Path.get_dirname(current_dir)), true);
+                                                GLib.Path.get_dirname(current_dir)), true);
     }
 
     private void action_terminal() {

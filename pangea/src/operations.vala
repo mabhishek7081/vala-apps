@@ -245,8 +245,8 @@ public class Operations: GLib.Object {
             GLib.File file_check = GLib.File.new_for_path(files_open.nth_data(0));
             if (file_check.query_file_type(0) == GLib.FileType.DIRECTORY) {
                 new Pangea.IconView().open_location(GLib.File.new_for_path(files_open.nth_data(
-                        0)),
-                                                     true);
+                                                        0)),
+                                                    true);
             } else {
                 try {
                     file_info = file_check.query_info("standard::content-type", 0, null);

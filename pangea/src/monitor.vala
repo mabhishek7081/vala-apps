@@ -38,7 +38,7 @@ public class DirectoryMonitor: GLib.Object {
                                  GLib.FileMonitorEvent event) {
         //print("DEBUG: %s changed\n", current_dir);
         new Pangea.IconView().open_location(GLib.File.new_for_path(current_dir),
-                                             false);
+                                            false);
     }
 
 }
