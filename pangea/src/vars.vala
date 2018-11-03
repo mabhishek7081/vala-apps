@@ -7,6 +7,7 @@ const string[] AUTHORS   = { "Simargl <https://github.com/simargl>", null };
 
 Gtk.ApplicationWindow window;
 Gtk.IconView view;
+Gtk.Entry location_entry;
 Gtk.ListStore model;
 Gtk.Menu menu;
 Gtk.TreeIter iter;

@@ -111,19 +111,21 @@ public class Operations: GLib.Object {
         string bookmark = GLib.Path.build_filename(
                               GLib.Environment.get_user_config_dir(), "gtk-3.0/bookmarks");
         var bookmarks_file = File.new_for_path(bookmark);
-        try {
-            var dis = new DataInputStream (bookmarks_file.read ());
-            string line;
-            int i=0;
-            while ((line = dis.read_line (null)) != null) {
-                int l = line.index_of_char(' ');
-                string s = GLib.Path.get_basename(line.slice (0, l));
-                string p = line.slice(0, l).replace("file://", "");
-                add_button_to_bookmarks_grid(p, s, i);
-                i++;
+        if (bookmarks_file.query_exists() == true) {
+            try {
+                var dis = new DataInputStream (bookmarks_file.read ());
+                string line;
+                int i=0;
+                while ((line = dis.read_line (null)) != null) {
+                    int l = line.index_of_char(' ');
+                    string s = GLib.Path.get_basename(line.slice (0, l));
+                    string p = line.slice(0, l).replace("file://", "");
+                    add_button_to_bookmarks_grid(p, s, i);
+                    i++;
+                }
+            } catch (Error e) {
+                error ("%s", e.message);
             }
-        } catch (Error e) {
-            error ("%s", e.message);
         }
     }
 
@@ -135,11 +137,18 @@ public class Operations: GLib.Object {
                          Gtk.IconSize.LARGE_TOOLBAR));
         button.set_relief(Gtk.ReliefStyle.NONE);
         button.button_press_event.connect((w, e) => {
-            if (e.button == 1) {
+            if (e.button == 1 || e.button == 2) {
                 new Pangea.IconView().open_location(GLib.File.new_for_path(path), true);
             }
-            if (e.button == 2) {
-                remove_bookmark(button.get_label());
+            if (e.button == 3) {
+                var menuitem_remove_bookmark = new Gtk.MenuItem.with_label("Remove");
+                menuitem_remove_bookmark.activate.connect(() => {
+                    remove_bookmark(button.get_label());
+                });
+                menu = new Gtk.Menu();
+                menu.append(menuitem_remove_bookmark);
+                menu.show_all();
+                menu.popup (null, null, null, e.button, e.time);
             }
             return false;
         });
@@ -152,6 +161,15 @@ public class Operations: GLib.Object {
         GLib.FileOutputStream fos = null;
         string bookmark = GLib.Path.build_filename(
                               GLib.Environment.get_user_config_dir(), "gtk-3.0/bookmarks");
+        
+        GLib.File bookmarks_dir = GLib.File.new_for_path(GLib.Path.get_dirname(bookmark));
+        if (bookmarks_dir.query_exists() == false) {
+            try {
+                bookmarks_dir.make_directory();
+            } catch (GLib.Error e) {
+                stderr.printf ("%s\n", e.message);
+            }  
+        }
         try {
             fos = File.new_for_path(bookmark).append_to(FileCreateFlags.NONE);
         } catch (GLib.Error e) {
@@ -373,14 +391,35 @@ public class Operations: GLib.Object {
     public void file_paste_activate() {
         if (files_copy != null) {
             foreach(string i in files_copy) {
+                GLib.File file2 = File.new_for_path(current_dir + "/" + GLib.Path.get_basename(i));
+                if (file2.query_exists() == true) {
+                    var dialog = new Gtk.Dialog();
+                    dialog.set_title("Overwrite?");
+                    dialog.set_border_width(10);
+                    dialog.set_property("skip-taskbar-hint", true);
+                    dialog.set_transient_for(window);
+                    dialog.set_resizable(false);
+                    var label = new Gtk.Label("Overwrite %s?".printf(GLib.Path.get_basename(i)));
+                    var content = dialog.get_content_area() as Gtk.Box;
+                    content.pack_start(label, true, true, 10);
+                    dialog.add_button("No", Gtk.ResponseType.NO);
+                    dialog.add_button("Yes", Gtk.ResponseType.YES);
+                    dialog.set_default_response(Gtk.ResponseType.NO);
+                    dialog.show_all();
+                    if (dialog.run() != Gtk.ResponseType.YES) {
+                        dialog.destroy();
+                        return;
+                    }
+                    dialog.destroy();
+                }
                 execute_command_sync("cp -a '%s' '%s'".printf(i, current_dir));
-                stdout.printf("DEBUG: copying '%s' to '%s'\n".printf(i, current_dir));
+                stdout.printf("DEBUG: copying '%s' to '%s'\n".printf(i, current_dir + "/" + GLib.Path.get_basename(i)));                 
             }
         }
         if (files_cut != null) {
             foreach(string i in files_cut) {
                 execute_command_sync("mv '%s' '%s'".printf(i, current_dir));
-                stdout.printf("DEBUG: moving '%s' to '%s'\n".printf(i, current_dir));
+                stdout.printf("DEBUG: moving '%s' to '%s'\n".printf(i, current_dir + "/" + GLib.Path.get_basename(i)));
             }
         }
     }
@@ -494,9 +533,9 @@ public class Operations: GLib.Object {
             try {
                 var file_check = GLib.File.new_for_path(fullpath);
                 GLib.FileInfo file_info = file_check.query_info("*", 0, null);
-                int64 bytes = file_info.get_size();
-                int64 kb = file_info.get_size() / 1024;
-                int64 mb = file_info.get_size() / 1048576;
+                int64 bytes = get_file_size(file_check);
+                int64 kb = bytes / 1024;
+                int64 mb = bytes / 1048576;
                 if ( bytes > 1048576) {
                     size = "%s MB (%s bytes)".printf(mb.to_string(), bytes.to_string());
                 } else {
@@ -545,6 +584,78 @@ public class Operations: GLib.Object {
             }
             dialog.destroy();
         }
+    }
+
+    public int64 get_file_size(GLib.File file) {
+        try {
+            GLib.FileInfo fileInfo = file.query_info ("standard::*",
+                                     FileQueryInfoFlags.NONE);
+            if ( fileInfo.get_file_type () == FileType.DIRECTORY ) {
+                int64 size = 0;
+                var enumerator = file.enumerate_children ("standard::*",
+                                 FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
+                GLib.FileInfo childFileInfo;
+                while ( (childFileInfo = enumerator.next_file ()) != null ) {
+                    size += get_file_size (file.resolve_relative_path (childFileInfo.get_name ()));
+                }
+                return size;
+            } else {
+                return fileInfo.get_size ();
+            }
+        } catch (Error e) {
+            error ("%s", e.message);
+        }
+    }
+
+    public void show_preferences_dialog() {
+        var dialog = new Gtk.Dialog();
+        dialog.set_title("Preferences");
+        dialog.set_border_width(5);
+        dialog.set_property("skip-taskbar-hint", true);
+        dialog.set_transient_for(window);
+        dialog.set_resizable(false);
+        dialog.width_request = 360;
+        var preferences_label_icon_size =       new Gtk.Label("Icon size");
+        preferences_label_icon_size.set_halign(Gtk.Align.START);
+        var preferences_label_thumbnail_size =  new Gtk.Label("Thumbnail size");
+        preferences_label_thumbnail_size.set_halign(Gtk.Align.START);
+        var preferences_spinbutton_icon_size = new Gtk.SpinButton.with_range(
+            24, 256, 8);
+        preferences_spinbutton_icon_size.adjustment.page_increment = 8;
+        preferences_spinbutton_icon_size.set_value(icon_size);
+        preferences_spinbutton_icon_size.value_changed.connect(() => {
+            icon_size = (int)preferences_spinbutton_icon_size.get_value();
+            view.set_item_width(icon_size + 24);
+            new Pangea.Settings().save_settings();
+            new Pangea.IconView().open_location(GLib.File.new_for_path(current_dir), false);
+        });
+        var preferences_spinbutton_thumbnail_size = new Gtk.SpinButton.with_range(
+            24, 256, 8);
+        preferences_spinbutton_thumbnail_size.adjustment.page_increment = 8;
+        preferences_spinbutton_thumbnail_size.set_value(thumbnail_size);
+        preferences_spinbutton_thumbnail_size.value_changed.connect(() => {
+            thumbnail_size = (int)preferences_spinbutton_thumbnail_size.get_value();
+            new Pangea.Settings().save_settings();
+            new Pangea.IconView().open_location(GLib.File.new_for_path(current_dir), false);
+        });
+        var grid = new Gtk.Grid();
+        grid.attach(preferences_label_icon_size,        0, 0, 1, 1);
+        grid.attach(preferences_label_thumbnail_size,   0, 1, 1, 1);
+        grid.attach(preferences_spinbutton_icon_size,        1, 0, 1, 1);
+        grid.attach(preferences_spinbutton_thumbnail_size,   1, 1, 1, 1);
+        grid.set_column_spacing(5);
+        grid.set_row_spacing(10);
+        grid.set_border_width(5);
+        grid.set_column_homogeneous(true);
+        var container = dialog.get_content_area() as Gtk.Container;
+        container.add(grid);
+        dialog.add_button("OK", Gtk.ResponseType.OK);
+        dialog.set_default_response(Gtk.ResponseType.OK);
+        dialog.show_all();
+        if (dialog.run() == Gtk.ResponseType.OK) {
+            dialog.destroy();
+        }
+        dialog.destroy();
     }
 
     public GLib.List<string> get_files_selection() {

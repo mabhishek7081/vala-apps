@@ -19,6 +19,8 @@ public class Settings : GLib.Object {
         settings = new GLib.Settings("org.vala-apps.pangea.preferences");
         settings.set_int("width", width);
         settings.set_int("height", height);
+        settings.set_int("icon-size", icon_size);
+        settings.set_int("thumbnail-size", thumbnail_size);
         settings.set_int("paned-pos", paned_pos);
         settings.set_string("saved-dir", current_dir);
         GLib.Settings.sync();

@@ -55,7 +55,7 @@ public class Thumbnails: GLib.Object {
     private Gdk.Pixbuf load_fallback_icon() {
         try {
             Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-            pix = icon_theme.load_icon("gtk-file", icon_size, 0);
+            pix = icon_theme.load_icon("text-x-generic", icon_size, 0);
         } catch (GLib.Error e) {
             error("%s\n", e.message);
         }
@@ -82,7 +82,7 @@ public class Thumbnails: GLib.Object {
             error("%s\n", e.message);
         }
         Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-        Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size, 0);
+        Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size, Gtk.IconLookupFlags.FORCE_SIZE);
         if (icon_info != null) {
             try {
                 pix = icon_info.load_icon();
@@ -91,7 +91,7 @@ public class Thumbnails: GLib.Object {
             }
         } else {
             try {
-                pix = icon_theme.load_icon("gtk-file", icon_size, 0);
+                pix = icon_theme.load_icon("text-x-generic", icon_size, 0);
             } catch (GLib.Error e) {
                 error("%s\n", e.message);
             }

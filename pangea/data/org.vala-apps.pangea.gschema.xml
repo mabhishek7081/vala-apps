@@ -16,7 +16,7 @@
       <description>Gtk.Paned position between devices and bookmarks</description>
     </key>
     <key name="icon-size" type="i">
-      <default>64</default>
+      <default>48</default>
       <summary>Icon size</summary>
       <description>Icon size</description>
     </key>

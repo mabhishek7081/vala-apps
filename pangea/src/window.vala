@@ -1,12 +1,12 @@
 namespace Pangea {
 public class Window: Gtk.ApplicationWindow {
     private const GLib.ActionEntry[] action_entries = {
-        { "go-up",         action_go_to_up_directory   },
         { "go-home",       action_go_to_home_directory },
         { "create-folder", action_create_folder        },
         { "create-file",   action_create_file          },
         { "add-bookmark",  action_add_bookmark         },
         { "terminal",      action_terminal             },
+        { "preferences",   action_preferences          },
         { "cut",           action_cut                  },
         { "copy",          action_copy                 },
         { "rename",        action_rename               },
@@ -32,15 +32,19 @@ public class Window: Gtk.ApplicationWindow {
         section.append("Open in Terminal", "app.terminal");
         menu.append_section(null, section);
         section = new GLib.Menu();
+        section.append("Preferences", "app.preferences");
+        menu.append_section(null, section);
+        section = new GLib.Menu();
         section.append("About", "app.about");
         section.append("Quit",  "app.quit");
         menu.append_section(null, section);
         app.set_app_menu(menu);
-        app.set_accels_for_action("app.go-up",            {"BackSpace"});
         app.set_accels_for_action("app.go-home",          {"<Alt>Home"});
         app.set_accels_for_action("app.create-folder",    {"<Control>N"});
         app.set_accels_for_action("app.create-file",      {"<Control><Shift>N"});
+        app.set_accels_for_action("app.add-bookmark",     {"<Control>B"});
         app.set_accels_for_action("app.terminal",         {"F4"});
+        app.set_accels_for_action("app.preferences",      {"<Control>P"});
         app.set_accels_for_action("app.cut",              {"<Control>X"});
         app.set_accels_for_action("app.copy",             {"<Control>C"});
         app.set_accels_for_action("app.rename",           {"F2"});
@@ -78,22 +82,6 @@ public class Window: Gtk.ApplicationWindow {
                                       Gtk.PolicyType.AUTOMATIC);
         scrolled_bookmarks.vexpand = true;
         scrolled_bookmarks.width_request = 180;
-        var button_up = new Gtk.Button();
-        var button_home = new Gtk.Button();
-        button_up.set_always_show_image(true);
-        button_up.set_image(new Gtk.Image.from_icon_name("go-up",
-                            Gtk.IconSize.MENU));
-        button_up.set_relief(Gtk.ReliefStyle.NONE);
-        button_up.clicked.connect(() => {
-            action_go_to_up_directory();
-        });
-        button_home.set_always_show_image(true);
-        button_home.set_image(new Gtk.Image.from_icon_name("go-home",
-                              Gtk.IconSize.MENU));
-        button_home.set_relief(Gtk.ReliefStyle.NONE);
-        button_home.clicked.connect(() => {
-            action_go_to_home_directory();
-        });
         // Dropdown Menu
         combo_path_menu = new Gtk.Menu();
         var combo_path = new Gtk.MenuButton();
@@ -101,10 +89,26 @@ public class Window: Gtk.ApplicationWindow {
         combo_path.set_popup(combo_path_menu);
         combo_path.set_image(new Gtk.Image.from_icon_name("go-down",
                              Gtk.IconSize.MENU));
+        var button_up = new Gtk.Button();
+        button_up.set_always_show_image(true);
+        button_up.set_image(new Gtk.Image.from_icon_name("go-up",
+                            Gtk.IconSize.MENU));
+        button_up.set_relief(Gtk.ReliefStyle.NONE);
+        button_up.clicked.connect(() => {
+            action_go_to_up_directory();
+        });
+        var button_home = new Gtk.Button();
+        button_home.set_always_show_image(true);
+        button_home.set_image(new Gtk.Image.from_icon_name("go-home",
+                              Gtk.IconSize.MENU));
+        button_home.set_relief(Gtk.ReliefStyle.NONE);
+        button_home.clicked.connect(() => {
+            action_go_to_home_directory();
+        });
         var buttons_grid = new Gtk.Grid();
-        buttons_grid.attach(button_up,           0, 0, 1, 1);
-        buttons_grid.attach(button_home,         1, 0, 1, 1);
-        buttons_grid.attach(combo_path,          2, 0, 1, 1);
+        buttons_grid.attach(combo_path,          0, 0, 1, 1);
+        buttons_grid.attach(button_up,           1, 0, 1, 1);
+        buttons_grid.attach(button_home,         2, 0, 1, 1);
         var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
         pane = new Gtk.Paned (Gtk.Orientation.VERTICAL);
         pane.add1(scrolled_devices);
@@ -121,7 +125,7 @@ public class Window: Gtk.ApplicationWindow {
         view.set_text_column(1);
         view.set_tooltip_column(3);
         view.set_column_spacing(3);
-        view.set_item_width(70);
+        view.set_item_width(icon_size + 24);
         view.set_activate_on_single_click(true);
         view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
         view.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK, targets,
@@ -129,6 +133,8 @@ public class Window: Gtk.ApplicationWindow {
         view.drag_data_get.connect(drag_source_operation);
         view.drag_data_received.connect(on_drag_data_received);
         Gtk.drag_dest_set(view, Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY);
+        location_entry = new Gtk.Entry();
+        location_entry.expand = false;
         var scrolled = new Gtk.ScrolledWindow(null, null);
         scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
         scrolled.add(view);
@@ -137,10 +143,13 @@ public class Window: Gtk.ApplicationWindow {
         statusbar = new Gtk.Statusbar();
         context_id = statusbar.get_context_id("pangea");
         statusbar.push(context_id, "Starting up...");
+        var location_grid = new Gtk.Grid();
+        location_grid.attach(location_entry, 0, 0, 1, 1);
+        location_grid.attach(scrolled,       0, 1, 1, 1);
         var grid = new Gtk.Grid();
-        grid.attach(places_grid, 0, 0, 1, 1);
-        grid.attach(scrolled,    1, 0, 1, 1);
-        grid.attach(statusbar,   0, 1, 2, 1);
+        grid.attach(places_grid,    0, 0, 1, 1);
+        grid.attach(location_grid,     1, 0, 1, 1);
+        grid.attach(statusbar,      0, 1, 2, 1);
         window.add(grid);
         window.set_title(NAME);
         window.set_default_size(width, height);
@@ -183,6 +192,9 @@ public class Window: Gtk.ApplicationWindow {
         });
         view.key_press_event.connect(on_key_press_event);
         view.button_press_event.connect(context_menu_activate);
+        location_entry.activate.connect(() => {
+            new Pangea.IconView().open_location(GLib.File.new_for_path(location_entry.get_text()), true);
+        });
         window.delete_event.connect(() => {
             action_quit();
             return true;
@@ -190,6 +202,9 @@ public class Window: Gtk.ApplicationWindow {
     }
 
     private bool on_key_press_event(Gdk.EventKey event) {
+        if (Gdk.keyval_name(event.keyval) == "BackSpace") {
+            action_go_to_up_directory();
+        }
         if (Gdk.keyval_name(event.keyval) == "Escape") {
             view.unselect_all();
         }
@@ -283,6 +298,10 @@ public class Window: Gtk.ApplicationWindow {
     private void action_terminal() {
         new Pangea.Operations().execute_command_async("%s '%s'".printf(terminal,
                 current_dir));
+    }
+
+    private void action_preferences() {
+        new Pangea.Operations().show_preferences_dialog();
     }
 
     private void action_cut() {

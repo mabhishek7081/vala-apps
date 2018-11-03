@@ -47,12 +47,12 @@ public class IconView : GLib.Object {
                     get_file_content(fullpath);
                     GLib.Icon icon = GLib.ContentType.get_icon(content);
                     Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-                    Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size, 0);
+                    Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size, Gtk.IconLookupFlags.FORCE_SIZE);
                     check_if_symlink(fullpath);
                     if (icon_info != null) {
                         pbuf = icon_info.load_icon();
                     } else {
-                        pbuf = icon_theme.load_icon("gtk-file", icon_size, 0);
+                        pbuf = icon_theme.load_icon("text-x-generic", icon_size, 0);
                     }
                     //print("%s\n", content);
                     // thumbnails
@@ -101,6 +101,7 @@ public class IconView : GLib.Object {
                     });
                 }
                 window.set_title("%s".printf(current_dir));
+                location_entry.set_text("%s".printf(current_dir));
                 bool already_in_the_list = false;
                 foreach (string i in list_dir_history) {
                     if (i == current_dir) {
@@ -133,7 +134,7 @@ public class IconView : GLib.Object {
 
     private Gdk.Pixbuf add_emblem(Gdk.Pixbuf p) {
         Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-        var icon_info = icon_theme.lookup_icon ("emblem-symbolic-link", 24,
+        var icon_info = icon_theme.lookup_icon ("emblem-symbolic-link", 16,
                                                 Gtk.IconLookupFlags.FORCE_SIZE);
         Gdk.Pixbuf emblem = null;
         try {
@@ -141,11 +142,13 @@ public class IconView : GLib.Object {
         } catch (GLib.Error e) {
             stderr.printf ("%s\n", e.message);
         }
+        int dest_x = icon_size - 16;
+        int dest_y = icon_size - 16;
         var emblemed = p.copy();
         emblem.composite(emblemed,
-                         icon_size - 26, icon_size - 26,
-                         24, 24,
-                         icon_size - 26, icon_size - 26,
+                         dest_x, dest_y,
+                         16, 16,
+                         dest_x, dest_y,
                          1.0, 1.0,
                          Gdk.InterpType.BILINEAR, 242);
         return emblemed;
