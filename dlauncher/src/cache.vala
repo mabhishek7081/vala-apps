@@ -1,35 +1,60 @@
 namespace Dlauncher {
 public class Cache: GLib.Object {
-    public void list_applications(GMenu.TreeDirectory? tree_root = null) {
-        GMenu.TreeDirectory root;
-        GMenu.Tree tree;
-        if (tree_root == null) {
-            tree = new GMenu.Tree("gnome-applications.menu",
-                                  GMenu.TreeFlags.SORT_DISPLAY_NAME);
-            try {
-                tree.load_sync();
-            } catch (Error e) {
-                stderr.printf("Error: %s\n", e.message);
+    public void list_applications() {
+        try {
+            string dd = "/usr/share/applications/";
+            string n;
+            var d = Dir.open(dd);
+            while ((n = d.read_name()) != null) {
+                string icon;
+                string name;
+                string desc;
+                string cmd;
+                string nodisplay = "";
+                if (n.contains(".desktop")) {
+                    var keyfile = new GLib.KeyFile();
+                    try {
+                        keyfile.load_from_file(dd + n, GLib.KeyFileFlags.NONE);
+                    } catch (GLib.Error e) {
+                        error("%s\n", e.message);
+                    }
+                    try {
+                        icon = keyfile.get_string ("Desktop Entry", "Icon");
+                    } catch (GLib.Error e) {
+                        error("%s %s\n", n, e.message);
+                    }
+                    try {
+                        name = keyfile.get_string ("Desktop Entry", "Name");
+                    } catch (GLib.Error e) {
+                        error("%s %s\n", n, e.message);
+                    }
+                    try {
+                        desc = keyfile.get_string ("Desktop Entry", "Comment");
+                    } catch (GLib.Error e) {
+                        desc = "";
+                        //error("%s\n", e.message);
+                    }
+                    try {
+                        cmd = keyfile.get_string ("Desktop Entry", "Exec");
+                        cmd = cmd.replace("%F", "").replace("%f", "").replace("%U", "").replace("%u",
+                                "");
+                    } catch (GLib.Error e) {
+                        error("%s %s\n", n, e.message);
+                    }
+                    try {
+                        nodisplay = keyfile.get_string ("Desktop Entry", "NoDisplay");
+                    } catch (GLib.Error e) {
+                        nodisplay = "";
+                        //error("%s\n", e.message);
+                    }
+                    if (nodisplay != "true") {
+                        var model = new Dlauncher.Model();
+                        model.add_item_to_iconview(icon, name, desc, cmd);
+                    }
+                }
             }
-            root = tree.get_root_directory();
-        } else {
-            root = tree_root;
-        }
-        var it = root.iter();
-        GMenu.TreeItemType type;
-        while ((type = it.next()) != GMenu.TreeItemType.INVALID) {
-            if (type == GMenu.TreeItemType.DIRECTORY) {
-                var dir = it.get_directory();
-                list_applications(dir);
-            } else if (type == GMenu.TreeItemType.ENTRY) {
-                var appinfo = it.get_entry().get_app_info();
-                string icon = appinfo.get_icon().to_string();
-                string name = appinfo.get_name();
-                string desc = appinfo.get_description();
-                string cmd  = appinfo.get_executable();
-                var model = new Dlauncher.Model();
-                model.add_item_to_iconview(icon, name, desc, cmd);
-            }
+        } catch (GLib.Error e) {
+            error("%s\n", e.message);
         }
     }
 }

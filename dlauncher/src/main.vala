@@ -112,7 +112,7 @@ public class Application: Gtk.Application {
             int rh;
             var root_window = Gdk.get_default_root_window();
             root_window.get_geometry(null, null, null, out rh);
-            window.move(2, rh - height - 60);
+            window.move(0, rh - height - 36);
         }
     }
 

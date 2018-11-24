@@ -47,7 +47,8 @@ public class IconView : GLib.Object {
                     get_file_content(fullpath);
                     GLib.Icon icon = GLib.ContentType.get_icon(content);
                     Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-                    Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size, Gtk.IconLookupFlags.FORCE_SIZE);
+                    Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size,
+                                              Gtk.IconLookupFlags.FORCE_SIZE);
                     check_if_symlink(fullpath);
                     if (icon_info != null) {
                         pbuf = icon_info.load_icon();

@@ -193,7 +193,8 @@ public class Window: Gtk.ApplicationWindow {
         view.key_press_event.connect(on_key_press_event);
         view.button_press_event.connect(context_menu_activate);
         location_entry.activate.connect(() => {
-            new Pangea.IconView().open_location(GLib.File.new_for_path(location_entry.get_text()), true);
+            new Pangea.IconView().open_location(GLib.File.new_for_path(
+                                                    location_entry.get_text()), true);
         });
         window.delete_event.connect(() => {
             action_quit();

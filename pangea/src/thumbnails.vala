@@ -82,7 +82,8 @@ public class Thumbnails: GLib.Object {
             error("%s\n", e.message);
         }
         Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-        Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size, Gtk.IconLookupFlags.FORCE_SIZE);
+        Gtk.IconInfo? icon_info = icon_theme.lookup_by_gicon(icon, icon_size,
+                                  Gtk.IconLookupFlags.FORCE_SIZE);
         if (icon_info != null) {
             try {
                 pix = icon_info.load_icon();

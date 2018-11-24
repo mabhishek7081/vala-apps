@@ -161,14 +161,14 @@ public class Operations: GLib.Object {
         GLib.FileOutputStream fos = null;
         string bookmark = GLib.Path.build_filename(
                               GLib.Environment.get_user_config_dir(), "gtk-3.0/bookmarks");
-        
-        GLib.File bookmarks_dir = GLib.File.new_for_path(GLib.Path.get_dirname(bookmark));
+        GLib.File bookmarks_dir = GLib.File.new_for_path(GLib.Path.get_dirname(
+                                      bookmark));
         if (bookmarks_dir.query_exists() == false) {
             try {
                 bookmarks_dir.make_directory();
             } catch (GLib.Error e) {
                 stderr.printf ("%s\n", e.message);
-            }  
+            }
         }
         try {
             fos = File.new_for_path(bookmark).append_to(FileCreateFlags.NONE);
@@ -391,7 +391,8 @@ public class Operations: GLib.Object {
     public void file_paste_activate() {
         if (files_copy != null) {
             foreach(string i in files_copy) {
-                GLib.File file2 = File.new_for_path(current_dir + "/" + GLib.Path.get_basename(i));
+                GLib.File file2 = File.new_for_path(current_dir + "/" + GLib.Path.get_basename(
+                                                        i));
                 if (file2.query_exists() == true) {
                     var dialog = new Gtk.Dialog();
                     dialog.set_title("Overwrite?");
@@ -413,13 +414,15 @@ public class Operations: GLib.Object {
                     dialog.destroy();
                 }
                 execute_command_sync("cp -a '%s' '%s'".printf(i, current_dir));
-                stdout.printf("DEBUG: copying '%s' to '%s'\n".printf(i, current_dir + "/" + GLib.Path.get_basename(i)));                 
+                stdout.printf("DEBUG: copying '%s' to '%s'\n".printf(i,
+                              current_dir + "/" + GLib.Path.get_basename(i)));
             }
         }
         if (files_cut != null) {
             foreach(string i in files_cut) {
                 execute_command_sync("mv '%s' '%s'".printf(i, current_dir));
-                stdout.printf("DEBUG: moving '%s' to '%s'\n".printf(i, current_dir + "/" + GLib.Path.get_basename(i)));
+                stdout.printf("DEBUG: moving '%s' to '%s'\n".printf(i,
+                              current_dir + "/" + GLib.Path.get_basename(i)));
             }
         }
     }
