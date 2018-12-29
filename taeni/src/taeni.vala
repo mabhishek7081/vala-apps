@@ -55,6 +55,18 @@ private class Program : Gtk.Application {
 
     public override void startup() {
         base.startup();
+        add_accelerator("<Primary><Shift>N", "app.new-window", null );
+        add_accelerator("<Primary><Shift>T", "app.new-tab", null );
+        add_accelerator("<Primary><Shift>W", "app.close-tab", null );
+        add_accelerator("<Primary>Q", "app.quit", null );
+        add_accelerator("<Primary>Page_Down", "app.next-tab",null );
+        add_accelerator("<Primary>Page_Up", "app.prev-tab", null );
+        add_accelerator("<Primary><Shift>C", "app.copy", null );
+        add_accelerator("<Primary><Shift>V", "app.paste", null );
+        add_accelerator("<Primary><Shift>A", "app.select-all", null );
+        add_accelerator("F11", "app.full-screen", null );
+        add_accelerator("<Primary>F10", "app.show-menu", null );
+        /*
         set_accels_for_action("app.new-window",    {"<Primary><Shift>N"});
         set_accels_for_action("app.new-tab",       {"<Primary><Shift>T"});
         set_accels_for_action("app.close-tab",     {"<Primary><Shift>W"});
@@ -66,6 +78,7 @@ private class Program : Gtk.Application {
         set_accels_for_action("app.select-all",    {"<Primary><Shift>A"});
         set_accels_for_action("app.full-screen",   {"F11"});
         set_accels_for_action("app.show-menu",     {"<Primary>F10"});
+        */
     }
 
     public override void activate() {

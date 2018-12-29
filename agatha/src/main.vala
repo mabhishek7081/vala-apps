@@ -62,20 +62,6 @@ public class Application: Gtk.Application {
         var settings = new Agatha.Settings();
         settings.get_all();
         // accelerator
-#if GTK_3_22
-        set_accels_for_action("app.previous-page",          {"Left"});
-        set_accels_for_action("app.next-page",              {"Right"});
-        set_accels_for_action("app.scroll-up",              {"Up"});
-        set_accels_for_action("app.scroll-down",            {"Down"});
-        set_accels_for_action("app.page-up",                {"Page_Up"});
-        set_accels_for_action("app.page-down",              {"Page_Down"});
-        set_accels_for_action("app.zoom-plus",              {"KP_Add"});
-        set_accels_for_action("app.zoom-minus",             {"KP_Subtract"});
-        set_accels_for_action("app.full-screen-toggle",     {"F11"});
-        set_accels_for_action("app.open",                   {"<Control>O"});
-        set_accels_for_action("app.goto",                   {"<Control>G"});
-        set_accels_for_action("app.quit",                   {"<Control>Q"});
-#else
         add_accelerator("Left",             "app.previous-page", null);
         add_accelerator("Right",            "app.next-page", null);
         add_accelerator("Up",               "app.scroll-up", null);
@@ -88,7 +74,20 @@ public class Application: Gtk.Application {
         add_accelerator("<Control>O",       "app.open", null);
         add_accelerator("<Control>G",       "app.goto", null);
         add_accelerator("<Control>Q",       "app.quit", null);
-#endif
+        /*
+        set_accels_for_action("app.previous-page",          {"Left"});
+        set_accels_for_action("app.next-page",              {"Right"});
+        set_accels_for_action("app.scroll-up",              {"Up"});
+        set_accels_for_action("app.scroll-down",            {"Down"});
+        set_accels_for_action("app.page-up",                {"Page_Up"});
+        set_accels_for_action("app.page-down",              {"Page_Down"});
+        set_accels_for_action("app.zoom-plus",              {"KP_Add"});
+        set_accels_for_action("app.zoom-minus",             {"KP_Subtract"});
+        set_accels_for_action("app.full-screen-toggle",     {"F11"});
+        set_accels_for_action("app.open",                   {"<Control>O"});
+        set_accels_for_action("app.goto",                   {"<Control>G"});
+        set_accels_for_action("app.quit",                   {"<Control>Q"});
+        */
         // context menu
         var menu_popup = new GLib.Menu();
         var section_one = new GLib.Menu();
@@ -119,11 +118,9 @@ public class Application: Gtk.Application {
         window.add(eventbox);
         window.set_icon_name(ICON);
         window.set_default_size(width, height);
-#if GTK_3_22
         if (maximized == true) {
             window.maximize();
         }
-#endif
         window.show_all();
         window.delete_event.connect(() => {
             action_quit();
@@ -159,11 +156,8 @@ public class Application: Gtk.Application {
     // Mouse EventButton Press
     private bool button_press_event(Gdk.EventButton event) {
         if (event.button == 3) {
-#if GTK_3_22
-            popup.popup_at_pointer(event);
-#else
             popup.popup(null, null, null, 0, Gtk.get_current_event_time());
-#endif
+            //popup.popup_at_pointer(event);
         }
         if (event.button == 1 && event.type == Gdk.EventType.2BUTTON_PRESS) {
             action_full_screen_toggle();
@@ -314,9 +308,7 @@ public class Application: Gtk.Application {
 
     private void action_quit() {
         window.get_size(out width, out height);
-#if GTK_3_22
         maximized = window.is_maximized;
-#endif
         var settings = new Agatha.Settings();
         settings.set_width();
         settings.set_height();

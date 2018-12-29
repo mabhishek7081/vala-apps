@@ -71,22 +71,6 @@ private class Program : Gtk.Application {
 
     public override void startup() {
         base.startup();
-#if GTK_3_22
-        set_accels_for_action("app.next-image",            {"Right"});
-        set_accels_for_action("app.previous-image",        {"Left"});
-        set_accels_for_action("app.open",                  {"O", "<Primary>O"});
-        set_accels_for_action("app.set-as-wallpaper",      {"W", "<Primary>W"});
-        set_accels_for_action("app.toggle-thumbnails",     {"T", "<Primary>T"});
-        set_accels_for_action("app.rotate-right",          {"Page_Down", "<Primary>Page_Down"});
-        set_accels_for_action("app.rotate-left",           {"Page_Up", "<Primary>Page_Up"});
-        set_accels_for_action("app.full-screen-exit",      {"Escape"});
-        set_accels_for_action("app.zoom-in",               {"KP_Add"});
-        set_accels_for_action("app.zoom-out",              {"KP_Subtract"});
-        set_accels_for_action("app.zoom-actual",           {"KP_0"});
-        set_accels_for_action("app.full-screen-toggle",    {"F11"});
-        set_accels_for_action("app.show-menu",             {"F10"});
-        set_accels_for_action("app.quit",                  {"Q", "<Primary>Q"});
-#else
         add_accelerator("Right",        "app.next-image", null);
         add_accelerator("L",            "app.next-image", null);
         add_accelerator("Left",         "app.previous-image", null);
@@ -103,7 +87,22 @@ private class Program : Gtk.Application {
         add_accelerator("F11",          "app.full-screen-toggle", null);
         add_accelerator("F10",          "app.show-menu", null);
         add_accelerator("Q",            "app.quit", null);
-#endif
+        /*
+        set_accels_for_action("app.next-image",            {"Right"});
+        set_accels_for_action("app.previous-image",        {"Left"});
+        set_accels_for_action("app.open",                  {"O", "<Primary>O"});
+        set_accels_for_action("app.set-as-wallpaper",      {"W", "<Primary>W"});
+        set_accels_for_action("app.toggle-thumbnails",     {"T", "<Primary>T"});
+        set_accels_for_action("app.rotate-right",          {"Page_Down", "<Primary>Page_Down"});
+        set_accels_for_action("app.rotate-left",           {"Page_Up", "<Primary>Page_Up"});
+        set_accels_for_action("app.full-screen-exit",      {"Escape"});
+        set_accels_for_action("app.zoom-in",               {"KP_Add"});
+        set_accels_for_action("app.zoom-out",              {"KP_Subtract"});
+        set_accels_for_action("app.zoom-actual",           {"KP_0"});
+        set_accels_for_action("app.full-screen-toggle",    {"F11"});
+        set_accels_for_action("app.show-menu",             {"F10"});
+        set_accels_for_action("app.quit",                  {"Q", "<Primary>Q"});
+        */
         var menu = new Menu();
         var section = new GLib.Menu();
         section.append("Open",               "app.open");

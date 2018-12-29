@@ -5,15 +5,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(ValaPrecompile)
 
 find_package(PkgConfig)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0>=3.8.0)
-
-pkg_check_modules (GTK_3_22 QUIET gtk+-3.0>=3.20)
-if (GTK_3_22_FOUND)
-    set (GLOBAL_VALAC_OPTIONS ${GLOBAL_VALAC_OPTIONS} --define=GTK_3_22)
-    message ("-- Compiling for Gtk 3.22")
-else (GTK_3_22_FOUND)
-    message ("-- Compiling for Gtk < 3.20")
-endif (GTK_3_22_FOUND)
+pkg_check_modules(GTK3 REQUIRED gtk+-3.0>=3.12.0)
 
 include_directories(${GTK3_INCLUDE_DIRS})
 link_directories(${GTK3_LIBRARY_DIRS})

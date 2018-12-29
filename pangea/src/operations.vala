@@ -21,7 +21,7 @@ public class Operations: GLib.Object {
         button.set_always_show_image(true);
         button.set_relief(Gtk.ReliefStyle.NONE);
         // set device icon
-        button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
+        button.set_image(new Gtk.Image.from_icon_name("drive-harddisk",
                          Gtk.IconSize.MENU));
         if (GLib.File.new_for_path(mount_point).query_exists() == true) {
             string name;
@@ -32,7 +32,7 @@ public class Operations: GLib.Object {
                     c++;
                 }
                 if (c != 0) {
-                    button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
+                    button.set_image(new Gtk.Image.from_icon_name("media-eject",
                                      Gtk.IconSize.MENU));
                 }
             } catch (GLib.Error e) {
@@ -58,7 +58,7 @@ public class Operations: GLib.Object {
                             execute_command_sync("notify-send \"Pangea\" \"Mounted %s\"".printf("/dev/" +
                                                  button.get_label()));
                             execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
-                            button.set_image(new Gtk.Image.from_icon_name("media-eject-symbolic",
+                            button.set_image(new Gtk.Image.from_icon_name("media-eject",
                                              Gtk.IconSize.MENU));
                         }
                     } catch (GLib.Error e) {
@@ -82,7 +82,7 @@ public class Operations: GLib.Object {
                         execute_command_sync("notify-send \"Pangea\" \"Ejected %s\"".printf("/dev/" +
                                              button.get_label()));
                         execute_command_async("mpg123 -q /usr/share/sounds/dialog-information.mp3");
-                        button.set_image(new Gtk.Image.from_icon_name("drive-harddisk-symbolic",
+                        button.set_image(new Gtk.Image.from_icon_name("drive-harddisk",
                                          Gtk.IconSize.MENU));
                     } else {
                         execute_command_sync("notify-send \"Pangea\" \"Problem ejecting %s. Device is currently in use.\"".printf("/dev/"

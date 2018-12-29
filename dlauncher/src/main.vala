@@ -32,22 +32,14 @@ public class Application: Gtk.Application {
 
     public override void startup() {
         base.startup();
-#if GTK_3_22
-        set_accels_for_action("app.quit", {"Escape"});
-#else
         add_accelerator("Escape", "app.quit", null);
-#endif
+        //set_accels_for_action("app.quit", {"Escape"});
         entry = new Gtk.Entry();
         entry.hexpand = true;
         entry.height_request = 36;
         entry.set_placeholder_text("Search");
-#if GTK_3_22
-        entry.primary_icon_name = "system-search-symbolic";
-        entry.secondary_icon_name = "edit-clear-symbolic";
-#else
         entry.primary_icon_name = "edit-find";
         entry.secondary_icon_name = "edit-clear";
-#endif
         entry.secondary_icon_activatable = true;
         entry.icon_press.connect((position, event) => {
             if (position == Gtk.EntryIconPosition.SECONDARY) {

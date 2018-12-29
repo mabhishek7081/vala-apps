@@ -32,7 +32,8 @@ public class Program: Gtk.Application {
         section.append("Quit", "app.quit");
         menu.append_section(null, section);
         set_app_menu(menu);
-        set_accels_for_action("app.quit", {"<Primary><Shift>Q", "<Primary>Q"});
+        add_accelerator("<Primary>Q", "app.quit", null);
+        //set_accels_for_action("app.quit", {"<Primary><Shift>Q", "<Primary>Q"});
         action_add_widgets();
     }
 

@@ -12,9 +12,10 @@ public class Model: GLib.Object {
                 pixbuf = icon_info.load_icon();
             }
             if (pixbuf == null) {
-                if (GLib.File.new_for_path(icon).query_exists() == true) {              // try using full path
+                if (GLib.File.new_for_path(icon).query_exists() ==
+                        true) {              // try using full path
                     try {
-                        pixbuf = new Gdk.Pixbuf.from_file_at_size(icon, 64, 64);           
+                        pixbuf = new Gdk.Pixbuf.from_file_at_size(icon, 64, 64);
                     } catch (Error e) {
                         stderr.printf ("%s\n", e.message);
                     }

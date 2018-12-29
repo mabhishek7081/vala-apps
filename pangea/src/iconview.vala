@@ -58,7 +58,8 @@ public class IconView : GLib.Object {
                     //print("%s\n", content);
                     // thumbnails
                     if (content == "image/jpeg" || content == "image/png"
-                            || content == "image/svg+xml") {
+                            || content == "image/svg+xml" || content == "image/x-xbitmap"
+                            || content == "image/x-xpixmap") {
                         list_images.append(fullpath);
                     }
                     if (content == "application/x-desktop") {

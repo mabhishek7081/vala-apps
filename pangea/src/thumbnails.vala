@@ -74,7 +74,8 @@ public class Thumbnails: GLib.Object {
         try {
             icon_name = keyfile.get_string ("Desktop Entry", "Icon");
         } catch (GLib.Error e) {
-            error("%s\n", e.message);
+            icon_name = "";
+            //error("%s\n", e.message);
         }
         try {
             icon = GLib.Icon.new_for_string(icon_name);

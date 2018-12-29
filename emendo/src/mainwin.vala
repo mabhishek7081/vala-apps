@@ -27,23 +27,7 @@ public class MainWin: Gtk.ApplicationWindow {
         files = new GLib.List<string>();
         var settings = new Emendo.Settings();
         settings.get_all();
-        // accelerators
         app.add_action_entries(action_entries, app);
-        app.set_accels_for_action("app.show-menu",  {"F10"});
-        app.set_accels_for_action("app.undo",       {"<Primary>Z"});
-        app.set_accels_for_action("app.redo",       {"<Primary>Y"});
-        app.set_accels_for_action("app.open",       {"<Primary>O"});
-        app.set_accels_for_action("app.save",       {"<Primary>S"});
-        app.set_accels_for_action("app.new",        {"<Primary>N"});
-        app.set_accels_for_action("app.save-all",   {"<Primary><Shift>S"});
-        app.set_accels_for_action("app.find",       {"<Primary>F"});
-        app.set_accels_for_action("app.replace",    {"<Primary>H"});
-        app.set_accels_for_action("app.wrap",       {"<Primary>R"});
-        app.set_accels_for_action("app.color",      {"F9"});
-        app.set_accels_for_action("app.pref",       {"<Primary>P"});
-        app.set_accels_for_action("app.close",      {"<Primary>W"});
-        app.set_accels_for_action("app.close-all",  {"<Primary><Shift>W"});
-        app.set_accels_for_action("app.quit",       {"<Primary>Q"});
         // app menu
         var menu = new GLib.Menu();
         var section = new GLib.Menu();

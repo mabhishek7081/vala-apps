@@ -48,10 +48,16 @@ private class Program : Gtk.Application {
         section.append("Quit",      "app.quit");
         menu.append_section(null, section);
         set_app_menu(menu);
+        add_accelerator("<Primary><Shift>A", "app.add", null);
+        add_accelerator("Delete", "app.reset", null);
+        add_accelerator("F10", "app.show-menu", null);
+        add_accelerator("<Primary>Q", "app.quit", null);
+        /*
         set_accels_for_action("app.add",       {"<Primary><Shift>A"});
         set_accels_for_action("app.reset",     {"Delete"});
         set_accels_for_action("app.show-menu", {"F10"});
         set_accels_for_action("app.quit",      {"<Primary>Q"});
+        */
         settings = new GLib.Settings("org.vala-apps.wpset.preferences");
         images_dir = settings.get_strv("images-dir");
         liststore = new Gtk.ListStore (2, typeof (Gdk.Pixbuf), typeof (string));

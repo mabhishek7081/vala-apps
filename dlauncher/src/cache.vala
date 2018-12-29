@@ -21,7 +21,8 @@ public class Cache: GLib.Object {
                     try {
                         icon = keyfile.get_string ("Desktop Entry", "Icon");
                     } catch (GLib.Error e) {
-                        error("%s %s\n", n, e.message);
+                        icon = "";
+                        //error("%s %s\n", n, e.message);
                     }
                     try {
                         name = keyfile.get_string ("Desktop Entry", "Name");
