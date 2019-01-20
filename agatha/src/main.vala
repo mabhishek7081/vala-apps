@@ -62,10 +62,6 @@ public class Application: Gtk.Application {
         var settings = new Agatha.Settings();
         settings.get_all();
         // accelerator
-        add_accelerator("Left",             "app.previous-page", null);
-        add_accelerator("Right",            "app.next-page", null);
-        add_accelerator("Up",               "app.scroll-up", null);
-        add_accelerator("Down",             "app.scroll-down", null);
         add_accelerator("Page_Up",          "app.page-up", null);
         add_accelerator("Page_Down",        "app.page-down", null);
         add_accelerator("KP_Add",           "app.zoom-plus", null);
@@ -75,10 +71,6 @@ public class Application: Gtk.Application {
         add_accelerator("<Control>G",       "app.goto", null);
         add_accelerator("<Control>Q",       "app.quit", null);
         /*
-        set_accels_for_action("app.previous-page",          {"Left"});
-        set_accels_for_action("app.next-page",              {"Right"});
-        set_accels_for_action("app.scroll-up",              {"Up"});
-        set_accels_for_action("app.scroll-down",            {"Down"});
         set_accels_for_action("app.page-up",                {"Page_Up"});
         set_accels_for_action("app.page-down",              {"Page_Down"});
         set_accels_for_action("app.zoom-plus",              {"KP_Add"});
@@ -113,6 +105,7 @@ public class Application: Gtk.Application {
         eventbox.button_press_event.connect(button_press_event);
         eventbox.motion_notify_event.connect(button_motion_event);
         eventbox.button_release_event.connect(button_release_event);
+        eventbox.key_press_event.connect(on_key_press_event);
         window = new Gtk.ApplicationWindow(this);
         window.window_position = Gtk.WindowPosition.CENTER;
         window.add(eventbox);
@@ -122,6 +115,7 @@ public class Application: Gtk.Application {
             window.maximize();
         }
         window.show_all();
+        window.window_state_event.connect(window_state_event_cb);
         window.delete_event.connect(() => {
             action_quit();
             return true;
@@ -151,6 +145,22 @@ public class Application: Gtk.Application {
         var viewer = new Agatha.Viewer();
         viewer.render_page();
         window.present();
+    }
+
+    private bool on_key_press_event(Gdk.EventKey event) {
+        if (Gdk.keyval_name(event.keyval) == "Left") {
+            action_previous_page();
+        }
+        if (Gdk.keyval_name(event.keyval) == "Right") {
+            action_next_page();
+        }
+        if (Gdk.keyval_name(event.keyval) == "Up") {
+            action_scroll_up();
+        }        
+        if (Gdk.keyval_name(event.keyval) == "Down") {
+            action_scroll_down();
+        }
+        return false;
     }
 
     // Mouse EventButton Press
@@ -306,9 +316,13 @@ public class Application: Gtk.Application {
         dialogs.show_about();
     }
 
+    private bool window_state_event_cb (Gdk.EventWindowState event) {
+        maximized = (event.new_window_state & Gdk.WindowState.MAXIMIZED) != 0;
+        return false;
+    }
+
     private void action_quit() {
         window.get_size(out width, out height);
-        maximized = window.is_maximized;
         var settings = new Agatha.Settings();
         settings.set_width();
         settings.set_height();

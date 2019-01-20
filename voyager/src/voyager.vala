@@ -71,10 +71,6 @@ private class Program : Gtk.Application {
 
     public override void startup() {
         base.startup();
-        add_accelerator("Right",        "app.next-image", null);
-        add_accelerator("L",            "app.next-image", null);
-        add_accelerator("Left",         "app.previous-image", null);
-        add_accelerator("K",            "app.previous-image", null);
         add_accelerator("O",            "app.open", null);
         add_accelerator("W",            "app.set-as-wallpaper", null);
         add_accelerator("T",            "app.toggle-thumbnails", null);
@@ -88,8 +84,6 @@ private class Program : Gtk.Application {
         add_accelerator("F10",          "app.show-menu", null);
         add_accelerator("Q",            "app.quit", null);
         /*
-        set_accels_for_action("app.next-image",            {"Right"});
-        set_accels_for_action("app.previous-image",        {"Left"});
         set_accels_for_action("app.open",                  {"O", "<Primary>O"});
         set_accels_for_action("app.set-as-wallpaper",      {"W", "<Primary>W"});
         set_accels_for_action("app.toggle-thumbnails",     {"T", "<Primary>T"});
@@ -178,6 +172,7 @@ private class Program : Gtk.Application {
             quit();
             return true;
         });
+        window.key_press_event.connect(on_key_press_event);
         add_window(window);
         hadj = scrolled_window_image.get_hadjustment();
         vadj = scrolled_window_image.get_vadjustment();
@@ -199,6 +194,16 @@ private class Program : Gtk.Application {
             return false;
         });
         list_images(Path.get_dirname(file));
+    }
+
+    private bool on_key_press_event(Gdk.EventKey event) {
+        if (Gdk.keyval_name(event.keyval) == "Left" || Gdk.keyval_name(event.keyval) == "Up") {
+            action_previous_image();
+        }
+        if (Gdk.keyval_name(event.keyval) == "Right" || Gdk.keyval_name(event.keyval) == "Down") {
+            action_next_image();
+        }
+        return false;
     }
 
     // Treeview
