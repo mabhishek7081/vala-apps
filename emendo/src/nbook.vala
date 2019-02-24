@@ -69,7 +69,7 @@ public class NBook: Gtk.Notebook {
         } catch (Error e) {
             stderr.printf ("Error: %s\n", e.message);
         }
-        var tab_button = new Gtk.Button.from_icon_name("window-close-symbolic",
+        var tab_button = new Gtk.Button.from_icon_name("window-close",
                 Gtk.IconSize.MENU);
         tab_button.set_relief(Gtk.ReliefStyle.NONE);
         tab_button.set_hexpand(false);

@@ -143,15 +143,21 @@ public class Find: Gtk.Dialog {
 
     // Change entry color
     private void on_found_entry_color() {
-        var rgba = Gdk.RGBA();
-        rgba.parse("#000000");
-        entry.override_color(Gtk.StateFlags.NORMAL, rgba);
+        var rgba_text = Gdk.RGBA();
+        var rgba_background = Gdk.RGBA();
+        rgba_text.parse("#000000");
+        rgba_background.parse("#FFFFFF");
+        entry.override_color(Gtk.StateFlags.NORMAL, rgba_text);
+        entry.override_background_color(Gtk.StateFlags.NORMAL, rgba_background);
     }
 
     private void on_not_found_entry_color() {
-        var rgba = Gdk.RGBA();
-        rgba.parse("#FF6666");
-        entry.override_color(Gtk.StateFlags.NORMAL, rgba);
+        var rgba_text = Gdk.RGBA();
+        var rgba_background = Gdk.RGBA();
+        rgba_text.parse("#FFFFFF");
+        rgba_background.parse("#FF6666");
+        entry.override_color(Gtk.StateFlags.NORMAL, rgba_text);
+        entry.override_background_color(Gtk.StateFlags.NORMAL, rgba_background);
     }
 
 }

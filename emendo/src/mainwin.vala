@@ -72,9 +72,13 @@ public class MainWin: Gtk.ApplicationWindow {
         }
         window.add(notebook);
         window.show_all();
+        window.window_state_event.connect((w, e) => {
+            maximized = (e.new_window_state & Gdk.WindowState.MAXIMIZED) != 0;
+            return false;
+        });
         window.delete_event.connect(() => {
             action_quit();
-            return true;
+            return false;
         });
     }
 
@@ -188,7 +192,6 @@ public class MainWin: Gtk.ApplicationWindow {
 
     public void action_quit() {
         window.get_size(out width, out height);
-        maximized = window.is_maximized;
         active_tab = notebook.get_current_page();
         var settings = new Emendo.Settings();
         settings.set_width();
