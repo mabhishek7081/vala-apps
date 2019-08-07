@@ -1,42 +1,30 @@
 namespace Appearance {
 bool dark;
-bool header;
 string theme;
 string icon;
 string font;
 string cursor;
-string decoration;
 
 Gtk.Settings gtk_settings;
 Gtk.ComboBoxText button_dark;
-Gtk.ComboBoxText button_header;
 Gtk.ComboBoxText button_theme;
 Gtk.ComboBoxText button_icon;
 Gtk.FontButton   button_font;
 Gtk.ComboBoxText button_cursor;
-Gtk.ComboBoxText button_decoration;
 
 public class Settings: GLib.Object {
     public void get_current_values() {
         gtk_settings = Gtk.Settings.get_default();
         dark         = gtk_settings.gtk_application_prefer_dark_theme;
-        header       = gtk_settings.gtk_dialogs_use_header;
         theme        = gtk_settings.gtk_theme_name;
         icon         = gtk_settings.gtk_icon_theme_name;
         font         = gtk_settings.gtk_font_name;
         cursor       = gtk_settings.gtk_cursor_theme_name;
-        decoration   = gtk_settings.gtk_decoration_layout;
     }
 
     public void dark_changed() {
         gtk_settings.set("gtk-application-prefer-dark-theme",
                          bool.parse(button_dark.get_active_id()));
-        write_changes_gtk3();
-    }
-
-    public void header_changed() {
-        gtk_settings.set("gtk-dialogs-use-header",
-                         bool.parse(button_header.get_active_id()));
         write_changes_gtk3();
     }
 
@@ -65,11 +53,6 @@ public class Settings: GLib.Object {
         write_changes_gtk2();
     }
 
-    public void decoration_changed() {
-        gtk_settings.set("gtk-decoration-layout", button_decoration.get_active_id());
-        write_changes_gtk3();
-    }
-
     public void write_changes_gtk3() {
         try {
             // GTK3
@@ -79,13 +62,11 @@ public class Settings: GLib.Object {
                 "[Settings]\n" +
                 "gtk-application-prefer-dark-theme=%s\n".printf(
                     button_dark.get_active_id().to_string()) +
-                "gtk-dialogs-use-header=%s\n".printf(button_header.get_active_id().to_string())
-                +
+                "gtk-dialogs-use-header=false\n" +
                 "gtk-theme-name=%s\n".printf(button_theme.get_active_text()) +
                 "gtk-icon-theme-name=%s\n".printf(button_icon.get_active_text()) +
                 "gtk-font-name=%s\n".printf(button_font.get_font().to_string()) +
                 "gtk-cursor-theme-name=%s\n".printf(button_cursor.get_active_text()) +
-                "gtk-decoration-layout=%s\n".printf(button_decoration.get_active_id()) +
                 "gtk-menu-images=true\n";
             FileUtils.set_contents(gtk3file, gtk3content);
         } catch (FileError e) {

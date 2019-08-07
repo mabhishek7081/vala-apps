@@ -5,8 +5,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(ValaPrecompile)
 
 find_package(PkgConfig)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0>=3.14.0)
-pkg_check_modules(VTE3 REQUIRED vte-2.91)
+pkg_check_modules(GTK3 REQUIRED gtk+-3.0>=3.10.0)
+pkg_check_modules(VTE3 REQUIRED vte-2.90)
 
 include_directories(${GTK3_INCLUDE_DIRS})
 link_directories(${GTK3_LIBRARY_DIRS})
@@ -21,7 +21,7 @@ vala_precompile(VALA_C
     src/taeni.vala
 PACKAGES
     gtk+-3.0
-    vte-2.91
+    vte-2.90
 OPTIONS
     --vapidir=/usr/share/vala/vapi)
 add_executable(taeni ${VALA_C})

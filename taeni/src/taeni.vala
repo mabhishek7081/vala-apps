@@ -152,8 +152,8 @@ private class Program : Gtk.Application {
         term = new Vte.Terminal();
         term.set_scrollback_lines(4096);
         term.expand = true;
-        term.set_cursor_blink_mode(Vte.CursorBlinkMode.OFF);
-        term.set_cursor_shape(Vte.CursorShape.UNDERLINE);
+        term.set_cursor_blink_mode(Vte.TerminalCursorBlinkMode.OFF);
+        term.set_cursor_shape(Vte.TerminalCursorShape.UNDERLINE);
         term.child_exited.connect(action_close_tab);
         term.button_press_event.connect(terminal_button_press);
         try {
@@ -162,8 +162,8 @@ private class Program : Gtk.Application {
             stderr.printf("error: %s\n", e.message);
         }
         try {
-            term.spawn_sync(Vte.PtyFlags.DEFAULT, path, { Vte.get_user_shell() }, null,
-                            SpawnFlags.SEARCH_PATH, null, out child_pid);
+            term.fork_command_full(Vte.PtyFlags.DEFAULT, GLib.Environment.get_current_dir(), { Vte.get_user_shell() }, null, SpawnFlags.SEARCH_PATH, null, out child_pid);
+    
         } catch(Error e) {
             stderr.printf("error: %s\n", e.message);
         }
@@ -287,10 +287,10 @@ private class Program : Gtk.Application {
     }
 
     private void set_color_from_string(string back, string text) {
-        var bgcolor = Gdk.RGBA();
-        var fgcolor = Gdk.RGBA();
-        bgcolor.parse(back);
-        fgcolor.parse(text);
+        var bgcolor = Gdk.Color();
+        var fgcolor = Gdk.Color();
+        Gdk.Color.parse(back, out bgcolor);
+        Gdk.Color.parse(text, out fgcolor);
         term.set_color_background(bgcolor);
         term.set_color_foreground(fgcolor);
     }

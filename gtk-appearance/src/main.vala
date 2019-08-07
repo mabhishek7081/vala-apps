@@ -44,46 +44,36 @@ public class Program: Gtk.Application {
     private void action_add_widgets() {
         // Labels
         var label_dark       = new Gtk.Label("Global dark theme");
-        var label_header     = new Gtk.Label("Dialogs use header bar");
         var label_theme      = new Gtk.Label("Gtk theme");
         var label_icon       = new Gtk.Label("Icons");
         var label_font       = new Gtk.Label("Default font");
         var label_cursor     = new Gtk.Label("Cursor");
-        var label_decoration = new Gtk.Label("Decoration layout ");
         label_dark.set_halign(Gtk.Align.START);
-        label_header.set_halign(Gtk.Align.START);
         label_theme.set_halign(Gtk.Align.START);
         label_icon.set_halign(Gtk.Align.START);
         label_font.set_halign(Gtk.Align.START);
         label_cursor.set_halign(Gtk.Align.START);
-        label_decoration.set_halign(Gtk.Align.START);
         // Buttons
         button_dark       = new Gtk.ComboBoxText();
-        button_header     = new Gtk.ComboBoxText();
         button_theme      = new Gtk.ComboBoxText();
         button_icon       = new Gtk.ComboBoxText();
         button_font       = new Gtk.FontButton();
         button_cursor     = new Gtk.ComboBoxText();
-        button_decoration = new Gtk.ComboBoxText();
         // Get Values
         var settings = new Appearance.Settings();
         settings.get_current_values();
         populate_combo_boxes();
         button_dark.set_active_id(dark.to_string());
-        button_header.set_active_id(header.to_string());
         button_theme.set_active_id(theme);
         button_icon.set_active_id(icon);
         button_font.set_font_name(font);
         button_cursor.set_active_id(cursor);
-        button_decoration.set_active_id(decoration);
         // Connect signals
         button_dark.changed.connect         (on_button_dark_changed);
-        button_header.changed.connect       (on_button_header_changed);
         button_theme.changed.connect        (on_button_theme_changed);
         button_icon.changed.connect         (on_button_icon_changed);
         button_font.font_set.connect        (on_button_font_changed);
         button_cursor.changed.connect       (on_button_cursor_changed);
-        button_decoration.changed.connect   (on_button_decoration_changed);
         // Grid
         var grid = new Gtk.Grid();
         grid.set_column_spacing(10);
@@ -92,18 +82,14 @@ public class Program: Gtk.Application {
         grid.set_column_homogeneous(true);
         grid.attach(label_dark,        0, 0, 3, 1);
         grid.attach(button_dark,       3, 0, 2, 1);
-        grid.attach(label_header,      0, 1, 3, 1);
-        grid.attach(button_header,     3, 1, 2, 1);
-        grid.attach(label_theme,       0, 2, 3, 1);
-        grid.attach(button_theme,      3, 2, 2, 1);
-        grid.attach(label_icon,        0, 3, 3, 1);
-        grid.attach(button_icon,       3, 3, 2, 1);
-        grid.attach(label_font,        0, 4, 3, 1);
-        grid.attach(button_font,       3, 4, 2, 1);
-        grid.attach(label_cursor,      0, 5, 3, 1);
-        grid.attach(button_cursor,     3, 5, 2, 1);
-        grid.attach(label_decoration,  0, 6, 3, 1);
-        grid.attach(button_decoration, 3, 6, 2, 1);
+        grid.attach(label_theme,       0, 1, 3, 1);
+        grid.attach(button_theme,      3, 1, 2, 1);
+        grid.attach(label_icon,        0, 2, 3, 1);
+        grid.attach(button_icon,       3, 2, 2, 1);
+        grid.attach(label_font,        0, 3, 3, 1);
+        grid.attach(button_font,       3, 3, 2, 1);
+        grid.attach(label_cursor,      0, 4, 3, 1);
+        grid.attach(button_cursor,     3, 4, 2, 1);
         window = new Gtk.ApplicationWindow(this);
         window.window_position = Gtk.WindowPosition.CENTER;
         window.set_title(NAME);
@@ -177,25 +163,11 @@ public class Program: Gtk.Application {
         // Dark
         button_dark.append("true", "True");
         button_dark.append("false", "False");
-        // Header
-        button_header.append("true", "True");
-        button_header.append("false", "False");
-        // Decoration
-        button_decoration.append("menu:close",
-                                 "Only close button");
-        button_decoration.append("menu:minimize,close",
-                                 "Close and minimize");
-        button_decoration.append("menu:minimize,maximize,close",    "All buttons");
     }
 
     private void on_button_dark_changed() {
         var settings = new Appearance.Settings();
         settings.dark_changed();
-    }
-
-    private void on_button_header_changed() {
-        var settings = new Appearance.Settings();
-        settings.header_changed();
     }
 
     private void on_button_theme_changed() {
@@ -216,11 +188,6 @@ public class Program: Gtk.Application {
     private void on_button_cursor_changed() {
         var settings = new Appearance.Settings();
         settings.cursor_changed();
-    }
-
-    private void on_button_decoration_changed() {
-        var settings = new Appearance.Settings();
-        settings.decoration_changed();
     }
 
     private void action_about() {
